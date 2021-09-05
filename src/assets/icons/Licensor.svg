@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="93" height="93" viewBox="0 0 93 93">
+  <defs>
+    <clipPath id="clip-Licensor">
+      <rect width="93" height="93"/>
+    </clipPath>
+  </defs>
+  <g id="Licensor" clip-path="url(#clip-Licensor)">
+    <path id="Icon_ionic-md-document" data-name="Icon ionic-md-document" d="M23.365,3.375H10.212A3.461,3.461,0,0,0,6.75,6.837V35.913a3.461,3.461,0,0,0,3.462,3.462H30.981a3.461,3.461,0,0,0,3.462-3.462V14.452ZM21.981,15.837V6.144l9.692,9.692Z" transform="translate(26.25 25.625)" fill="#141414"/>
+  </g>
+</svg>

@@ -1,0 +1,484 @@
+/* table */
+.el-pagination button:disabled {
+  background-color: #2a2a2a;
+  color: rgb(213, 213, 213);
+  font-size: 18px ;
+}
+.el-pagination .btn-next, .el-pagination .btn-prev {
+  background-color: #2a2a2a;
+  color: rgb(213, 213, 213);
+  font-size: 18px ;
+}
+.el-pagination .btn-next .el-icon, .el-pagination .btn-prev .el-icon {
+  font-size: 20px;
+}
+.el-pager li {
+  background-color: #2a2a2a;
+  color: rgb(213, 213, 213);
+  font-size: 18px ;
+}
+.el-table {
+  border-radius: 10px;
+  background-color: #2a2a2a;
+  font-size: 18px ;
+}
+.table-pagination {
+  text-align: right;
+  margin-top: 0px;
+}
+.el-table thead {
+  color: #eeeeee;
+  text-transform: uppercase;
+}
+table, th {
+  border-right: 1px solid rgb(170, 170, 170);
+  border-left: 1px solid rgb(170, 170, 170);
+  border-collapse: collapse;
+}
+table, td {
+  border-right: 1px solid rgb(230, 230, 230);
+  border-left: 1px solid rgb(230, 230, 230);
+  border-collapse: collapse;
+}
+th:first-child /* , td:first-child */ { border-left: 1px solid rgb(55, 55, 55); }
+tr { border: none; }
+.el-button--warning {
+    background-color: #5586AA!important;
+    border-color: #5586AA;
+}
+.cell {
+  font-weight: normal;
+}
+
+/* search bar*/
+.button-text {
+  font-size: 18px  !important;
+}
+.search {
+  display: block;
+  width: 100%;
+  margin-bottom: -15px;
+}
+.search-padding {
+  padding:20px 0px 20px 0px;
+}
+.search-margin {
+  margin: 10px 0px 20px -15px;
+}
+.el-container-search {
+  margin: 20px 0px 20px 0px;
+  padding: 15px 30px 30px 30px;
+}
+.bg-portion {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+.el-input--prefix .el-input__inner {
+    padding-left: 40px;
+}
+
+/* sort */
+.sort {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+/* logo */
+.logo-min {
+  text-align: center;
+  background-color: #0e0e0e;
+  color: #ffffff;
+  font-size:36px;
+  font-weight: 800;
+  word-wrap: break-word;
+  max-width: 200px;
+  border-bottom: 1px solid #cccccc;
+  padding: 20px 0px 20px 0px;
+}
+.logo-max {
+  text-align: center;
+  background-color: #0e0e0e;
+  color: #ffffff;
+  font-size:26px;
+  font-weight: 500;
+  word-wrap: break-word;
+  max-width: auto;
+  border-bottom: 1px solid #cccccc;
+  padding: 20px 0px 20px 0px;
+}
+
+/* menu */
+.el-menu.el-menu--horizontal {
+  border-bottom: solid 1px #2a2a2a;
+}
+.mf-size {
+ font-size: 22px  !important;
+ padding: 0 40px !important;
+}
+
+/* side bar*/
+.custom-scrollbar[data-v-7f431c07] {
+  border-right: 4px solid #dcdfe6;
+}
+.el-menu-item {
+  text-align: center;
+  color: #f9f9f9 !important;
+  border-bottom: 1px solid #cccccc;
+  font-size: 16px !important;
+}
+.el-submenu {
+  text-align: center;
+  border-bottom: 1px solid #cccccc;
+}
+.el-submenu__title {
+  color: #f9f9f9 !important;
+}
+.el-submenu__title:hover,
+.el-submenu__title:focus {
+  color: #000000  !important;
+}
+.el-menu-item:hover,
+.el-menu-item:focus {
+  color: #000000  !important;
+}
+.el-menu-item.is-active {
+  background: #f9f9f9 !important;
+  color: #000000  !important;
+}
+.el-menu-item [class^=el-icon-] {
+  width: 34px;
+  display: none;
+}
+.el-submenu [class^=el-icon-] {
+  display: none;
+}
+.el-menu--collapse>.el-menu-item [class^=el-icon-], .el-menu--collapse>.el-submenu>.el-submenu__title [class^=el-icon-] {
+  width: 60px;
+  margin-left: -18px;
+  display: block;
+}
+.el-menu--horizontal > .el-menu-item.is-active[data-v-fabc2818] {
+    background-color: rgb(42, 42, 42) !important;
+    color: #f9f9f9 !important;
+}
+.el-submenu .el-menu-item {
+  color: #000000 !important;
+}
+.el-submenu__title {
+  font-size: 16px !important;
+}
+.black-text {
+    color: #000000 !important;
+}
+.el-drawer {
+  border-right: 4px solid #dcdfe6;
+}
+/* breadcrumb */
+.el-breadcrumb__inner a, .el-breadcrumb__inner.is-link {
+  color: #f9f9f9 !important;
+  font-weight: 300 !important;
+
+}
+.el-breadcrumb__inner {
+  color: #f9f9f9 !important;
+  font-weight: bold !important;
+}
+
+/* custom icon */
+.el-icon-s-platform { content: url('assets/icons/Home.svg');  filter: brightness(3) invert(1)}
+.el-icon-s-platform:before { content: url('assets/icons/Home.svg');}
+.el-icon-s-platform:hover,
+.el-icon-s-platform:focus {
+  filter: brightness(0%);
+}
+.el-icon-s-platform:active {
+  filter: brightness(3);
+}
+.el-icon-suitcase { content: url('assets/icons/Product.svg');  filter: brightness(3) invert(1)}
+.el-icon-suitcase:before { content: url('assets/icons/Product.svg');}
+.el-icon-suitcase:hover,
+.el-icon-suitcase:focus {
+  filter: brightness(0%);
+}
+.el-icon-s-suitcase:active {
+  filter: brightness(0%);
+}
+.el-icon-postcard { content: url('assets/icons/NFT.svg');  filter: brightness(3) invert(1)}
+.el-icon-postcard:before { content: url('assets/icons/NFT.svg');}
+.el-icon-postcard:hover,
+.el-icon-postcard:focus {
+  filter: brightness(0%);
+}
+.el-icon-s-postcard:active {
+  filter: brightness(3);
+}
+.el-icon-s-custom { content: url('assets/icons/Customer.svg');  filter: brightness(3) invert(1)}
+.el-icon-s-custom:before { content: url('assets/icons/Customer.svg');}
+.el-icon-s-custom:hover,
+.el-icon-s-custom:focus {
+  filter: brightness(0%);
+}
+.el-icon-s-custom:active {
+  filter: brightness(3);
+}
+.el-icon-s-open { content: url('assets/icons/Artist.svg');  filter: brightness(3) invert(1)}
+.el-icon-s-open:before { content: url('assets/icons/Artist.svg');}
+.el-icon-s-open:hover,
+.el-icon-s-open:focus {
+  filter: brightness(0%);
+}
+.el-icon-s-open:active {
+  filter: brightness(3);
+}
+.el-icon-document { content: url('assets/icons/Licensor.svg');  filter: brightness(3) invert(1)}
+.el-icon-document:before { content: url('assets/icons/Licensor.svg');}
+.el-icon-document:hover,
+.el-icon-document:focus {
+  filter: brightness(0%);
+}
+.el-icon-s-document:active {
+  filter: brightness(3);
+}
+.el-icon-s-tools { content: url('assets/icons/Settings.svg');  filter: brightness(3) invert(1)}
+.el-icon-s-tools:before { content: url('assets/icons/Settings.svg');}
+.el-icon-s-tools:hover,
+.el-icon-s-tools:focus {
+  filter: brightness(0%);
+}
+.el-icon-s-tools:active {
+  filter: brightness(3);
+}
+.el-icon-search { 
+  content: url('assets/icons/Search.svg');  
+  filter: brightness(50%) invert(3);
+  width: 60px;
+}
+.el-icon-edit { 
+  content: url('assets/icons/Edit.svg');  
+  filter: brightness(50%) invert(3);
+  width: 68px;
+  margin: -10px;
+}
+.edit-icon {
+  padding: 2px 5px;
+}
+
+/* Form */
+.el-upload {
+  width: 100% !important;
+}
+.el-upload-dragger {
+  width: 100% !important;
+  border: 5px dashed #268bb4;
+  height: 180px;
+}
+
+.el-upload--picture-card {
+    height: 180px;
+}
+
+.el-input__inner {
+  border-color: #b3b3b3;
+  font-size: 18px;
+}
+.el-textarea__inner {
+  border-color: #b3b3b3;
+  font-size: 18px;
+}
+.el-menu--horizontal>.el-menu-item.is-active {
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+}
+.form-custom {
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+.form-bg-color {
+  background-color:#fcfcfcfc;
+}
+.form-text-title {
+  display:block; 
+  font-size:22px; 
+  font-weight:bold
+}
+.form-text-title-pad {
+  padding:60px 0px 20px 0px
+}
+
+.image-files {
+  width: 100px; 
+  height: 100px; 
+  margin:5px;
+  float: left;
+  text-align: right;
+  position: relative;
+  border-radius: 5px !important;
+  overflow: hidden;
+}
+.image-files-big {
+  max-width:60%;
+  min-width:200px;
+  position: relative;
+  overflow: hidden;
+}
+.each-image {
+  width: 100px; 
+  height: 100px; 
+  overflow:hidden
+}
+.image-max-height {
+  text-align:center; 
+  height:200px; 
+  overflow:hidden
+}
+.el-icon-delete {
+  position: absolute;
+  z-index: 1000;
+  top: 5px;
+  right: 5px;
+}
+.el-icon-delete:hover {
+  color: red;
+}
+.el-form--label-top .el-form-item__label {
+  font-size: 18px;
+  font-weight:bold;
+  padding: 0 0 2px 0;
+}
+.el-overlay{
+    top: 60px !important;
+}
+.el-date-editor.el-input, .el-date-editor.el-input__inner {
+    width: 100% !important;
+}
+
+/* custom breadcrumb */
+
+* {margin: 0; padding: 0;}
+
+// html, body {min-height: 100%;}
+
+body {
+  // text-align: center;
+  // padding-top: 100px;
+  background: #333333;
+  background: linear-gradient(#333333, #111111);
+  // font-family: 'Merriweather Sans', arial, verdana;
+}
+
+.breadcrumb {
+  /*centering*/
+  display: inline-block;
+  box-shadow: 0 0 15px 1px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  border-radius: 5px;
+  counter-reset: flag;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  outline: none;
+  display: block;
+  float: left;
+  font-size: 12px;
+  line-height: 36px;
+  color: white;
+  padding: 0 10px 0 60px;
+  background: #333;
+  background: linear-gradient(#333, #111);
+  position: relative;
+}
+.breadcrumb a:first-child {
+  padding-left: 46px;
+  border-radius: 5px 0 0 5px; /*to match with the parent's radius*/
+}
+.breadcrumb a:first-child:before {
+  left: 14px;
+}
+.breadcrumb a:last-child {
+  border-radius: 0 5px 5px 0; /*this was to prevent glitches on hover*/
+  padding-right: 20px;
+}
+
+/*hover/active styles*/
+.breadcrumb a.active, .breadcrumb a:hover{
+  background: #111;
+  background: linear-gradient(#333, #111);
+}
+.breadcrumb a.active:after, .breadcrumb a:hover:after {
+  background: #222;
+  background: linear-gradient(145deg, #333, #222);
+}
+
+/*adding the arrows for the breadcrumbs using rotated pseudo elements*/
+.breadcrumb a:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -18px; /*half of square's length*/
+  /*same dimension as the line-height of .breadcrumb a */
+  width: 36px;
+  height: 36px;
+  transform: scale(0.707) rotate(45deg);
+  /*we need to prevent the arrows from getting buried under the next link*/
+  z-index: 1;
+  /*background same as links but the gradient will be rotated to compensate with the transform applied*/
+  background: #555;
+  background: linear-gradient(135deg, #777, #333);
+  /*stylish arrow design using box shadow*/
+  box-shadow:
+    2px -2px 0 2px rgba(0, 0, 0, 0.4),
+    3px -3px 0 2px rgba(255, 255, 255, 0.1);
+  border-radius: 0 5px 0 50px;
+}
+/*we dont need an arrow after the last link*/
+.breadcrumb a:last-child:after {
+  content: none;
+}
+/*we will use the :before element to show numbers*/
+.breadcrumb a:before {
+  content: counter(flag);
+  counter-increment: flag;
+  /*some styles now*/
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  margin: 8px 0;
+  position: absolute;
+  top: 0;
+  left: 30px;
+  background: #333;
+  background: linear-gradient(#333, #300);
+  font-weight: bold;
+}
+
+.flat a, .flat a:after {
+  background: #F9F9F9;
+  color:rgb(31, 31, 31);
+  transition: all 0.7s;
+}
+.flat a:before {
+  background: #F9F9F9;
+  box-shadow: 0 0 0 1px rgb(175, 175, 175);
+  text-align: center;
+}
+.flat a:hover, .flat a.active,
+.flat a:hover:after, .flat a.active:after{
+  background: #5586AA;
+}
+
+.el-upload-list__item-name [class^=el-icon] {
+  height: 40px;
+}
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}

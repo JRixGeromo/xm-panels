@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="93" height="93" viewBox="0 0 93 93">
+  <defs>
+    <clipPath id="clip-NFT">
+      <rect width="93" height="93"/>
+    </clipPath>
+  </defs>
+  <g id="NFT" clip-path="url(#clip-NFT)">
+    <g id="Group_66" data-name="Group 66" transform="translate(-1609 -661.819)">
+      <g id="Polygon_1" data-name="Polygon 1" transform="translate(1671.042 690.819) rotate(90)" fill="#141414">
+        <path d="M 25.66570281982422 30.08394050598145 L 9.334689140319824 30.08394050598145 L 1.147587656974792 15.54197120666504 L 9.334689140319824 1.000001192092896 L 25.66570281982422 1.000001192092896 L 33.85280609130859 15.54197120666504 L 25.66570281982422 30.08394050598145 Z" stroke="none"/>
+        <path d="M 9.919282913208008 2.000001907348633 L 2.295177459716797 15.54197120666504 L 9.919282913208008 29.08394050598145 L 25.08111000061035 29.08394050598145 L 32.70521545410156 15.54197120666504 L 25.08111000061035 2.000001907348633 L 9.919282913208008 2.000001907348633 M 8.750097274780273 1.9073486328125e-06 L 26.25029754638672 1.9073486328125e-06 L 35.00039672851562 15.54197120666504 L 26.25029754638672 31.08394050598145 L 8.750097274780273 31.08394050598145 L -3.814697265625e-06 15.54197120666504 L 8.750097274780273 1.9073486328125e-06 Z" stroke="none" fill="#141414"/>
+      </g>
+      <!-- <text id="NFT-2" data-name="NFT" transform="translate(1638 697.819)" fill="#f9f9f9" font-size="15" font-family="SourceSansPro-Bold, Source Sans Pro" font-weight="700"><tspan x="-13.155" y="15">NFT</tspan></text> -->
+      <text id="NFT-2" data-name="NFT" transform="translate(1638 697.819)" fill="#f9f9f9" font-size="16" font-family="SourceSansPro-Bold, Source Sans Pro" font-weight="100"><tspan x="5" y="15">NFT</tspan></text>
+    </g>
+  </g>
+</svg>

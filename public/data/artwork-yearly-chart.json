@@ -1,0 +1,100 @@
+{
+  "week": [
+    {
+      "label": "Sunday",
+      "value": 8
+    },
+    {
+      "label": "Monday",
+      "value": 9
+    },
+    {
+      "label": "Tuesday",
+      "value": 13
+    },
+    {
+      "label": "Wednesday",
+      "value": 7
+    },
+    {
+      "label": "Thursday",
+      "value": 21
+    },
+    {
+      "label": "Friday",
+      "value": 19
+    },
+    {
+      "label": "Saturday",
+      "value": 17
+    }
+  ],
+  "month": [
+    {
+      "label": "Week 1",
+      "value": 42
+    },
+    {
+      "label": "Week 2",
+      "value": 35
+    },
+    {
+      "label": "Week 3",
+      "value": 39
+    },
+    {
+      "label": "Week 4",
+      "value": 43
+    }
+  ],
+  "year": [
+    {
+      "label": "January",
+      "value": 193
+    },
+    {
+      "label": "February",
+      "value": 145
+    },
+    {
+      "label": "March",
+      "value": 132
+    },
+    {
+      "label": "April",
+      "value": 184
+    },
+    {
+      "label": "May",
+      "value": 127
+    },
+    {
+      "label": "June",
+      "value": 143
+    },
+    {
+      "label": "July",
+      "value": 124
+    },
+    {
+      "label": "August",
+      "value": 192
+    },
+    {
+      "label": "September",
+      "value": 122
+    },
+    {
+      "label": "October",
+      "value": 154
+    },
+    {
+      "label": "November",
+      "value": 172
+    },
+    {
+      "label": "December",
+      "value": 95
+    }
+  ]
+}

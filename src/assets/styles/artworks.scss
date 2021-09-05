@@ -1,0 +1,39 @@
+.artwork-details {
+  .artwork-wrapper {
+    border       : 1px solid gainsboro;
+    border-radius: 5px;
+  }
+
+  .artwork-container {
+    height         : 300px;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    padding        : 20px 1px;
+  }
+
+  .artwork-info-wrapper {
+    .artwork-name {
+      font-size  : 30px;
+      font-weight: bold;
+    }
+
+    .artist-name-wrapper {
+      padding: 15px 0;
+
+      span {
+        font-weight: bold;
+      }
+    }
+
+    .price-label {
+      color      : rgb(124, 124, 124);
+      padding-top: 10px;
+    }
+
+    .price {
+      font-weight: bold;
+      line-height: 2;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="93" height="93" viewBox="0 0 93 93">
+  <defs>
+    <clipPath id="clip-Cancel">
+      <rect width="93" height="93"/>
+    </clipPath>
+  </defs>
+  <g id="Cancel" clip-path="url(#clip-Cancel)">
+    <g id="Cancel_icon" data-name="Cancel icon" transform="translate(16 16)">
+      <rect id="Rectangle_60" data-name="Rectangle 60" width="62" height="62" fill="none"/>
+      <path id="Icon_metro-cancel" data-name="Icon metro-cancel" d="M17.995,1.928A15.424,15.424,0,1,0,33.419,17.352,15.424,15.424,0,0,0,17.995,1.928Zm0,27.956A12.532,12.532,0,1,1,30.527,17.352,12.532,12.532,0,0,1,17.995,29.885ZM22.815,9.64l-4.82,4.82-4.82-4.82-2.892,2.892,4.82,4.82-4.82,4.82,2.892,2.892,4.82-4.82,4.82,4.82,2.892-2.892-4.82-4.82,4.82-4.82Z" transform="translate(13.006 13.648)" fill="#be4343"/>
+    </g>
+  </g>
+</svg>

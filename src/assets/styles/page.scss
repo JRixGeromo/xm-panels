@@ -1,0 +1,12 @@
+.page-lang {
+  display: flex;
+  align-items: center;
+
+  .action {
+    padding-left: 15px;
+
+    .el-link {
+      padding: 0 5px;
+    }
+  }
+}

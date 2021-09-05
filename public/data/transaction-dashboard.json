@@ -1,0 +1,123 @@
+{
+  "week": [
+    {
+      "label": "Sunday",
+      "totalTransactionAmount": 412,
+      "totalTransactionCommission": 41
+    },
+    {
+      "label": "Monday",
+      "totalTransactionAmount": 425,
+      "totalTransactionCommission": 48
+    },
+    {
+      "label": "Tuesday",
+      "totalTransactionAmount": 467,
+      "totalTransactionCommission": 47
+    },
+    {
+      "label": "Wednesday",
+      "totalTransactionAmount": 481,
+      "totalTransactionCommission": 57
+    },
+    {
+      "label": "Thursday",
+      "totalTransactionAmount": 457,
+      "totalTransactionCommission": 23
+    },
+    {
+      "label": "Friday",
+      "totalTransactionAmount": 521,
+      "totalTransactionCommission": 63
+    },
+    {
+      "label": "Saturday",
+      "totalTransactionAmount": 321,
+      "totalTransactionCommission": 53
+    }
+  ],
+  "month": [
+    {
+      "label": "Week 1",
+      "totalTransactionAmount": 671,
+      "totalTransactionCommission": 561
+    },
+    {
+      "label": "Week 2",
+      "totalTransactionAmount": 632,
+      "totalTransactionCommission": 631
+    },
+    {
+      "label": "Week 3",
+      "totalTransactionAmount": 581,
+      "totalTransactionCommission": 512
+    },
+    {
+      "label": "Week 4",
+      "totalTransactionAmount": 653,
+      "totalTransactionCommission": 78
+    }
+  ],
+  "year": [
+    {
+      "label": "January",
+      "totalTransactionAmount": 682,
+      "totalTransactionCommission": 635
+    },
+    {
+      "label": "February",
+      "totalTransactionAmount": 598,
+      "totalTransactionCommission": 514
+    },
+    {
+      "label": "March",
+      "totalTransactionAmount": 521,
+      "totalTransactionCommission": 521
+    },
+    {
+      "label": "April",
+      "totalTransactionAmount": 764,
+      "totalTransactionCommission": 513
+    },
+    {
+      "label": "May",
+      "totalTransactionAmount": 385,
+      "totalTransactionCommission": 386
+    },
+    {
+      "label": "June",
+      "totalTransactionAmount": 698,
+      "totalTransactionCommission": 634
+    },
+    {
+      "label": "July",
+      "totalTransactionAmount": 498,
+      "totalTransactionCommission": 682
+    },
+    {
+      "label": "August",
+      "totalTransactionAmount": 485,
+      "totalTransactionCommission": 677
+    },
+    {
+      "label": "September",
+      "totalTransactionAmount": 524,
+      "totalTransactionCommission": 654
+    },
+    {
+      "label": "October",
+      "totalTransactionAmount": 735,
+      "totalTransactionCommission": 742
+    },
+    {
+      "label": "November",
+      "totalTransactionAmount": 512,
+      "totalTransactionCommission": 724
+    },
+    {
+      "label": "December",
+      "totalTransactionAmount": 723,
+      "totalTransactionCommission": 651
+    }
+  ]
+}

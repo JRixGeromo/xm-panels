@@ -1,0 +1,85 @@
+.card {
+  padding           : 1em;
+  margin-bottom     : 15px;
+  border-radius     : 5px;
+  display           : flex;
+  justify-content   : space-between;
+  align-items       : center;
+  user-select       : none;
+  -webkit-box-shadow: 0px 0px 6px 0px rgba(65, 75, 100, 0.12), 0px 0px 4px 0px rgba(65, 75, 100, 0.08);
+  box-shadow        : 0px 0px 6px 0px rgba(65, 75, 100, 0.12), 0px 0px 4px 0px rgba(65, 75, 100, 0.08);
+
+  &.table {
+    display: block;
+  }
+
+  &.row {
+    display: block;
+
+    .title {
+      margin-bottom: 1em;
+      font-weight  : bold;
+    }
+
+    .sub-title {
+      line-height: 2;
+      color      : rgb(177, 177, 177);
+      font-size  : 15px;
+    }
+
+    .data {
+      font-size: 18px;
+    }
+  }
+
+  &.chart {
+    padding: 0 1em !important;
+    display: block;
+
+    .card.chart {
+      box-shadow: unset;
+      padding   : unset !important;
+    }
+
+    .title {
+      text-align : center;
+      font-weight: bold;
+      padding    : 1em 0;
+    }
+
+    .chart-view {
+      padding-bottom: 1em;
+    }
+
+    canvas {
+      height: 400px !important;
+    }
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .info {
+    color     : #8e8e8e;
+    display   : block;
+    margin-top: 10px;
+  }
+
+  .result {
+    background     : gray;
+    color          : #fff;
+    font-size      : 25px;
+    border-radius  : 5px;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    height         : 50px;
+    width          : 50px;
+  }
+}
+
+.el-breadcrumb {
+  margin-bottom: 20px;
+  font-size    : 20px;
+}
