@@ -45,6 +45,17 @@ export function LicensorApiIni() {
     })
   );
 }
+export function CharacterApiIni() {
+  return (
+    axios.create({
+      baseURL: process.env.VUE_APP_BSG_API_DOMAIN,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+  );
+}
 export function ProductApiIni() {
   return (
     axios.create({

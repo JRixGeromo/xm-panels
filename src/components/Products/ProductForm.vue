@@ -120,13 +120,13 @@
 
       <el-col :span="9">
         <div style="margin-top: 15px;">
-          <el-form-item label="License" prop="licenseId">
-          <el-select v-model="productForm.licenseId" placeholder="Select">
+          <el-form-item label="Series" prop="characterId">
+          <el-select v-model="productForm.characterId" placeholder="Select">
             <el-option
-              v-for="license in licensorList"
-              :key="license.licenseId"
-              :label="license.licenseName"
-              :value="license.licenseId"
+              v-for="character in characterList"
+              :key="character.characterId"
+              :label="character.characterName"
+              :value="character.characterId"
             >
             </el-option>
           </el-select>
@@ -204,7 +204,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import { GET_LICENSOR_LIST } from '@/store/modules/licensor/actions-type';
+import { GET_CHARACTER_LIST } from '@/store/modules/character/actions-type';
 import { GET_ARTIST_LIST } from '@/store/modules/artist/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 
@@ -243,7 +243,7 @@ export default {
         productManufactureCountry: 'US',
         productReleaseDate: '',
         productManufactureDate: '',
-        licenseId: null,
+        characterId: null,
         artistIds: null,
         productStatus: 'Active',
       },
@@ -290,10 +290,10 @@ export default {
             message: 'Please enter manufacture date',
           },
         ],
-        licenseId: [
+        characterId: [
           {
             required: true,
-            message: 'Please select license',
+            message: 'Please select character',
           },
         ],
         artistIds: [
@@ -350,14 +350,14 @@ export default {
       this.productForm.productImagesFile = null;
     },
     ...mapActions('artist', [GET_ARTIST_LIST]),
-    ...mapActions('licensor', [GET_LICENSOR_LIST]),
+    ...mapActions('character', [GET_CHARACTER_LIST]),
   },
   computed: {
     ...mapState('artist', ['artistList']),
-    ...mapState('licensor', ['licensorList']),
+    ...mapState('character', ['characterList']),
   },
   mounted() {
-    this.GET_LICENSOR_LIST();
+    this.GET_CHARACTER_LIST();
     this.GET_ARTIST_LIST();
   },
 };

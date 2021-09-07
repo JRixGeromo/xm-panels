@@ -4,6 +4,7 @@ import user from './modules/user';
 import artist from './modules/artist';
 import product from './modules/product';
 import licensor from './modules/licensor';
+import character from './modules/character';
 import access from './modules/access';
 import configuration from './modules/configuration';
 
@@ -16,6 +17,7 @@ export default createStore({
     product,
     artist,
     licensor,
+    character,
     access,
     configuration,
   },

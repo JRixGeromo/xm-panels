@@ -11,6 +11,8 @@ import {
   SEARCH_PRODUCT_IN_LIST,
   CREATE_DESIGN,
   GET_DESIGNS,
+  CREATE_SERIAL_NUMBER,
+  GET_SERIAL_NUMBERS,
 } from '@/store/modules/product/actions-type';
 import {
   GET_PRODUCT_LIST_START,
@@ -35,6 +37,15 @@ import {
   GET_DESIGNS_START,
   GET_DESIGNS_SUCCESS,
   GET_DESIGNS_FAILURE,
+  CREATE_SERIAL_NUMBER_START,
+  CREATE_SERIAL_NUMBER_SUCCESS,
+  CREATE_SERIAL_NUMBER_FAILURE,
+  UPDATE_SERIAL_NUMBER_START,
+  UPDATE_SERIAL_NUMBER_SUCCESS,
+  UPDATE_SERIAL_NUMBER_FAILURE,
+  GET_SERIAL_NUMBERS_START,
+  GET_SERIAL_NUMBERS_SUCCESS,
+  GET_SERIAL_NUMBERS_FAILURE,
 } from '@/store/modules/product/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
@@ -45,12 +56,16 @@ const state = {
   productList: [],
   productDetails: [],
   designDetails: [],
+  serialNumberDetails: [],
   creatingProduct: false,
   gettingProductDetails: false,
   gettingDesigns: false,
+  gettingSerialNumbers: false,
   updatingProduct: false,
   creatingDesign: false,
   updatingDesign: false,
+  creatingSerialNumber: false,
+  updatingSerialNumber: false,
 };
 
 const getters = {
@@ -90,9 +105,9 @@ const actions = {
     });
   },
   [GET_PRODUCT]({ commit }, productId) {
-    // const fullpageLoader = ElLoading.service({
-    //   fullscreen: true,
-    // });
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
     commit(GET_PRODUCT_START);
     productServices.getProduct(productId).then(
       (data) => {
@@ -101,10 +116,9 @@ const actions = {
       () => {
         commit(GET_PRODUCT_FAILURE);
       },
-    );
-    // .finally(() => {
-    //   fullpageLoader.close();
-    // });
+    ).finally(() => {
+      fullpageLoader.close();
+    });
   },
   async [CREATE_PRODUCT]({ commit }, productDetails) {
     const fullpageLoader = ElLoading.service({
@@ -268,12 +282,6 @@ const actions = {
       for (let i = 0; i < designDetails.forDelete.length; i++) {
         await productServices.deleteDesign(designDetails.forDelete[i].designId).then(() => {
           /*
-          for (let j = 0; j < designDetails.existing.length; j++) {
-            if (designDetails.existing[i].designId === designDetails.forDelete[i].designId) {
-              designDetails.existing[i].splice(i, 1);
-              break;
-            }
-          }
           */
         });
       }
@@ -399,6 +407,52 @@ const actions = {
     //   fullpageLoader.close();
     // });
   },
+
+  async [CREATE_SERIAL_NUMBER]({ commit }, serialNumberDetails) {
+    // serialNumberDetails.serialNumbers.shift();
+    // console.log(serialNumberDetails);
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
+    commit(CREATE_SERIAL_NUMBER_START);
+    await productServices.createSerialNumber(serialNumberDetails.serialNumbers, serialNumberDetails.productId).then(
+      () => {
+        ElMessage.success({
+          showClose: true,
+          message: 'Design created successfully',
+        });
+        commit(CREATE_SERIAL_NUMBER_SUCCESS);
+        router.push('/allproducts');
+      },
+      (error) => {
+        ElMessage.error({
+          showClose: true,
+          message: error,
+        });
+        commit(CREATE_SERIAL_NUMBER_FAILURE);
+      },
+    ).finally(() => {
+      fullpageLoader.close();
+    });
+  },
+  [GET_SERIAL_NUMBERS]({ commit }, productId) {
+    // const fullpageLoader = ElLoading.service({
+    //   fullscreen: true,
+    // });
+    commit(GET_DESIGNS_START);
+    productServices.getDesigns(productId).then(
+      (data) => {
+        commit(GET_DESIGNS_SUCCESS, data);
+      },
+      () => {
+        commit(GET_DESIGNS_FAILURE);
+      },
+    );
+    // .finally(() => {
+    //   fullpageLoader.close();
+    // });
+  },
+
 };
 
 const mutations = {
@@ -460,6 +514,40 @@ const mutations = {
   },
   [UPDATE_DESIGN_FAILURE](state) {
     state.updatingDesign = false;
+  },
+  ///
+
+  ///
+  [GET_SERIAL_NUMBERS_START](state) {
+    state.gettingSerialNumbers = true;
+  },
+  [GET_SERIAL_NUMBERS_SUCCESS](state, data) {
+    state.gettingSerialNumbers = false;
+    state.serialNumberDetails = data;
+    state.oriSerialNumber = data;
+  },
+  [GET_SERIAL_NUMBERS_FAILURE](state) {
+    state.serialNumberDetails = [];
+    state.gettingSerialNumbers = false;
+    state.oriSerialNumber = [];
+  },
+  [CREATE_SERIAL_NUMBER_START](state) {
+    state.creatingSerialNumber = true;
+  },
+  [CREATE_SERIAL_NUMBER_SUCCESS](state) {
+    state.creatingSerialNumber = false;
+  },
+  [CREATE_SERIAL_NUMBER_FAILURE](state) {
+    state.creatingSerialNumber = false;
+  },
+  [UPDATE_SERIAL_NUMBER_START](state) {
+    state.updatingSerialNumber = true;
+  },
+  [UPDATE_SERIAL_NUMBER_SUCCESS](state) {
+    state.updatingSerialNumber = false;
+  },
+  [UPDATE_SERIAL_NUMBER_FAILURE](state) {
+    state.updatingSerialNumber = false;
   },
   ///
 

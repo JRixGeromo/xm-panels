@@ -2,7 +2,7 @@
   <ProductSerialNumbersForm
     :onSubmit="onSubmit"
     :resetForm="resetForm"
-    :loading="creatingProduct"
+    :loading="creatingSerialNumber"
   />
 </template>
 
@@ -11,15 +11,15 @@ import { useStore } from 'vuex';
 import { computed } from 'vue';
 import ProductSerialNumbersForm from '@/components/Products/ProductSerialNumbersForm.vue';
 // import { randomPassword } from '@/helpers';
-import { CREATE_DESIGN } from '@/store/modules/product/actions-type';
+import { CREATE_SERIAL_NUMBER } from '@/store/modules/product/actions-type';
 
 export default {
-  name: 'DesignCreate',
+  name: 'SerialNumberCreate',
   setup() {
     const store = useStore();
     return {
-      creatingDesign: computed(() => store.state.product.creatingDesign),
-      createDesign: (designDetail) => store.dispatch(`product/${CREATE_DESIGN}`, designDetail),
+      creatingSerialNumber: computed(() => store.state.product.creatingSerialNumber),
+      createSerialNumber: (serialNumberDetail) => store.dispatch(`product/${CREATE_SERIAL_NUMBER}`, serialNumberDetail),
     };
   },
   methods: {
@@ -28,7 +28,11 @@ export default {
         console.log(form.model);
         if (valid) {
           // use default profile image if user click clear img
-          this.createSerialNumber(form.model);
+          const serialNumberDetail = {
+            ...form.model,
+            applicationDomain: process.env.VUE_APP_APPLICATION_DOMAIN,
+          };
+          this.createSerialNumber(serialNumberDetail);
         }
       });
     },

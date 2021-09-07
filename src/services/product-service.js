@@ -127,6 +127,17 @@ function updateDesign(designDetails) {
       throw error.response.data;
     });
 }
+
+function createSerialNumber(serialNumberDetails, productId) {
+  SetAuthHeader();
+  return ProductApiIni().post(`/api/xm/product/v1/${productId}/productserialnumber`, serialNumberDetails)
+    .then((response) => response.data)
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
 const services = {
   getProducts,
   getProduct,
@@ -138,6 +149,7 @@ const services = {
   getDesigns,
   deleteDesign,
   updateDesign,
+  createSerialNumber,
 };
 
 export default services;
