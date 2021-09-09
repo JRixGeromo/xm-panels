@@ -43,7 +43,7 @@
         </el-col>
         <el-col :span="6">
           <label class="sort" for="searchProducts">Sort By</label>
-          <el-select v-model="value" placeholder="Select">
+          <el-select v-model="value" placeholder="Select" @change="sortProduct">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -126,7 +126,9 @@
       <!-- <div :style="{ padding: '5px' }" @click="$router.push(`/productprofile/${o.productId}`)"> -->
       <div :style="{ padding: '5px' }" @click="$router.push(`/product/${each.productId}/details`)">
       <el-card :body-style="{ padding: '0px' }">
-        <img :src="each.productDisplayImage" class="image">
+        <div class="portrait">
+          <img :src="each.productDisplayImage">
+        </div>
         <div style="padding: 14px;">
           <span style="font-size:22px">{{ each.productName }}</span>
           <div class="bottom" style="padding-top:10px; font-size:18px">
@@ -177,6 +179,7 @@ export default {
   },
   watch: {
     productList() {
+      console.log(this.pagination);
       if (this.searchKeyword) {
         this.pagination = {
           ...this.pagination,
@@ -211,6 +214,24 @@ export default {
     searchOnChange() {
       this.SEARCH_PRODUCT_IN_LIST(this.searchKeyword);
     },
+    sortProduct() {
+      let sortedData = this.data;
+      sortedData = sortedData.sort((a, b) => {
+        let atime = new Date(a.productCreatedDate);
+        let btime = new Date(b.productCreatedDate);
+        atime = atime.getTime();
+        btime = btime.getTime();
+        let val = 0;
+        if (this.value === 'newest') {
+          val = atime - btime;
+        } else {
+          val = btime - atime;
+        }
+        return val;
+      });
+      this.data = sortedData;
+      console.log(this.data);
+    },
   },
   data() {
     return {
@@ -227,11 +248,11 @@ export default {
       },
       options: [
         {
-          value: 'Newest',
+          value: 'newest',
           label: 'Newest',
         },
         {
-          value: 'Oldest',
+          value: 'oldest',
           label: 'Oldest',
         },
       ],
@@ -268,5 +289,23 @@ export default {
   text-align: center;
   border-color: #9e9e9e
 }
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.portrait {
+    overflow-y: hidden;
+    height: 700px;
+    width: auto;
+    // background-color: #000;
+}
+// .landscape {
+//     height: 30px;
+//     width: 80px;
+// }
 
+// .square {
+//     height: 75px;
+//     width: 75px;
+// }
 </style>

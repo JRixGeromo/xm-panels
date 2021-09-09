@@ -95,6 +95,7 @@
           </el-form-item>
         </div>
         <div style="margin: 15px 0px 15px 0px;">
+          <label style="font-weight: bold; display:block"><span style="color:RED">*</span> Product Images </label>
           <div v-for="image in productForm.existingImages" class="demo-image__preview image-files" :key="image" :id="image" style="">
           <i class="el-icon-delete" @click="handleImagesDelete(image)"></i>
           <el-image
@@ -106,7 +107,7 @@
           </div>
         </div>
         <div style="margin-top: 15px;">
-          <el-form-item label="Product Images" prop="productImagesFileCheck">
+          <el-form-item prop="productImagesFileCheck">
           <el-upload
             drag
             :on-change="handleProductsImg"
@@ -115,10 +116,13 @@
             :file-list="fileList"
             :auto-upload="false"
             :accept="fileFormat"
-            :show-file-list="true"
+            :show-file-list="false"
             multiple
           >
-            <i class="el-icon-plus" style="padding-top:70px"></i>
+            <i class="el-icon-plus" style="top:50%; position:absolute; left:50%"></i>
+            <span v-for="(each) in productForm.productImagesUrl" :key="each">
+              <img :src="each" class="square" />
+            </span>
             <template #tip>
               <div class="el-upload__tip">
               </div>
@@ -319,13 +323,13 @@ export default {
             message: 'Please select artist',
           },
         ],
-        productCoverImageFile: [
+        productCoverImageUrl: [
           {
             required: true,
             message: 'Please select product background image',
           },
         ],
-        productImageFile: [
+        productImageUrl: [
           {
             required: true,
             message: 'Please select product image',
@@ -438,3 +442,9 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.square {
+    height: 75px;
+    width: 70px;
+}
+</style>

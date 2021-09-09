@@ -8,20 +8,22 @@
     ref="serialNumberForm"
     @keyup.enter="onSubmit($refs.serialNumberForm)"
   >
-    <el-row :gutter="20" class="form-bg-color" v-if="!afterSelectFile" style="padding: 30px 0px 30px 0px;">
+    <el-row :gutter="20" class="form-bg-color"
+      v-if="showUpload"
+      style="padding: 30px 0px 30px 0px;">
       <el-col :span="18" :offset="3">
         <div style="font-size: 18px;
             font-weight: bold;
             }">
           <label>Upload Serial Numbers</label>
           <div style="margin-top: 10px; text-align:center" class="dropbox">
-            <input type="file" @change="onFileChange" :auto-upload="false" class="input-file">
+            <input type="file" @change="onFileChange" :auto-upload="false" accept=".csv,.xls,.xlsx" class="input-file">
             <i class="el-icon-plus" style="padding-top:90px; font-size:20px"></i>
           </div>
         </div>
       </el-col>
     </el-row>
-    <!-- <el-row :gutter="20" class="form-bg-color" style="padding-top: 30px;">
+    <el-row :gutter="20" class="form-bg-color" style="padding-top: 30px;" v-if="fromBackend">
       <el-col :span="18" :offset="3">
           <el-pagination
           class="table-pagination"
@@ -33,9 +35,9 @@
         >
         </el-pagination>
       </el-col>
-    </el-row> -->
-    <el-row :gutter="20" class="form-bg-color" v-if="afterSelectFile"  style="padding: 30px 0px 30px 0px;">
-      <el-col :span="6" v-for="(each) in serialNumberForm.serialNumbers" :key="each" @click="go('SN1234567890523456')">
+    </el-row>
+    <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;" v-if="localData.length > 0">
+      <el-col :span="6" v-for="(each) in localData" :key="each">
         <div :style="{ padding: '5px' }">
         <el-card :body-style="{ padding: '0px' }">
           <div style="padding: 30px; text-align: center">
@@ -48,13 +50,28 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20" class="form-bg-color" v-if="afterSelectFile"  style="padding: 30px 0px 30px 0px;">
+    <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;" v-if="showRemote">
+      <el-col :span="6" v-for="(each) in remoteData" :key="each">
+        <div :style="{ padding: '5px' }"  @click="go(each.serialNumber)">
+        <el-card :body-style="{ padding: '0px' }">
+          <div style="padding: 30px; text-align: center">
+            <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
+            <div class="bottom" style="padding-top:10px; font-size:18px">
+              <span>{{ each.edition }}</span>
+            </div>
+          </div>
+        </el-card>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;">
       <el-col :span="18" :offset="3">
         <div style="margin: 20px 0px 20px 0px;">
           <el-row justify="end">
-            <el-button @click="changeFile">Select Another</el-button>
+            <el-button @click="changeFile" v-if="showUploadBut">Upload Another</el-button>
             <el-button
               type="success"
+               v-if="localData.length > 0"
               @click="onSubmit($refs.serialNumberForm)"
               :loading="loading"
             >
@@ -68,10 +85,16 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import { GET_PRODUCT } from '@/store/modules/product/actions-type';
 import readXlsxFile from 'read-excel-file';
 import { ElMessage } from 'element-plus';
+
+const defaultPagination = {
+  itemPerPage: 25,
+  totalRecord: 0,
+  currentPage: 0,
+};
 
 export default {
   props: {
@@ -94,16 +117,22 @@ export default {
     return {
       files: '',
       xlsxTemp: [],
-      afterSelectFile: false,
+      localData: [],
+      remoteData: [],
+      showRemote: false,
+      showUpload: false,
+      showUploadBut: false,
       serialNumberForm: {
         productId: this.$route.params.id,
         serialNumbers: [],
       },
+      pagination: defaultPagination,
+      paginationTimeout: null,
+      searchKeyword: '',
     };
   },
   methods: {
     onFileChange(e) {
-      this.afterSelectFile = true;
       this.files = e.target.files || e.dataTransfer.files;
       if (!this.files.length) {
         return;
@@ -137,8 +166,13 @@ export default {
               edition: rows[i][1].toString(),
             });
           }
+          this.localData = result;
           this.serialNumberForm.serialNumbers = result;
-          console.log(this.serialNumberForm.serialNumbers);
+          if (this.localData.length > 0) {
+            this.showUpload = false;
+            this.showUploadBut = true;
+          }
+          console.log(this.localData);
         });
       } else {
         this.error('Cannot read file !');
@@ -160,9 +194,29 @@ export default {
             });
           }
         }
+        this.localData = result;
         this.serialNumberForm.serialNumbers = result;
-        console.log(this.serialNumberForm.serialNumbers);
+        if (this.localData.length > 0) {
+          this.showUpload = false;
+          this.showUploadBut = true;
+        }
+        // this.fromBackend = false;
+        console.log(this.localData);
       }
+    },
+    paginationCallback(page) {
+      const newPagination = {
+        ...this.pagination,
+        currentPage: page - 1,
+      };
+      const productDetails = this.getProductSerials({
+        ...newPagination,
+      });
+      this.data = [];
+      this.paginationTimeout = setTimeout(() => {
+        this.data = productDetails.data;
+      }, 1);
+      this.pagination = productDetails.pagination;
     },
     error(m) {
       ElMessage.error({
@@ -171,30 +225,58 @@ export default {
       });
     },
     changeFile() {
-      this.afterSelectFile = false;
-      // this.serialNumberDetails.serialNumbers = [];
+      this.localData = [];
+      this.showUpload = true;
+      this.showUploadBut = false;
+      this.showRemote = false;
     },
     go(sn) {
-      window.open(`https://xm-landing.bsg-dev.tk/productprovenance?id=${sn}`, '_blank');
+      if (sn.length > 0) {
+        window.open(`https://xm-landing.bsg-dev.tk/productprovenance?id=${sn}`, '_blank');
+      }
     },
     ...mapActions('product', [GET_PRODUCT]),
   },
   computed: {
     ...mapState('product', ['productDetails']),
+    ...mapGetters('product', ['getProductSerials']),
   },
   mounted() {
     this.GET_PRODUCT(this.$route.params.id);
-    this.serialNumberForm.productId = this.$route.params.id;
+    // this.serialNumberForm.productId = this.$route.params.id;
+  },
+  beforeUnmount() {
+    clearTimeout(this.paginationTimeout);
+    // this.RESET_PRODUCT_STATE();
   },
   watch: {
     productDetails() {
-      // this.serialNumberForm.serialNumbers = this.productDetails.productSerialNumbers;
-      console.log(this.serialNumberForm.serialNumbers);
+      if (this.searchKeyword) {
+        this.pagination = {
+          ...this.pagination,
+          currentPage: 0,
+        };
+      }
+      const productDetails = this.getProductSerials({
+        ...this.pagination,
+      });
+      this.remoteData = productDetails.data;
+      this.pagination = productDetails.pagination;
+      if (this.remoteData.length > 0) {
+        this.showRemote = true;
+        this.showUpload = false;
+        this.showUploadBut = true;
+      } else {
+        this.showRemote = false;
+        this.showUpload = true;
+        this.showUploadBut = false;
+      }
+      this.showSaveBut = false;
     },
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .dropbox {
     outline: 2px dashed grey; /* the dash box */
     outline-offset: -10px;
@@ -226,5 +308,21 @@ export default {
 
   .font-text {
     font-family: 'ocr a std'
+  }
+
+</style>
+
+<style scoped>
+  .el-pagination button:disabled {
+      background-color: #d5d5d5 !important;
+      color: #2a2a2a !important;
+      font-size: 18px !important;
+  }
+  .el-pager li.active {
+      color: #d5d5d5 !important;
+      cursor: default;
+  }
+  .bg {
+    background-color:WHITE !important;
   }
 </style>

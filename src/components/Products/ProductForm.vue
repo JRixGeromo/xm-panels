@@ -105,10 +105,13 @@
             :file-list="fileList"
             :auto-upload="false"
             :accept="fileFormat"
-            :show-file-list="true"
+            :show-file-list="false"
             multiple
           >
-            <i class="el-icon-plus" style="padding-top:70px"></i>
+            <i class="el-icon-plus" style="top:50%; position:absolute; left:50%"></i>
+            <span v-for="(each) in productForm.productImagesUrl" :key="each">
+              <img :src="each" class="square" />
+            </span>
             <template #tip>
               <div class="el-upload__tip">
               </div>
@@ -362,3 +365,9 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.square {
+    height: 75px;
+    width: 70px;
+}
+</style>

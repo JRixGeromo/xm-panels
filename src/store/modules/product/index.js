@@ -85,6 +85,22 @@ const getters = {
 
     return data;
   },
+  getProductSerials: (state) => (parmas) => {
+    const paginationDetails = {
+      itemPerPage: parmas.itemPerPage,
+      totalRecord: state.productDetails.productSerialNumbers.length,
+      currentPage: parmas.currentPage,
+    };
+    const data = {
+      pagination: paginationDetails,
+      data: state.productDetails.productSerialNumbers.slice(
+        (parmas.itemPerPage * parmas.currentPage),
+        (parmas.itemPerPage * (parmas.currentPage + 1)),
+      ),
+    };
+
+    return data;
+  },
 };
 
 const actions = {

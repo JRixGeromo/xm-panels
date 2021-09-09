@@ -181,7 +181,7 @@ export default {
         designId: null,
         show: false,
       });
-      console.log(this.designForm.inputs);
+      this.go(this.designForm.inputs.length - 1);
     },
     deleteForm(i) {
       this.designForm.forDelete.push({
