@@ -7,6 +7,7 @@ import {
   UPDATE_ARTIST_PROFILE,
   GET_ARTIST_LIST,
   SEARCH_ARTIST_IN_LIST,
+  SORT_ARTISTS,
 } from '@/store/modules/artist/actions-type';
 import {
   GET_ARTIST_LIST_START,
@@ -19,6 +20,7 @@ import {
   UPDATE_ARTIST_PROFILE_SUCCESS,
   UPDATE_ARTIST_PROFILE_FAILURE,
   SEARCHED_ARTIST,
+  SORTED_ARTISTS,
   RESET_ARTIST_STATE,
 } from '@/store/modules/artist/mutations-type';
 // import { FILE_DOMAIN } from '@/common/constants';
@@ -140,10 +142,26 @@ const actions = {
   [SEARCH_ARTIST_IN_LIST]({ commit, state }, searchKeyword) {
     const artistList = [...state.oriArtistList];
     const searchedList = searchKeyword ?
-      artistList.filter((x) => x.artistDisplayName.toLowerCase().includes(searchKeyword.toLowerCase())) :
+      artistList.filter((x) => x.artistName.toLowerCase().includes(searchKeyword.toLowerCase())) :
       artistList;
     commit(SEARCHED_ARTIST, searchedList);
   },
+  [SORT_ARTISTS]({ commit, state }, sortBy) {
+    const artistList = [...state.oriArtistList];
+    const sortedArtists = artistList.sort((a, b) => {
+      const atime = new Date(a.artistCreatedDate).getTime();
+      const btime = new Date(b.artistCreatedDate).getTime();
+      let val = 0;
+      if (sortBy === 'oldest') {
+        val = atime - btime;
+      } else {
+        val = btime - atime;
+      }
+      return val;
+    });
+    commit(SORTED_ARTISTS, sortedArtists);
+  },
+
 };
 
 const mutations = {
@@ -186,6 +204,9 @@ const mutations = {
     state.updateArtistProfileSuccess = false;
   },
   [SEARCHED_ARTIST](state, data) {
+    state.artistList = data;
+  },
+  [SORTED_ARTISTS](state, data) {
     state.artistList = data;
   },
   [RESET_ARTIST_STATE](state) {

@@ -9,6 +9,7 @@ import {
   CREATE_LICENSOR,
   UPDATE_LICENSOR,
   SEARCH_LICENSOR_IN_LIST,
+  SORT_LICENSORS,
 } from '@/store/modules/licensor/actions-type';
 import {
   GET_LICENSOR_LIST_START,
@@ -24,6 +25,7 @@ import {
   UPDATE_LICENSOR_SUCCESS,
   UPDATE_LICENSOR_FAILURE,
   SEARCHED_LICENSOR,
+  SORTED_LICENSORS,
 } from '@/store/modules/licensor/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage } from 'element-plus';
@@ -181,9 +183,24 @@ const actions = {
   [SEARCH_LICENSOR_IN_LIST]({ commit, state }, searchKeyword) {
     const licensorList = [...state.oriLicensorList];
     const searchedList = searchKeyword ?
-      licensorList.filter((x) => x.licensorName.toLowerCase().includes(searchKeyword.toLowerCase())) :
+      licensorList.filter((x) => x.licenseName.toLowerCase().includes(searchKeyword.toLowerCase())) :
       licensorList;
     commit(SEARCHED_LICENSOR, searchedList);
+  },
+  [SORT_LICENSORS]({ commit, state }, sortBy) {
+    const licensorList = [...state.oriLicensorList];
+    const sortedLicensors = licensorList.sort((a, b) => {
+      const atime = new Date(a.licenseCreatedDate).getTime();
+      const btime = new Date(b.licenseCreatedDate).getTime();
+      let val = 0;
+      if (sortBy === 'oldest') {
+        val = atime - btime;
+      } else {
+        val = btime - atime;
+      }
+      return val;
+    });
+    commit(SORTED_LICENSORS, sortedLicensors);
   },
 };
 
@@ -233,6 +250,12 @@ const mutations = {
     state.updatingPassword = false;
   },
   [SEARCHED_LICENSOR](state, data) {
+    state.licensorList = data;
+  },
+  [SORTED_LICENSORS](state, data) {
+    state.licensorList = data;
+  },
+  [SORT_LICENSORS](state, data) {
     state.licensorList = data;
   },
 };

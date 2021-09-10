@@ -138,6 +138,16 @@ function createSerialNumber(serialNumberDetails, productId) {
     });
 }
 
+function deactivateSerialNumber(serialNumberDetails, productId) {
+  SetAuthHeader();
+  return ProductApiIni().post(`/api/xm/product/v1/${productId}/deactivate`, serialNumberDetails)
+    .then((response) => response.data)
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
 const services = {
   getProducts,
   getProduct,
@@ -150,6 +160,7 @@ const services = {
   deleteDesign,
   updateDesign,
   createSerialNumber,
+  deactivateSerialNumber,
 };
 
 export default services;

@@ -151,8 +151,9 @@
 </template>
 
 <script>
-import { GET_PRODUCT_LIST, UPDATE_PRODUCT, SEARCH_PRODUCT_IN_LIST } from '@/store/modules/product/actions-type';
+import { GET_PRODUCT_LIST, UPDATE_PRODUCT, SEARCH_PRODUCT_IN_LIST, SORT_PRODUCTS } from '@/store/modules/product/actions-type';
 import { mapActions, mapState, mapGetters /* , mapMutations */ } from 'vuex';
+
 // import EditPasswordForm from '@/components/Product/EditPasswordForm.vue';
 // import EditRoleForm from '@/components/Product/EditRoleForm.vue';
 // import ProductRole from '@/components/Access/ProductRole.vue';
@@ -179,7 +180,8 @@ export default {
   },
   watch: {
     productList() {
-      console.log(this.pagination);
+      // this.rawData = this.productList;
+      this.sortedProductList = this.productList;
       if (this.searchKeyword) {
         this.pagination = {
           ...this.pagination,
@@ -190,12 +192,12 @@ export default {
         ...this.pagination,
       });
       this.data = productList.data;
-      console.log(this.data);
+      // console.log(this.data);
       this.pagination = productList.pagination;
     },
   },
   methods: {
-    ...mapActions('product', [GET_PRODUCT_LIST, UPDATE_PRODUCT, SEARCH_PRODUCT_IN_LIST]),
+    ...mapActions('product', [GET_PRODUCT_LIST, UPDATE_PRODUCT, SEARCH_PRODUCT_IN_LIST, SORT_PRODUCTS]),
     // ...mapMutations('product', [RESET_PRODUCT_STATE]),
     paginationCallback(page) {
       const newPagination = {
@@ -215,28 +217,15 @@ export default {
       this.SEARCH_PRODUCT_IN_LIST(this.searchKeyword);
     },
     sortProduct() {
-      let sortedData = this.data;
-      sortedData = sortedData.sort((a, b) => {
-        let atime = new Date(a.productCreatedDate);
-        let btime = new Date(b.productCreatedDate);
-        atime = atime.getTime();
-        btime = btime.getTime();
-        let val = 0;
-        if (this.value === 'newest') {
-          val = atime - btime;
-        } else {
-          val = btime - atime;
-        }
-        return val;
-      });
-      this.data = sortedData;
-      console.log(this.data);
+      this.SORT_PRODUCTS(this.value);
     },
   },
   data() {
     return {
       page: 0,
       data: [],
+      rawData: [],
+      sortedProductList: [],
       pagination: defaultPagination,
       paginationTimeout: null,
       searchKeyword: '',

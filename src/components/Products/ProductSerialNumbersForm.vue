@@ -6,7 +6,6 @@
     :model="serialNumberForm"
     :rules="rules"
     ref="serialNumberForm"
-    @keyup.enter="onSubmit($refs.serialNumberForm)"
   >
     <el-row :gutter="20" class="form-bg-color"
       v-if="showUpload"
@@ -52,15 +51,20 @@
     </el-row>
     <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;" v-if="showRemote">
       <el-col :span="6" v-for="(each) in remoteData" :key="each">
-        <div :style="{ padding: '5px' }"  @click="go(each.serialNumber)">
-        <el-card :body-style="{ padding: '0px' }">
-          <div style="padding: 30px; text-align: center">
-            <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
-            <div class="bottom" style="padding-top:10px; font-size:18px">
-              <span>{{ each.edition }}</span>
+        <div :style="{ padding: '5px' }">
+          <el-card :body-style="{ padding: '0px' }">
+            <el-checkbox
+            :id="each.productSerialNumberId"
+            @change="mark(each.productSerialNumberId, $event)"
+            checked style="margin-left:5px">
+             </el-checkbox>
+            <div style="padding: 30px; text-align: center" @click="go(each.serialNumber)">
+              <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
+              <div class="bottom" style="padding-top:10px; font-size:18px">
+                <span>{{ each.edition }}</span>
+              </div>
             </div>
-          </div>
-        </el-card>
+          </el-card>
         </div>
       </el-col>
     </el-row>
@@ -68,7 +72,15 @@
       <el-col :span="18" :offset="3">
         <div style="margin: 20px 0px 20px 0px;">
           <el-row justify="end">
-            <el-button @click="changeFile" v-if="showUploadBut">Upload Another</el-button>
+            <el-button @click="changeFile" v-if="showUploadBut && !serialNumberForm.forDeleteSN.length > 0">Upload Another</el-button>
+            <el-button
+              type="danger"
+               v-if="serialNumberForm.forDeleteSN.length > 0"
+              @click="onSubmit($refs.serialNumberForm)"
+              :loading="loading"
+            >
+              Deactivate
+            </el-button>
             <el-button
               type="success"
                v-if="localData.length > 0"
@@ -125,7 +137,9 @@ export default {
       serialNumberForm: {
         productId: this.$route.params.id,
         serialNumbers: [],
+        forDeleteSN: [],
       },
+      forDeleteSN: [],
       pagination: defaultPagination,
       paginationTimeout: null,
       searchKeyword: '',
@@ -229,6 +243,17 @@ export default {
       this.showUpload = true;
       this.showUploadBut = false;
       this.showRemote = false;
+    },
+    mark(sn, e) {
+      if (e) {
+        const i = this.serialNumberForm.forDeleteSN.indexOf(sn);
+        if (i !== -1) {
+          this.serialNumberForm.forDeleteSN.splice(i, 1);
+        }
+      } else {
+        this.serialNumberForm.forDeleteSN.push(sn);
+      }
+      console.log(this.serialNumberForm.forDeleteSN);
     },
     go(sn) {
       if (sn.length > 0) {

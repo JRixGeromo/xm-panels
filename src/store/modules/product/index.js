@@ -13,6 +13,7 @@ import {
   GET_DESIGNS,
   CREATE_SERIAL_NUMBER,
   GET_SERIAL_NUMBERS,
+  SORT_PRODUCTS,
 } from '@/store/modules/product/actions-type';
 import {
   GET_PRODUCT_LIST_START,
@@ -28,6 +29,7 @@ import {
   UPDATE_PRODUCT_SUCCESS,
   UPDATE_PRODUCT_FAILURE,
   SEARCHED_PRODUCT,
+  SORTED_PRODUCTS,
   CREATE_DESIGN_START,
   CREATE_DESIGN_SUCCESS,
   CREATE_DESIGN_FAILURE,
@@ -70,6 +72,7 @@ const state = {
 
 const getters = {
   getProducts: (state) => (parmas) => {
+    console.log(state);
     const paginationDetails = {
       itemPerPage: parmas.itemPerPage,
       totalRecord: state.productList.length,
@@ -288,6 +291,22 @@ const actions = {
     commit(SEARCHED_PRODUCT, searchedList);
   },
 
+  [SORT_PRODUCTS]({ commit, state }, sortBy) {
+    const productList = [...state.oriProductList];
+    const sortedProducts = productList.sort((a, b) => {
+      const atime = new Date(a.productCreatedDate).getTime();
+      const btime = new Date(b.productCreatedDate).getTime();
+      let val = 0;
+      if (sortBy === 'oldest') {
+        val = atime - btime;
+      } else {
+        val = btime - atime;
+      }
+      return val;
+    });
+    commit(SORTED_PRODUCTS, sortedProducts);
+  },
+
   async [CREATE_DESIGN]({ commit }, designDetails) {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
@@ -311,7 +330,6 @@ const actions = {
     const selectedProductId = designDetails.productId;
     if (designDetails.inputs.length > 0) {
       /* eslint-disable no-await-in-loop */
-
       for (let i = 0; i < designDetails.inputs.length; i++) {
         // handle existing image here
         let designImageFileDefault = designDetails.inputs[i].designImageUrl;
@@ -431,25 +449,47 @@ const actions = {
       fullscreen: true,
     });
     commit(CREATE_SERIAL_NUMBER_START);
-    await productServices.createSerialNumber(serialNumberDetails.serialNumbers, serialNumberDetails.productId).then(
-      () => {
-        ElMessage.success({
-          showClose: true,
-          message: 'Design created successfully',
-        });
-        commit(CREATE_SERIAL_NUMBER_SUCCESS);
-        router.push('/allproducts');
-      },
-      (error) => {
-        ElMessage.error({
-          showClose: true,
-          message: error,
-        });
-        commit(CREATE_SERIAL_NUMBER_FAILURE);
-      },
-    ).finally(() => {
-      fullpageLoader.close();
-    });
+    if (serialNumberDetails.forDeleteSN.lenth > 0) {
+      await productServices.deactivateSerialNumber(serialNumberDetails.forDeleteSN, serialNumberDetails.productId).then(
+        () => {
+          ElMessage.success({
+            showClose: true,
+            message: 'Serial numbers created successfully',
+          });
+          commit(CREATE_SERIAL_NUMBER_SUCCESS);
+          router.push('/allproducts');
+        },
+        (error) => {
+          ElMessage.error({
+            showClose: true,
+            message: error,
+          });
+          commit(CREATE_SERIAL_NUMBER_FAILURE);
+        },
+      ).finally(() => {
+        fullpageLoader.close();
+      });
+    } else {
+      await productServices.createSerialNumber(serialNumberDetails.serialNumbers, serialNumberDetails.productId).then(
+        () => {
+          ElMessage.success({
+            showClose: true,
+            message: 'Serial numbers created successfully',
+          });
+          commit(CREATE_SERIAL_NUMBER_SUCCESS);
+          router.push('/allproducts');
+        },
+        (error) => {
+          ElMessage.error({
+            showClose: true,
+            message: error,
+          });
+          commit(CREATE_SERIAL_NUMBER_FAILURE);
+        },
+      ).finally(() => {
+        fullpageLoader.close();
+      });
+    }
   },
   [GET_SERIAL_NUMBERS]({ commit }, productId) {
     // const fullpageLoader = ElLoading.service({
@@ -586,6 +626,9 @@ const mutations = {
     state.updatingProduct = false;
   },
   [SEARCHED_PRODUCT](state, data) {
+    state.productList = data;
+  },
+  [SORTED_PRODUCTS](state, data) {
     state.productList = data;
   },
 };

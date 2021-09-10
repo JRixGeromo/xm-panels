@@ -29,7 +29,7 @@
   <el-container class="bg-portion el-container-search">
     <div class="search">
       <el-row :gutter="20">
-        <el-col :span="18"><label class="search" for="searchUsers">Search Artist</label>
+        <el-col :span="18"><label class="search" for="searchArtist">Search Artist</label>
           <el-input
             placeholder="Type something to start searching..."
             v-model="searchKeyword"
@@ -42,8 +42,8 @@
           </el-input>
         </el-col>
         <el-col :span="6">
-          <label class="sort" for="searchUsers">Sort By</label>
-          <el-select v-model="value" placeholder="Select">
+          <label class="sort" for="searchArtists">Sort By</label>
+          <el-select v-model="value" placeholder="Select" @change="sortArtists">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -155,7 +155,8 @@
 <script>
 import { GET_ARTIST_LIST,
   UPDATE_ARTIST_PROFILE,
-  SEARCH_ARTIST_IN_LIST } from '@/store/modules/artist/actions-type';
+  SEARCH_ARTIST_IN_LIST,
+  SORT_ARTISTS } from '@/store/modules/artist/actions-type';
 import { EDIT_USER_ROLE } from '@/store/modules/access/actions-type';
 import { RESET_ARTIST_STATE } from '@/store/modules/artist/mutations-type';
 import { mapActions, mapState, mapGetters, mapMutations } from 'vuex';
@@ -199,7 +200,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('artist', [GET_ARTIST_LIST, UPDATE_ARTIST_PROFILE, SEARCH_ARTIST_IN_LIST]),
+    ...mapActions('artist', [GET_ARTIST_LIST, UPDATE_ARTIST_PROFILE, SEARCH_ARTIST_IN_LIST, SORT_ARTISTS]),
     ...mapActions('access', [EDIT_USER_ROLE]),
     ...mapMutations('artist', [RESET_ARTIST_STATE]),
     paginationCallback(page) {
@@ -239,6 +240,9 @@ export default {
     searchOnChange() {
       this.SEARCH_ARTIST_IN_LIST(this.searchKeyword);
     },
+    sortArtists() {
+      this.SORT_ARTISTS(this.value);
+    },
   },
   data() {
     return {
@@ -247,6 +251,17 @@ export default {
       pagination: defaultPagination,
       paginationTimeout: null,
       searchKeyword: '',
+      options: [
+        {
+          value: 'newest',
+          label: 'Newest',
+        },
+        {
+          value: 'oldest',
+          label: 'Oldest',
+        },
+      ],
+      value: '',
     };
   },
   components: {

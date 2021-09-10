@@ -29,7 +29,7 @@
   <el-container class="bg-portion el-container-search">
     <div class="search">
       <el-row :gutter="20">
-        <el-col :span="18"><label class="search" for="searchUsers">Search Licensor</label>
+        <el-col :span="18"><label class="search" for="searchLicensor">Search Licensor</label>
           <el-input
             placeholder="Type something to start searching..."
             v-model="searchKeyword"
@@ -42,8 +42,8 @@
           </el-input>
         </el-col>
         <el-col :span="6">
-          <label class="sort" for="searchUsers">Sort By</label>
-          <el-select v-model="value" placeholder="Select">
+          <label class="sort" for="sortLicensors">Sort By</label>
+          <el-select v-model="value" placeholder="Select" @change="sortLicensors">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -150,7 +150,7 @@
 </template>
 
 <script>
-import { GET_LICENSOR_LIST, UPDATE_LICENSOR, SEARCH_LICENSOR_IN_LIST } from '@/store/modules/licensor/actions-type';
+import { GET_LICENSOR_LIST, UPDATE_LICENSOR, SEARCH_LICENSOR_IN_LIST, SORT_LICENSORS } from '@/store/modules/licensor/actions-type';
 // import { EDIT_USER_ROLE } from '@/store/modules/access/actions-type';
 import { mapActions, mapState, mapGetters /* , mapMutations */ } from 'vuex';
 // import EditPasswordForm from '@/components/User/EditPasswordForm.vue';
@@ -194,7 +194,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('licensor', [GET_LICENSOR_LIST, UPDATE_LICENSOR, SEARCH_LICENSOR_IN_LIST]),
+    ...mapActions('licensor', [GET_LICENSOR_LIST, UPDATE_LICENSOR, SEARCH_LICENSOR_IN_LIST, SORT_LICENSORS]),
     // ...mapActions('access', [EDIT_USER_ROLE]),
     // ...mapMutations('user', [RESET_USER_STATE]),
     paginationCallback(page) {
@@ -254,6 +254,9 @@ export default {
     searchOnChange() {
       this.SEARCH_LICENSOR_IN_LIST(this.searchKeyword);
     },
+    sortLicensors() {
+      this.SORT_LICENSORS(this.value);
+    },
   },
   data() {
     return {
@@ -270,11 +273,11 @@ export default {
       // },
       options: [
         {
-          value: 'Newest',
+          value: 'newest',
           label: 'Newest',
         },
         {
-          value: 'Oldest',
+          value: 'oldest',
           label: 'Oldest',
         },
       ],
