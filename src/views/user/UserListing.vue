@@ -31,7 +31,7 @@
     </div>
   </el-container>
   <el-container>
-    <el-button type="warning"><span class="button-text">Add User</span></el-button>
+    <el-button class="custom-btn add-btn">Add User</el-button>
   </el-container>
   <el-pagination
     class="table-pagination"

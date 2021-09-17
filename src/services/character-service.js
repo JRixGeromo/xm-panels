@@ -17,7 +17,7 @@ function getCharacters() {
 
 function getCharacter(characterId) {
   SetAuthHeader();
-  return CharacterApiIni().get(`/api/xm/product/v1/${characterId}/character`)
+  return CharacterApiIni().get(`/api/xm/product/v1/${characterId}/characters`)
     .then((response) => {
       extendAuthCookiesTime();
       return response.data;

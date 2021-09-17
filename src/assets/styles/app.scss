@@ -1,11 +1,35 @@
+@font-face {
+  font-family: 'gotham';
+  src: url('assets/fonts/gotham-black/gotham_black_regular-webfont.woff2') format('woff2'),
+       url('assets/fonts/gotham-black/gotham_black_regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
+  src: url('assets/fonts/helvetica-neue-ragular/helveticaneue_regular-webfont.woff2') format('woff2'),
+       url('assets/fonts/helvetica-neue-ragular/helveticaneue_regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   margin     : 0;
-  /* font-family: sans-serif; */
-  /* ocr a std */
-  font-family: 'Source Sans Pro';
-  // font-family: 'ocr a std';
   font-weight: normal;
   font-size: 18px;
+  font-family: 'Source Sans Pro', "Helvetica Neue";
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button {
+  font-family: 'gotham';
+  text-transform: uppercase;
 }
 
 #app {

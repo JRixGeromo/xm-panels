@@ -10,6 +10,7 @@ import {
   UPDATE_LICENSOR,
   SEARCH_LICENSOR_IN_LIST,
   SORT_LICENSORS,
+  SORT_LICENSORS_BY_QTY,
 } from '@/store/modules/licensor/actions-type';
 import {
   GET_LICENSOR_LIST_START,
@@ -26,6 +27,7 @@ import {
   UPDATE_LICENSOR_FAILURE,
   SEARCHED_LICENSOR,
   SORTED_LICENSORS,
+  SORTED_LICENSORS_BY_QTY,
 } from '@/store/modules/licensor/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage } from 'element-plus';
@@ -202,6 +204,17 @@ const actions = {
     });
     commit(SORTED_LICENSORS, sortedLicensors);
   },
+  [SORT_LICENSORS_BY_QTY]({ commit, state }) {
+    const licensorList = [...state.oriLicensorList];
+    const sortedLicensors = licensorList.sort((a, b) => {
+      const aqty = a.licenseProductQty;
+      const bqty = b.licenseProductQty;
+      let val = 0;
+      val = aqty - bqty;
+      return val;
+    });
+    commit(SORTED_LICENSORS_BY_QTY, sortedLicensors);
+  },
 };
 
 const mutations = {
@@ -255,7 +268,13 @@ const mutations = {
   [SORTED_LICENSORS](state, data) {
     state.licensorList = data;
   },
+  [SORTED_LICENSORS_BY_QTY](state, data) {
+    state.licensorList = data;
+  },
   [SORT_LICENSORS](state, data) {
+    state.licensorList = data;
+  },
+  [SORT_LICENSORS_BY_QTY](state, data) {
     state.licensorList = data;
   },
 };

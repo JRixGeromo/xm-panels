@@ -10,14 +10,14 @@
   >
     <el-row :gutter="20" class="form-bg-color">
       <el-col :span="21" :offset="3" class="form-text-title-pad">
-        <span class="form-text-title">Create New Product</span>
+        <label class="form-label">CREATE NEW PRODUCT</label>
       </el-col>
       <el-col :span="9" :offset="3">
-        <div class="grid-content bg-purple" style="max-width:60%;min-width:200px;">
+        <div class="grid-content bg-purple">
+          <label class="img-label">DISPLAY IMAGE</label>
           <div class="demo-image__preview">
-            <el-form-item label="Display Image" prop="productImageFile">
+            <el-form-item prop="productImageFile">
             <el-upload
-              drag
               action=""
               list-type="picture-card"
               :show-file-list="false"
@@ -26,7 +26,7 @@
               :accept="fileFormat"
             >
               <img v-if="productForm.productImageUrl" :src="productForm.productImageUrl" class="image" />
-              <i v-else class="el-icon-plus" style="padding-top:70px"></i>
+              <i v-else class="el-icon-plus"></i>
             </el-upload>
             <i
               v-if="productImageUrl"
@@ -39,9 +39,9 @@
       </el-col>
       <el-col :span="9">
         <div class="grid-content bg-purple">
-          <!-- <span class="form-custom">Background Image</span> -->
-          <div class="demo-image__preview" style="max-width:60%; min-width:200px;">
-            <el-form-item label="Background Image" prop="productCoverImageFile">
+          <div class="demo-image__preview">
+            <label class="img-label">BACKGROUND IMAGE</label>
+            <el-form-item prop="productCoverImageFile">
             <el-upload
               drag
               action=""
@@ -66,37 +66,49 @@
     </el-row>
     <el-row :gutter="20" class="form-bg-color" style="padding-bottom:20px">
       <el-col :span="9" :offset="3">
-        <div style="margin-top: 15px;">
-          <el-form-item label="Product Name" prop="productName">
-          <el-input
-            placeholder="Please input product name"
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="productName">
+            <el-input
+            placeholder=""
             v-model="productForm.productName"
+            @focus="focused.productName = true"
+            @blur="setLostFocused('productName')"
             >
-          </el-input>
+            </el-input>
+            <label class="label_middle "
+            :class="{label_above:productForm.productName.length > 0 || focused.productName }">PRODUCT NAME</label>
           </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Product Description" prop="productDescription">
-          <el-input
-            type="textarea"
-            :rows="5"
-            placeholder="Please input description"
-            v-model="productForm.productDescription">
-          </el-input>
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="productDescription">
+            <el-input
+              type="textarea"
+              :rows="5"
+              placeholder=""
+              @focus="focused.productDescription = true"
+              @blur="setLostFocused('productDescription')"
+              v-model="productForm.productDescription">
+              </el-input>
+              <label class="label_middle "
+              :class="{label_above:productForm.productDescription.length > 0 || focused.productDescription }">PRODUCT DESCRIPTION</label>
           </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Background" prop="productBackground">
-          <el-input
-            type="textarea"
-            :rows="5"
-            placeholder="Please input background"
-            v-model="productForm.productBackground">
-          </el-input>
-          </el-form-item>
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+            <el-form-item prop="productBackground">
+            <el-input
+              type="textarea"
+              :rows="5"
+              placeholder=""
+              @blur="setLostFocused('productBackground')"
+              @focus="focused.productBackground = true"
+              v-model="productForm.productBackground"></el-input>
+            <label class="label_middle "
+            :class="{label_above:productForm.productBackground.length > 0 || focused.productBackground }">BACKGROUND OF CHARACTER</label>
+            </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Product Images" prop="productImagesFileCheck">
+        <div style="margin-top: 35px; width: 100%">
+          <label class="img-label">PRODUCT IMAGE</label>
+          <el-form-item prop="productImagesFileCheck">
           <el-upload
             drag
             :on-change="handleProductsImg"
@@ -122,61 +134,129 @@
       </el-col>
 
       <el-col :span="9">
-        <div style="margin-top: 15px;">
-          <el-form-item label="Series" prop="characterId">
-          <el-select v-model="productForm.characterId" placeholder="Select">
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="licenseId">
+          <el-select v-model="productForm.licenseId" @change="getCharacters()" required>
+            <el-option
+              v-for="license in licensorList"
+              :key="license.licenseId"
+              :label="license.licenseName"
+              :value="license.licenseId"
+              @focus="focused.licenseId = true"
+              @blur="setLostFocused('licenseId')"
+            >
+            </el-option>
+          </el-select>
+          <label class="label_middle "
+          :class="{label_above:productForm.licenseId.length > 0 || focused.licenseId }">LICENSE</label>
+          </el-form-item>
+        </div>
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="characterId">
+          <el-select v-model="productForm.characterId" required>
             <el-option
               v-for="character in characterList"
               :key="character.characterId"
               :label="character.characterName"
               :value="character.characterId"
+              @focus="focused.characterId = true"
+              @blur="setLostFocused('characterId')"
             >
             </el-option>
           </el-select>
+          <label class="label_middle "
+          :class="{label_above:productForm.characterId.length > 0 || focused.characterId }">CHARACTER</label>
           </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Country of Manufacture" prop="productManufactureCountry">
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item
+            prop="productSeries"
+            >
+            <el-select
+            @click="focused.productSeries = true"
+            @blur="setLostFocused('productSeries')"
+            @change="createNew($event)"
+            v-model="productForm.productSeries"
+            default-first-option
+            placeholder=""
+            >
+            <el-option
+              v-for="series in productSeriesList.series"
+              :key="series"
+              :label="series"
+              :value="series"
+            >
+            </el-option>
+            <el-option value=" ">
+              + Create New
+            </el-option>
+          </el-select>
+          <label class="label_middle "
+          :class="{label_above:productForm.productSeries.length > 0 || focused.productSeries }">SERIES</label>
+          </el-form-item>
+        </div>
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="productManufactureCountry">
           <country-select
             v-model="productForm.productManufactureCountry"
             :country="country"
             topCountry="US"
-            className="el-input__inner"
             :autocomplete=true
             :removePlaceholder=true
+            @focus="focused.productManufactureCountry = true"
+            @blur="setLostFocused('productManufactureCountry')"
             />
+            <label class="label_middle "
+            :class="{label_above:productForm.productManufactureCountry.length > 0 || focused.productManufactureCountry }">
+            COUNTRY OF MANUFACTURE</label>
           </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Date Manufacture" prop="productManufactureDate">
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="productManufactureDate">
           <el-date-picker
             v-model="productForm.productManufactureDate"
             type="date"
+            @focus="focused.productManufactureDate = true"
+            @blur="setLostFocused('productManufactureDate')"
             placeholder="Pick a day">
           </el-date-picker>
+          <label class="label_middle "
+          :class="{label_above:productForm.productManufactureDate.length > 0 || focused.productManufactureDate }">DATE MANUFACTURE</label>
           </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Release Date" prop="productReleaseDate">
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="productReleaseDate">
           <el-date-picker
             v-model="productForm.productReleaseDate"
             type="date"
+            @focus="focused.productReleaseDate = true"
+            @blur="setLostFocused('productReleaseDate')"
             placeholder="Pick a day">
           </el-date-picker>
+          <label class="label_middle "
+          :class="{label_above:productForm.productReleaseDate.length > 0 || focused.productReleaseDate }">RELEASE DATE</label>
           </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Quantity" prop="productQuantity">
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="productQuantity">
           <el-input
-            placeholder="Please input Name"
             v-model="productForm.productQuantity"
+            @focus="focused.productQuantity = true"
+            @blur="setLostFocused('productQuantity')"
             >
           </el-input>
+          <label class="label_middle "
+          :class="{label_above:productForm.productQuantity > 0 || focused.productQuantity }">QUANTITY</label>
           </el-form-item>
         </div>
-        <div style="margin-top: 15px;">
-          <el-form-item label="Artists" prop="artistIds">
-          <el-select v-model="productForm.artistIds" multiple placeholder="Select">
+        <div style="margin-top: 35px; width: 100%" class="label_bound">
+          <el-form-item prop="artistIds">
+          <el-select v-model="productForm.artistIds"
+            placeholder=" "
+            multiple
+            @focus="focused.artistIds = true"
+            @blur="setLostFocused('artistIds')"
+            >
             <el-option
               v-for="artist in artistList"
               :key="artist.artistId"
@@ -184,11 +264,12 @@
               :value="artist.artistId">
             </el-option>
           </el-select>
+          <label class="label_middle " :class="{label_above:productForm.artistIds.length > 0 || focused.artistIds }">ARTISTS</label>
           </el-form-item>
         </div>
       </el-col>
       <el-col :span="18" :offset="3">
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 35px; width: 100%">
           <el-row justify="end">
             <el-button>Discard Changes</el-button>
             <el-button
@@ -203,12 +284,33 @@
       </el-col>
     </el-row>
   </el-form>
+  <el-dialog
+    custom-class="custom-dialog"
+    title="NAME OF SERIES"
+    v-model="createSeriesDialog"
+    :destroy-on-close="true"
+  >
+  <el-form-item>
+    <el-input
+    v-model="productForm.productSeries"
+    >
+    </el-input>
+  </el-form-item>
+  <el-form-item class="button-wrapper">
+      <el-button @click="discardProductSeries()">DISCARD</el-button>
+      <el-button @click="createSeriesDialog = false">
+        SAVE
+      </el-button>
+    </el-form-item>
+  </el-dialog>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
 import { GET_CHARACTER_LIST } from '@/store/modules/character/actions-type';
+import { GET_LICENSOR_LIST } from '@/store/modules/licensor/actions-type';
 import { GET_ARTIST_LIST } from '@/store/modules/artist/actions-type';
+import { GET_PRODUCT_SERIES_LIST } from '@/store/modules/product/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 
 export default {
@@ -230,6 +332,10 @@ export default {
     return {
       country: '',
       region: '',
+      middle: true,
+      above: false,
+      createSeriesDialog: false,
+      focused: [],
       fileFormat: IMAGE_FORMAT.join(','),
       productForm: {
         productCoverImageUrl: null,
@@ -242,12 +348,14 @@ export default {
         productName: '',
         productDescription: '',
         productBackground: '',
-        productQuantity: 1,
+        productQuantity: '',
         productManufactureCountry: 'US',
         productReleaseDate: '',
         productManufactureDate: '',
-        characterId: null,
-        artistIds: null,
+        characterId: '',
+        artistIds: [],
+        licenseId: '',
+        productSeries: '',
         productStatus: 'Active',
       },
       rules: {
@@ -266,7 +374,7 @@ export default {
         productBackground: [
           {
             required: true,
-            message: 'Please enter description',
+            message: 'Please enter product background',
           },
         ],
         productQuantity: [
@@ -297,6 +405,18 @@ export default {
           {
             required: true,
             message: 'Please select character',
+          },
+        ],
+        licenseId: [
+          {
+            required: true,
+            message: 'Please select license',
+          },
+        ],
+        productSeries: [
+          {
+            required: true,
+            message: 'Please select/create series',
           },
         ],
         artistIds: [
@@ -352,16 +472,72 @@ export default {
       this.productForm.productImagesUrl = null;
       this.productForm.productImagesFile = null;
     },
+    getCharacters() {
+      this.GET_CHARACTER_LIST(this.productForm.licenseId);
+    },
+    setLostFocused(el) {
+      if (this.productForm[el].length === 0) {
+        this.focused[el] = false;
+      }
+    },
+    createNew(e) {
+      if (e === ' ') {
+        this.productForm.productSeries = '';
+        this.createSeriesDialog = !this.createSeriesDialog;
+      }
+    },
+    discardProductSeries() {
+      this.productForm.productSeries = '';
+      this.createSeriesDialog = false;
+    },
     ...mapActions('artist', [GET_ARTIST_LIST]),
     ...mapActions('character', [GET_CHARACTER_LIST]),
+    ...mapActions('licensor', [GET_LICENSOR_LIST]),
+    ...mapActions('product', [GET_PRODUCT_SERIES_LIST]),
   },
   computed: {
     ...mapState('artist', ['artistList']),
     ...mapState('character', ['characterList']),
+    ...mapState('licensor', ['licensorList']),
+    ...mapState('product', ['productSeriesList']),
+    /*
+    productName() { return this.productForm.productName; },
+    artistIds() { return this.productForm.artistIds; },
+    productQuantity() { return this.productForm.productQuantity; },
+    productDescription() { return this.productForm.productDescription; },
+    productBackground() { return this.productForm.productBackground; },
+    productManufactureCountry() { return this.productForm.productManufactureCountry; },
+    productReleaseDate() { return this.productForm.productReleaseDate; },
+    productManufactureDate() { return this.productForm.productManufactureDate; },
+    characterId() { return this.productForm.characterId; },
+    licenseId() { return this.productForm.licenseId; },
+    */
   },
   mounted() {
-    this.GET_CHARACTER_LIST();
     this.GET_ARTIST_LIST();
+    this.GET_LICENSOR_LIST();
+    this.GET_PRODUCT_SERIES_LIST();
+    this.focused.productSeries = true;
+  },
+  watch: {
+    productSeriesList() {
+      console.log(this.productSeriesList);
+    },
+    licensorList() {
+      console.log(this.licensorList);
+    },
+    /*
+    productName() { this.setLostFocused('productName'); },
+    artistIds() { this.setLostFocused('artistIds'); },
+    productQuantity() { this.setLostFocused('productQuantity'); },
+    productDescription() { this.setLostFocused('productDescription'); },
+    productBackground() { this.setLostFocused('productBackground'); },
+    productManufactureCountry() { this.setLostFocused('productManufactureCountry'); },
+    productReleaseDate() { this.setLostFocused('productReleaseDate'); },
+    productManufactureDate() { this.setLostFocused('productManufactureDate'); },
+    characterId() { this.setLostFocused('characterId'); },
+    licenseId() { this.setLostFocused('licenseId'); },
+    */
   },
 };
 </script>
@@ -370,4 +546,6 @@ export default {
     height: 75px;
     width: 70px;
 }
+</style>
+<style>
 </style>

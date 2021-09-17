@@ -4,6 +4,7 @@
     :router="true"
     class="custom-side-menu"
     :collapse="!sidebarShow"
+    :unique-opened="true"
   >
     <template v-for="item in navMenu" :key="item.name">
       <template v-if="!item.child">
@@ -24,7 +25,7 @@
               :key="nav.name"
               :index="nav.route"
             >
-              <span class="black-text">{{ nav.name }}</span>
+              <span>{{ nav.name }}</span>
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
@@ -61,7 +62,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "@/assets/styles/_variables.scss";
+
 .el-menu {
-  background-color: #0e0e0e;
+  background-color: $--color-primary;
+  font-weight: bold;
+  font-size: 16px;
 }
 </style>

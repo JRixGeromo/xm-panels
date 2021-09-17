@@ -56,7 +56,7 @@
     </div>
   </el-container>
   <el-container>
-    <el-button type="warning" @click="$router.push(`/create/artist`)"><span class="button-text">Add New Artist</span></el-button>
+    <el-button class="custom-btn add-btn" @click="$router.push(`/create/artist`)">Add New Artist</el-button>
   </el-container>
   <el-pagination
     class="table-pagination"
@@ -127,7 +127,9 @@
       <!-- ${scope.row.artistId} -->
       <div :style="{ padding: '5px' }" @click="$router.push(`/artists/${each.artistId}/details`)">
       <el-card :body-style="{ padding: '0px' }">
-        <img :src="each.artistDisplayPhotoFilePath" class="image">
+        <div class="portrait">
+          <img :src="each.artistDisplayPhotoFilePath" class="image">
+        </div>
         <!-- <DataContainer v-if="each.artistDisplayPhotoFilePath"
           :dataDetail="each"
         /> -->
@@ -141,15 +143,6 @@
       </div>
     </el-col>
   </el-row>
-  <el-pagination
-    class="table-pagination"
-    layout="prev, pager, next"
-    :total="pagination.totalRecord"
-    :page-size="pagination.itemPerPage"
-    @current-change="paginationCallback"
-    :current-page="pagination.currentPage + 1"
-  >
-  </el-pagination>
 </template>
 
 <script>
@@ -271,6 +264,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/_variables.scss";
+
 .profile-pic-container {
   height: 50px;
   display: flex;
@@ -286,11 +281,21 @@ export default {
   border-radius: 0px;
 }
 .el-card {
-  background-color: #2a2a2a;
-  color: #f9f9f9;
+  background-color: $--color-primary;
+  color: #fff;
   border-radius: 0px;
   text-align: center;
-  border-color: #9e9e9e
+  border: unset;
+  cursor: pointer;
 }
-
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.portrait {
+  height: 400px;
+  width: 100%;
+}
 </style>

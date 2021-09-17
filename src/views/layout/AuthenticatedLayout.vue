@@ -1,6 +1,7 @@
 <template>
   <el-container direction="vertical">
-    <Header v-if="isMobileView"
+    <Header
+      v-if="isMobileView"
       :handleSidebarShow="handleSidebarShow"
       :isMobileView="isMobileView"
     />
@@ -13,12 +14,9 @@
         />
       </el-aside>
       <el-scrollbar class="body-scrollbar" height="100%">
-        <el-main>
-          <div class="line"></div>
-          <div class="app-body">
-            <router-view />
-          </div>
-        </el-main>
+        <div class="app-body">
+          <router-view />
+        </div>
       </el-scrollbar>
     </el-container>
   </el-container>
@@ -72,18 +70,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/_variables.scss";
+
+.app-body {
+  display: block;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  -ms-flex-preferred-size: auto;
+  flex-basis: auto;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 20px 20px 80px 20px;
+}
+
 .main-container {
   height: calc(100vh - 60px);
 }
 
 .sidebar-aside {
   width: unset !important;
+  height: 100%;
+  position: absolute;
+  z-index: 10;
 }
 
 .body-scrollbar {
   width: 100%;
+  padding-left: 68px;
 }
+
+.sidebar-aside,
 .el-container.is-vertical {
-  background-color: #2a2a2a;
+  background-color: $--color-primary;
 }
 </style>

@@ -68,9 +68,9 @@ const getters = {
 };
 
 const actions = {
-  [GET_CHARACTER_LIST]({ commit }) {
+  [GET_CHARACTER_LIST]({ commit }, lincenseId) {
     commit(GET_CHARACTER_LIST_START);
-    characterServices.getCharacters().then(
+    characterServices.getCharacter(lincenseId).then(
       (data) => {
         commit(GET_CHARACTER_LIST_SUCCESS, data);
       },

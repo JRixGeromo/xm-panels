@@ -56,7 +56,7 @@
     </div>
   </el-container>
   <el-container>
-    <el-button type="warning" @click="$router.push(`/create/licensor`)"><span class="button-text">Add New Licensor</span></el-button>
+    <el-button class="custom-btn add-btn" @click="$router.push(`/create/licensor`)">Add New Licensor</el-button>
   </el-container>
   <el-pagination
     class="table-pagination"
@@ -127,7 +127,9 @@
       <div :style="{ padding: '5px' }" @click="$router.push(`/licensor/${each.licenseId}/details`)">
       <el-card :body-style="{ padding: '0px' }">
         <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
-        <img :src="each.licenseDisplayImage" class="image">
+        <div class="portrait">
+          <img :src="each.licenseDisplayImage" class="image">
+        </div>
         <div style="padding: 14px;">
           <span style="font-size:22px">{{each.licenseDescription}}</span>
           <div class="bottom" style="padding-top:10px; font-size:18px">
@@ -138,15 +140,6 @@
       </div>
     </el-col>
   </el-row>
-  <el-pagination
-    class="table-pagination"
-    layout="prev, pager, next"
-    :total="pagination.totalRecord"
-    :page-size="pagination.itemPerPage"
-    @current-change="paginationCallback"
-    :current-page="pagination.currentPage + 1"
-  >
-  </el-pagination>
 </template>
 
 <script>
@@ -293,6 +286,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/_variables.scss";
+
 .profile-pic-container {
   height: 50px;
   display: flex;
@@ -302,17 +297,22 @@ export default {
 .pad-top {
   margin-top: 10px;
 }
-.image {
-  width: 100%;
-  height: 100%;
-  border-radius: 0px;
-}
 .el-card {
-  background-color: #2a2a2a;
-  color: #f9f9f9;
+  background-color: $--color-primary;
+  color: #fff;
   border-radius: 0px;
   text-align: center;
-  border-color: #9e9e9e
+  border: unset;
+  cursor: pointer;
 }
-
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.portrait {
+  height: 400px;
+  width: 100%;
+}
 </style>

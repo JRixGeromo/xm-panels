@@ -5,8 +5,11 @@
       <el-breadcrumb-item :to="{ path: '/allproducts' }">
         All Products
       </el-breadcrumb-item>
-      <el-breadcrumb-item>
-        Predator King
+      <el-breadcrumb-item v-if="this.$route.query.name">
+        {{this.$route.query.name}}
+      </el-breadcrumb-item>
+      <el-breadcrumb-item v-else>
+        Create
       </el-breadcrumb-item>
     </el-breadcrumb>
   </el-affix>
@@ -61,6 +64,7 @@ export default {
   },
   mounted() {
     this.activeMenu = this.$router.currentRoute.value.fullPath;
+    console.log(this.$route);
   },
   watch: {
     $route() {

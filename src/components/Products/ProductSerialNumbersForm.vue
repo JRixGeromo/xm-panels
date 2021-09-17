@@ -53,11 +53,13 @@
       <el-col :span="6" v-for="(each) in remoteData" :key="each">
         <div :style="{ padding: '5px' }">
           <el-card :body-style="{ padding: '0px' }">
-            <el-checkbox
-            :id="each.productSerialNumberId"
-            @change="mark(each.productSerialNumberId, $event)"
-            checked style="margin-left:5px">
-             </el-checkbox>
+            <div class="checkbox">
+              <input type="checkbox"
+              :id="each.productSerialNumberId"
+              @change="mark(each.productSerialNumberId, $event)"
+              :checked="isActive(each.status)"
+              style="margin-left:5px">
+            </div>
             <div style="padding: 30px; text-align: center" @click="go(each.serialNumber)">
               <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
               <div class="bottom" style="padding-top:10px; font-size:18px">
@@ -128,6 +130,7 @@ export default {
   data() {
     return {
       files: '',
+      active: false,
       xlsxTemp: [],
       localData: [],
       remoteData: [],
@@ -146,6 +149,13 @@ export default {
     };
   },
   methods: {
+    isActive(thisSn) {
+      let result = true;
+      if (thisSn === 'Inactive') {
+        result = false;
+      }
+      return result;
+    },
     onFileChange(e) {
       this.files = e.target.files || e.dataTransfer.files;
       if (!this.files.length) {
@@ -177,7 +187,7 @@ export default {
           for (let i = 1; i < rows.length; i++) {
             result.push({
               serialNumber: rows[i][0].toString(),
-              edition: rows[i][1].toString(),
+              edition: parseInt(rows[i][1].toString(), 0),
             });
           }
           this.localData = result;
@@ -202,9 +212,10 @@ export default {
         for (let i = 1; i < numberOfLines.length; i++) {
           eachLine = numberOfLines[i].split(',');
           if (eachLine[0].length > 0) {
+            const edition = eachLine[1].replace(/\r/g, '').toString();
             result.push({
               serialNumber: eachLine[0],
-              edition: eachLine[1].replace(/\r/g, ''),
+              edition: parseInt(edition, 0),
             });
           }
         }
@@ -245,7 +256,7 @@ export default {
       this.showRemote = false;
     },
     mark(sn, e) {
-      if (e) {
+      if (e.target.checked) {
         const i = this.serialNumberForm.forDeleteSN.indexOf(sn);
         if (i !== -1) {
           this.serialNumberForm.forDeleteSN.splice(i, 1);
@@ -349,5 +360,9 @@ export default {
   }
   .bg {
     background-color:WHITE !important;
+  }
+  .checkbox {
+    text-align: end !important;
+    padding-right: 7px !important;
   }
 </style>

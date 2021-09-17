@@ -28,6 +28,32 @@ function getProduct(productId) {
     });
 }
 
+function getLicense(licenseId) {
+  SetAuthHeader();
+  return ProductApiIni().get(`/api/xm/product/v1/${licenseId}/product`)
+    .then((response) => {
+      extendAuthCookiesTime();
+      return response.data;
+    })
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
+function getCharacter(licenseId) {
+  SetAuthHeader();
+  return ProductApiIni().get(`/api/xm/product/v1/${licenseId}/characters`)
+    .then((response) => {
+      extendAuthCookiesTime();
+      return response.data;
+    })
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
 function getProductProfile(artistUserId) {
   SetAuthHeader();
   return ProductApiIni().get(`/api/xm/product/v1/${artistUserId}/products`)
@@ -130,6 +156,8 @@ function updateDesign(designDetails) {
 
 function createSerialNumber(serialNumberDetails, productId) {
   SetAuthHeader();
+  console.log(serialNumberDetails);
+  console.log(productId);
   return ProductApiIni().post(`/api/xm/product/v1/${productId}/productserialnumber`, serialNumberDetails)
     .then((response) => response.data)
     .catch((error) => {
@@ -138,16 +166,27 @@ function createSerialNumber(serialNumberDetails, productId) {
     });
 }
 
-function deactivateSerialNumber(serialNumberDetails, productId) {
+function deactivateSerialNumber(serialNumberDetails) {
   SetAuthHeader();
-  return ProductApiIni().post(`/api/xm/product/v1/${productId}/deactivate`, serialNumberDetails)
+  return ProductApiIni().post('/api/xm/product/v1/productserialnumber/deactivate', serialNumberDetails)
     .then((response) => response.data)
     .catch((error) => {
       CheckAuthStatus(error.response);
       throw error.response.data;
     });
 }
-
+function getProductSeries() {
+  SetAuthHeader();
+  return ProductApiIni().get('/api/xm/product/v1/productseries')
+    .then((response) => {
+      extendAuthCookiesTime();
+      return response.data;
+    })
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
 const services = {
   getProducts,
   getProduct,
@@ -161,6 +200,9 @@ const services = {
   updateDesign,
   createSerialNumber,
   deactivateSerialNumber,
+  getCharacter,
+  getLicense,
+  getProductSeries,
 };
 
 export default services;
