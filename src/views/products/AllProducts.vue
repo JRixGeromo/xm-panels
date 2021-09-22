@@ -1,10 +1,4 @@
 <template>
-  <!-- <el-breadcrumb separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-    <el-breadcrumb-item>
-      Product Listing
-    </el-breadcrumb-item>
-  </el-breadcrumb> -->
   <el-container class="bg-portion el-container-search">
     <div class="search">
       <el-row :gutter="20">
@@ -34,6 +28,7 @@
       </el-row>
     </div>
   </el-container>
+  <el-container style="justify-content: center;">
   <el-affix style="margin: 20px 0;">
     <el-menu
       :default-active="activeIndex2"
@@ -61,79 +56,37 @@
         @click="filterProduct(license.licenseId)"
         class="mf-size"
         >{{ license.licenseDescription }}</el-menu-item>
-        <!-- <el-menu-item index="5-2" class="mf-size">item two</el-menu-item>
-        <el-menu-item index="5-3" class="mf-size">item three</el-menu-item> -->
-
       </el-submenu>
     </el-menu>
   </el-affix>
+  </el-container>
+  <el-container style="justify-content: center;" class="this-font">
+    <el-menu
+      :default-active="activeIndexSub"
+      class="el-menu-demo"
+      mode="horizontal"
+      @select="handleSelect"
+      text-color="#fff"
+      active-text-color="#ffd04b">
+      <el-menu-item index="0" class="mf-size" @click="products()">PRODUCTS</el-menu-item>
+      <el-menu-item index="1" class="mf-size" @click="approvals()">APPROVALS</el-menu-item>
+      <el-menu-item index="2" class="mf-size" @click="archives()">ARCHIVES</el-menu-item>
+    </el-menu>
+  </el-container>
   <el-button class="custom-btn add-btn" @click="$router.push(`/create/product`)">Add New Product</el-button>
-  <el-pagination
-    class="table-pagination"
-    layout="prev, pager, next"
-    :total="pagination.totalRecord"
-    :page-size="pagination.itemPerPage"
-    @current-change="paginationCallback"
-    :current-page="pagination.currentPage + 1"
-  >
-  </el-pagination>
-  <!-- <el-table :data="data" v-loading="gettingProductList" stripe :header-cell-style="{ background: '#373737' }">
-    <el-table-column
-      prop="productName"
-      label="Display Name"
-      align="left"
-      width="auto"
-      :min-width="120"
-    >
-      <template v-slot:default="slotProps">
-        {{ slotProps.row.productName ?? '-' }}
-      </template>
-    </el-table-column>
-    <el-table-column
-      prop="lastName"
-      label="Last Name"
-      align="left"
-      width="auto"
-    >
-    </el-table-column>
-    <el-table-column
-      prop="firstName"
-      label="First Name"
-      align="left"
-      width="auto"
-    >
-    </el-table-column>
-    <el-table-column
-      prop="emailAddress"
-      label="Email"
-      align="left"
-      width="auto"
-    >
-    </el-table-column>
-    <el-table-column label="Role" align="center">
-      <template v-slot:default="slotProps">
-        <ProductRole :productId="slotProps.row.productId" />
-      </template>
-    </el-table-column>
-    <el-table-column label="Edit Role" align="center">
-      <template #default="scope">
-        <el-button size="mini" icon="el-icon-edit" class="edit-icon" @click="handleEditRoleDialog(scope.row)"
-          ></el-button>
-      </template>
-    </el-table-column>
-    <el-table-column label="Edit Password" align="center">
-      <template #default="scope">
-        <el-button size="mini" icon="el-icon-edit" class="edit-icon" @click="handleEditPasswordDialog(scope.row)"
-          ></el-button>
-      </template>
-    </el-table-column>
-  </el-table> -->
-  <!-- <el-table :data="data" v-loading="gettingProductList" stripe :header-cell-style="{ background: '#373737' }"> -->
-  <el-row>
-    <!-- <el-col :span="24" v-for="(o, index) in data" :key="o" :offset="index > 0 ? 2 : 0"> -->
+  <el-row v-if="show=='products'">
+    <el-col :span="24" style="margin-bottom: 15px">
+      <el-pagination
+        class="table-pagination"
+        layout="prev, pager, next"
+        :total="pagination.totalRecord"
+        :page-size="pagination.itemPerPage"
+        @current-change="paginationCallback"
+        :current-page="pagination.currentPage + 1"
+      >
+    </el-pagination>
+    </el-col>
     <el-col :span="6" v-for="(each) in data" :key="each">
-    <!-- <el-col :span="8" :data="data" v-loading="gettingProductList"> -->
-      <!-- <div :style="{ padding: '5px' }" @click="$router.push(`/productprofile/${o.productId}`)"> -->
       <div :style="{ padding: '5px' }" @click="$router.push({ path:`/product/${each.productId}/details`, query: { name: `${each.productName}` }})">
       <el-card :body-style="{ padding: '0px' }">
         <div class="portrait">
@@ -149,6 +102,81 @@
       </div>
     </el-col>
   </el-row>
+  <el-row v-else-if="show=='approvals'">
+    <el-col :span="24">
+      <!-- <el-col :span="24">
+        <el-pagination
+          class="table-pagination"
+          layout="prev, pager, next"
+          :total="pagination.totalRecord"
+          :page-size="pagination.itemPerPage"
+          @current-change="paginationCallback"
+          :current-page="pagination.currentPage + 1"
+        >
+      </el-pagination>
+      </el-col> -->
+      <el-container v-for="(each) in autographApprovals" :key="each" style="border:1px solid #F9F9F9; margin:20px">
+        <el-col :span="8" class="wrapper">
+          <div style="margin:20px 0px 20px 20px; float: left; width:70%">
+            <div class="portrait">
+              <img :src="each.productInfo.productDisplayImage">
+            </div>
+          </div>
+          <div style="float: left; width:10%">
+            <div style="position: absolute;
+              top: 20px;
+              margin-left: 20px">
+             {{ getSerialNumber(each) }}<br>
+             {{ 'artist' }}
+            </div>
+            <div style="position: absolute;
+              bottom: 20px;
+              margin-left: 20px;">
+              {{ each.productInfo.productName }}<br>
+              {{ getLicensor(each) }}<br>
+              {{ getCharacter(each) }}
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8" class="wrapper">
+          <div class="inner">
+            Date: {{ getDate(each) }} <br>
+            Autograph Approval: {{each.productAutographStatus}}
+          </div>
+        </el-col>
+        <el-col :span="8" class="wrapper">
+          <div class="inner">
+          <button
+          class="el-button el-button--default custom-btn"
+          type="button"><span>VIEW SUBSCRIPTION</span>
+          </button>
+          </div>
+        </el-col>
+      </el-container>
+    </el-col>
+  </el-row>
+  <el-row v-else-if="show=='archives'">
+    <el-container v-for="(each) in autographArchives" :key="each" class="portrait">
+      <el-col :span="8">
+        <button
+        class="el-button el-button--default custom-btn"
+        type="button"><span>VIEW SUBSCRIPTION</span>
+        </button>
+      </el-col>
+      <el-col :span="8">
+        <button
+        class="el-button el-button--default custom-btn"
+        type="button"><span>VIEW SUBSCRIPTION</span>
+        </button>
+      </el-col>
+      <el-col :span="8">
+        <button
+        class="el-button el-button--default custom-btn"
+        type="button"><span>VIEW SUBSCRIPTION</span>
+        </button>
+      </el-col>
+    </el-container>
+  </el-row>
 </template>
 
 <script>
@@ -160,11 +188,9 @@ import {
   FILTER_PRODUCT_IN_LIST,
 } from '@/store/modules/product/actions-type';
 import { SORT_LICENSORS_BY_QTY, GET_LICENSOR_LIST } from '@/store/modules/licensor/actions-type';
+import { GET_AUTOGRAPH_APPROVALS_LIST, GET_AUTOGRAPH_ARCHIVES_LIST } from '@/store/modules/autograph/actions-type';
 import { mapActions, mapState, mapGetters /* , mapMutations */ } from 'vuex';
 
-// import EditPasswordForm from '@/components/Product/EditPasswordForm.vue';
-// import EditRoleForm from '@/components/Product/EditRoleForm.vue';
-// import ProductRole from '@/components/Access/ProductRole.vue';
 // import { getAuthID } from '@/helpers';
 
 const defaultPagination = {
@@ -178,11 +204,15 @@ export default {
   computed: {
     ...mapState('product', ['productList', 'gettingProductList', 'updatingProduct']),
     ...mapState('licensor', ['licensorList', 'gettingLicensorList']),
+    ...mapState('autograph', ['gettingAutographApprovalsList', 'gettingAutographArchivesList', 'autographApprovalsList', 'autographArchivesList']),
     ...mapGetters('product', ['getProducts']),
   },
   mounted() {
     this.GET_PRODUCT_LIST();
     this.GET_LICENSOR_LIST();
+    this.GET_AUTOGRAPH_APPROVALS_LIST();
+    this.GET_AUTOGRAPH_ARCHIVES_LIST();
+    console.log();
   },
   beforeUnmount() {
     clearTimeout(this.paginationTimeout);
@@ -200,16 +230,19 @@ export default {
         ...this.pagination,
       });
       this.data = productList.data;
-      // console.log(this.data);
       this.pagination = productList.pagination;
+      this.products();
     },
-    // licensorList() {
-    //   this.sortLicensors();
-    // },
+    autographArchivesList() {
+      this.autographArchives = this.autographArchivesList;
+    },
+    autographApprovalsList() {
+      this.autographApprovals = this.autographApprovalsList;
+    },
   },
   methods: {
-    filterProduct(licenseId) {
-      this.FILTER_PRODUCT_IN_LIST(licenseId);
+    filterProduct(licenseId, filterBy) {
+      this.FILTER_PRODUCT_IN_LIST(licenseId, filterBy);
     },
     licensorTopMenu() {
       let menu = '';
@@ -220,6 +253,7 @@ export default {
     },
     ...mapActions('product', [GET_PRODUCT_LIST, UPDATE_PRODUCT, SEARCH_PRODUCT_IN_LIST, SORT_PRODUCTS, FILTER_PRODUCT_IN_LIST]),
     ...mapActions('licensor', [GET_LICENSOR_LIST, SORT_LICENSORS_BY_QTY]),
+    ...mapActions('autograph', [GET_AUTOGRAPH_APPROVALS_LIST, GET_AUTOGRAPH_ARCHIVES_LIST]),
     // ...mapMutations('product', [RESET_PRODUCT_STATE]),
     paginationCallback(page) {
       const newPagination = {
@@ -241,13 +275,39 @@ export default {
     sortProducts() {
       this.SORT_PRODUCTS(this.value);
     },
-    // sortLicensors() {
-    //   this.SORT_LICENSORS_BY_QTY();
-    // },
+    products() {
+      this.show = 'products';
+    },
+    approvals() {
+      this.show = 'approvals';
+      console.log(this.autographArchivesList);
+    },
+    archives() {
+      this.show = 'archives';
+    },
+    getSerialNumber(each) {
+      return each.productInfo.productSerialNumbers ? each.productInfo.productSerialNumbers[0].serialNumber : '-';
+    },
+    getLicensor(each) {
+      return each.productInfo.character ? each.productInfo.character.license.licenseName : '-';
+    },
+    getCharacter(each) {
+      return each.productInfo.character ? each.productInfo.character.characterName : '-';
+    },
+    getDate(each) {
+      const dt = new Date(each.autographDate);
+      const d = dt.getDate().toString().concat('/');
+      const m = (dt.getMonth() + 1).toString().concat('/');
+      const y = dt.getFullYear().toString();
+      return each.autographDate ? d + m + y : '-';
+    },
   },
   data() {
     return {
       page: 0,
+      show: 'products',
+      autographApprovals: [],
+      autographArchives: [],
       data: [],
       rawData: [],
       pagination: defaultPagination,

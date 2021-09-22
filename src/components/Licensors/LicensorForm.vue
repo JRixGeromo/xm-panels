@@ -10,94 +10,69 @@
   >
   <el-row :gutter="20" class="form-bg-color">
     <el-col :span="21" :offset="3" class="form-text-title-pad">
-      <span class="form-text-title">Create New Licensor</span>
+      <span class="form-label">Create New Licensor</span>
     </el-col>
     <el-col :span="9" :offset="3">
       <div class="grid-content bg-purple" style="max-width:70%;">
         <div class="demo-image__preview">
-          <span class="form-custom">Display Image</span>
-          <el-upload
-            action=""
-            list-type="picture-card"
-            :show-file-list="false"
-            :on-change="handleLicenseImg"
-            :auto-upload="false"
-            :accept="fileFormat"
-          >
-            <img v-if="licensorForm.licenseImageUrl" :src="licensorForm.licenseImageUrl" class="image" />
-            <i v-else class="el-icon-plus"></i>
-          </el-upload>
-          <i
-            v-if="licenseImageUrl"
-            class="el-icon-error clear-img-icon"
-            @click="clearLicenseImg"
-          ></i>
+          <label class="img-label">Display Image</label>
+          <el-form-item prop="licenseImageFile">
+            <el-upload
+              action=""
+              list-type="picture-card"
+              :show-file-list="false"
+              :on-change="handleLicenseImg"
+              :auto-upload="false"
+              :accept="fileFormat"
+            >
+              <img v-if="licensorForm.licenseImageUrl" :src="licensorForm.licenseImageUrl" class="image" />
+              <i v-else class="el-icon-plus"></i>
+            </el-upload>
+            <i
+              v-if="licensorForm.licenseImageUrl"
+              class="el-icon-error clear-img-icon"
+              @click="clearLicenseImg"
+            ></i>
+          </el-form-item>
         </div>
-      </div>
-    </el-col>
-    <el-col :span="9">
-      <div class="grid-content bg-purple">
-        <!-- <div class="demo-image__preview">
-          <span class="form-custom">Background Image</span>
-          <el-upload
-            action=""
-            list-type="picture-card"
-            :show-file-list="false"
-            :on-change="handleLicenseImg"
-            :auto-upload="false"
-            :accept="fileFormat"
-          >
-            <img v-if="licensorForm.licenseDisplayImageUrl" :src="licensorForm.licenseDisplayImageUrl" class="image" />
-            <i v-else class="el-icon-plus"></i>
-          </el-upload>
-          <i
-            v-if="licensorForm.licenseDisplayImageUrl"
-            class="el-icon-error clear-img-icon"
-            @click="clearProfileImg"
-          ></i>
-        </div> -->
       </div>
     </el-col>
   </el-row>
 
-  <el-row :gutter="20" class="form-bg-color" style="padding-bottom:20px">
+  <el-row :gutter="20" class="form-bg-color pt-3" style="padding:20px 0">
     <el-col :span="18" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-form-item label="License Name" prop="licenseName">
-        <el-input
-          placeholder="Please input Name"
-          v-model="licensorForm.licenseName"
+      <TextInput
+        v-model="licensorForm.licenseName"
+        formProps="licenseName"
+        formLabel="License Name"
+      />
+    </el-col>
+    <el-col :span="18" :offset="3">
+      <TextArea
+        v-model="licensorForm.licenseDescription"
+        formProps="licenseDescription"
+        formLabel="Descriptions"
+      />
+    </el-col>
+    <el-col :span="18" :offset="3">
+      <el-row>
+        <el-col style="text-align: right;">
+          <el-button
+            class="custom-btn discard-btn"
+            @click="resetFormOnClick"
           >
-        </el-input>
-        </el-form-item>
-      </div>
-    </el-col>
-    <el-col :span="18" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-form-item label="Descriptions" prop="licenseDescription">
-        <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="Please input Description"
-          v-model="licensorForm.licenseDescription">
-        </el-input>
-        </el-form-item>
-      </div>
-    </el-col>
-    <el-col :span="18" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-row justify="end">
-          <el-button>Discard Changes</el-button>
-          <!-- <el-button type="success">Save</el-button> -->
+            Discard
+          </el-button>
           <el-button
             type="success"
             @click="onSubmit($refs.licensorForm)"
             :loading="loading"
+            class="custom-btn submit-btn"
           >
             Submit
           </el-button>
-        </el-row>
-      </div>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 
@@ -144,6 +119,8 @@
 // import { mapActions, mapState } from 'vuex';
 // import { GET_ROLE_LIST } from '@/store/modules/access/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
+import TextArea from '@/components/Share/TextArea.vue';
+import TextInput from '@/components/Share/TextInput.vue';
 
 export default {
   props: {
@@ -187,6 +164,12 @@ export default {
             message: 'Please enter description',
           },
         ],
+        licenseImageFile: [
+          {
+            required: true,
+            message: 'Please upload licensor image',
+          },
+        ],
       },
     };
   },
@@ -205,6 +188,10 @@ export default {
       // this.licensorForm.profileImageUrl = null;
       // this.licensorForm.profileImageFile = null;
     },
+    resetFormOnClick() {
+      this.clearLicenseImg();
+      this.resetForm(this.$refs.licensorForm);
+    },
     // clearLicenseCoverImg() {
     //   this.licensorForm.licenseCoverImageUrl = null;
     //   this.licensorForm.licenseCoverImageFile = null;
@@ -213,5 +200,9 @@ export default {
   // computed: {
   //   ...mapState('access', ['roleList']),
   // },
+  components: {
+    TextArea,
+    TextInput,
+  },
 };
 </script>

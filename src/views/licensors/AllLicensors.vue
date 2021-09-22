@@ -128,7 +128,7 @@
       <el-card :body-style="{ padding: '0px' }">
         <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
         <div class="portrait">
-          <img :src="each.licenseDisplayImage" class="image">
+          <img :src="each.licenseDisplayImage">
         </div>
         <div style="padding: 14px;">
           <span style="font-size:22px">{{each.licenseDescription}}</span>

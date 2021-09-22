@@ -446,7 +446,35 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapState('artist', ['artistList']),
+    ...mapState('character', ['characterList']),
+    ...mapState('licensor', ['licensorList']),
+    ...mapState('product', ['productSeriesList']),
+    /*
+    productName() { return this.productForm.productName; },
+    artistIds() { return this.productForm.artistIds; },
+    productQuantity() { return this.productForm.productQuantity; },
+    productDescription() { return this.productForm.productDescription; },
+    productBackground() { return this.productForm.productBackground; },
+    productManufactureCountry() { return this.productForm.productManufactureCountry; },
+    productReleaseDate() { return this.productForm.productReleaseDate; },
+    productManufactureDate() { return this.productForm.productManufactureDate; },
+    characterId() { return this.productForm.characterId; },
+    licenseId() { return this.productForm.licenseId; },
+    */
+  },
+  mounted() {
+    this.GET_ARTIST_LIST();
+    this.GET_LICENSOR_LIST();
+    this.GET_PRODUCT_SERIES_LIST();
+    this.focused.productSeries = true;
+  },
   methods: {
+    ...mapActions('artist', [GET_ARTIST_LIST]),
+    ...mapActions('character', [GET_CHARACTER_LIST]),
+    ...mapActions('licensor', [GET_LICENSOR_LIST]),
+    ...mapActions('product', [GET_PRODUCT_SERIES_LIST]),
     handleProductImg(file) {
       this.productForm.productImageUrl = URL.createObjectURL(file.raw);
       this.productForm.productImageFile = file.raw;
@@ -490,34 +518,6 @@ export default {
       this.productForm.productSeries = '';
       this.createSeriesDialog = false;
     },
-    ...mapActions('artist', [GET_ARTIST_LIST]),
-    ...mapActions('character', [GET_CHARACTER_LIST]),
-    ...mapActions('licensor', [GET_LICENSOR_LIST]),
-    ...mapActions('product', [GET_PRODUCT_SERIES_LIST]),
-  },
-  computed: {
-    ...mapState('artist', ['artistList']),
-    ...mapState('character', ['characterList']),
-    ...mapState('licensor', ['licensorList']),
-    ...mapState('product', ['productSeriesList']),
-    /*
-    productName() { return this.productForm.productName; },
-    artistIds() { return this.productForm.artistIds; },
-    productQuantity() { return this.productForm.productQuantity; },
-    productDescription() { return this.productForm.productDescription; },
-    productBackground() { return this.productForm.productBackground; },
-    productManufactureCountry() { return this.productForm.productManufactureCountry; },
-    productReleaseDate() { return this.productForm.productReleaseDate; },
-    productManufactureDate() { return this.productForm.productManufactureDate; },
-    characterId() { return this.productForm.characterId; },
-    licenseId() { return this.productForm.licenseId; },
-    */
-  },
-  mounted() {
-    this.GET_ARTIST_LIST();
-    this.GET_LICENSOR_LIST();
-    this.GET_PRODUCT_SERIES_LIST();
-    this.focused.productSeries = true;
   },
   watch: {
     productSeriesList() {

@@ -15,73 +15,45 @@
     <el-col :span="9" :offset="3">
       <div class="grid-content bg-purple" style="max-width:70%;">
         <div class="demo-image__preview">
-          <span class="form-custom">Display Image</span>
-          <el-upload
-            action=""
-            list-type="picture-card"
-            :show-file-list="false"
-            :on-change="handleLicenseImg"
-            :auto-upload="false"
-            :accept="fileFormat"
-          >
-            <img v-if="licensorForm.licenseImageUrl" :src="licensorForm.licenseImageUrl" class="image" />
-            <i v-else class="el-icon-plus"></i>
-          </el-upload>
-          <i
-            v-if="licenseImageUrl"
-            class="el-icon-error clear-img-icon"
-            @click="clearLicenseImg"
-          ></i>
+          <label class="img-label">Display Image</label>
+          <el-form-item prop="licenseImageFile">
+            <el-upload
+              action=""
+              list-type="picture-card"
+              :show-file-list="false"
+              :on-change="handleLicenseImg"
+              :auto-upload="false"
+              :accept="fileFormat"
+            >
+              <img v-if="licensorForm.licenseImageUrl" :src="licensorForm.licenseImageUrl" class="image" />
+              <i v-else class="el-icon-plus"></i>
+            </el-upload>
+            <i
+              v-if="licensorForm.licenseImageUrl"
+              class="el-icon-error clear-img-icon"
+              @click="clearLicenseImg"
+            ></i>
+          </el-form-item>
         </div>
-      </div>
-    </el-col>
-    <el-col :span="9">
-      <div class="grid-content bg-purple">
-        <!-- <div class="demo-image__preview">
-          <span class="form-custom">Background Image</span>
-          <el-upload
-            action=""
-            list-type="picture-card"
-            :show-file-list="false"
-            :on-change="handleLicenseImg"
-            :auto-upload="false"
-            :accept="fileFormat"
-          >
-            <img v-if="licensorForm.profileImageUrl" :src="licensorForm.profileImageUrl" class="image" />
-            <i v-else class="el-icon-plus"></i>
-          </el-upload>
-          <i
-            v-if="licensorForm.profileImageUrl"
-            class="el-icon-error clear-img-icon"
-            @click="clearProfileImg"
-          ></i>
-        </div> -->
       </div>
     </el-col>
   </el-row>
 
   <el-row :gutter="20" class="form-bg-color" style="padding-bottom:20px">
     <el-col :span="18" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-form-item label="License Name" prop="licenseName">
-        <el-input
-          placeholder="Please input Name"
-          v-model="licensorForm.licenseName"
-          >
-        </el-input>
-        </el-form-item>
-      </div>
+      <TextInput
+        v-model="licensorForm.licenseName"
+        formProps="licenseName"
+        formLabel="License Name"
+      />
     </el-col>
     <el-col :span="18" :offset="3">
       <div style="margin-top: 15px;">
-        <el-form-item label="Descriptions" prop="licenseDescription">
-        <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="Please input Description"
-          v-model="licensorForm.licenseDescription">
-        </el-input>
-        </el-form-item>
+        <TextArea
+          v-model="licensorForm.licenseDescription"
+          formProps="licenseDescription"
+          formLabel="Descriptions"
+        />
       </div>
     </el-col>
     <el-col :span="18" :offset="3">
@@ -146,6 +118,8 @@ import { mapActions, mapState } from 'vuex';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 import { GET_LICENSOR,
   UPDATE_LICENSOR } from '@/store/modules/licensor/actions-type';
+import TextArea from '@/components/Share/TextArea.vue';
+import TextInput from '@/components/Share/TextInput.vue';
 
 export default {
   props: {
@@ -226,6 +200,10 @@ export default {
         ...this.licensorForm,
       };
     },
+  },
+  components: {
+    TextArea,
+    TextInput,
   },
 };
 </script>

@@ -3,6 +3,7 @@ import auth from './modules/auth';
 import user from './modules/user';
 import artist from './modules/artist';
 import product from './modules/product';
+import autograph from './modules/autograph';
 import licensor from './modules/licensor';
 import character from './modules/character';
 import access from './modules/access';
@@ -15,6 +16,7 @@ export default createStore({
     auth,
     user,
     product,
+    autograph,
     artist,
     licensor,
     character,

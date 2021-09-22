@@ -141,7 +141,7 @@ tr { border: none; }
   color: white !important;
   // border-bottom: 1px solid #cccccc;
   font-size: 16px !important;
-  padding-left: 0 !important;
+  // padding-left: 0 !important;
 }
 .el-submenu {
   padding-left: 0 !important;
@@ -160,14 +160,15 @@ tr { border: none; }
 }
 .el-submenu__title:hover,
 .el-submenu__title:focus {
-  background: white !important;
-  color: #000000  !important;
+  background: transparent !important;
+  color: #fff  !important;
 }
 .el-menu-item:hover,
 .el-menu-item:focus,
 .el-menu-item.is-active {
-  background: white !important;
-  color: #000000  !important;
+  background: transparent !important;
+  color: #fff  !important;
+  border-bottom-color: #cccccc !important;
 }
 .el-menu-item [class^=el-icon-],
 .el-submenu [class^=el-icon-] {
@@ -178,14 +179,26 @@ tr { border: none; }
   margin-left: -20px;
   display: block;
 }
-
-.el-menu--horizontal > .el-menu-item.is-active[data-v-fabc2818] {
-    background-color: rgb(42, 42, 42) !important;
-    color: white !important;
+.el-menu--horizontal .el-menu .el-menu-item, .el-menu--horizontal .el-menu .el-submenu__title {
+  background-color: transparent !important;
+  background-color: #000 !important;
+  color: #fff !important;
+}
+.el-menu--popup {
+  padding: 1px 0;
+  border-radius: 0px
+}
+.el-menu--horizontal > .el-menu-item.is-active {
+    background-color: transparent !important;
+    color: #fff !important;
 }
 .el-submenu .el-menu-item {
   color: #000000 !important;
   min-width: unset;
+}
+.el-menu--horizontal>.el-menu-item {
+  padding: 0px !important;
+  margin: 0px 20px 0px 20px;
 }
 .el-submenu__title {
   font-size: 16px !important;
@@ -198,12 +211,12 @@ tr { border: none; }
 }
 /* breadcrumb */
 .el-breadcrumb__inner a, .el-breadcrumb__inner.is-link {
-  color: white !important;
+  color: #fff !important;
   font-weight: 300 !important;
 
 }
 .el-breadcrumb__inner {
-  color: white !important;
+  color: #fff !important;
   font-weight: bold !important;
 }
 
@@ -421,7 +434,7 @@ body {
 
 /*adding the arrows for the breadcrumbs using rotated pseudo elements*/
 .breadcrumb a:after {
-  content: '';
+  // content: '';
   position: absolute;
   top: 0;
   right: -18px; /*half of square's length*/
@@ -466,16 +479,52 @@ body {
   background: #F9F9F9;
   color:rgb(31, 31, 31);
   transition: all 0.7s;
+  padding: 0px  70px  0px  60px; 
 }
 .flat a:before {
   background: #F9F9F9;
   box-shadow: 0 0 0 1px rgb(175, 175, 175);
   text-align: center;
+  color: #000;
+  // margin-left: 20px;
 }
-.flat a:hover, .flat a.active,
+.flat a:hover, .flat a.active, 
 .flat a:hover:after, .flat a.active:after{
-  background: #5586AA;
+  background: transparent;
+  border-top-color: #99884D; 
+  color: #fff;
 }
+
+////////////// custom
+.flat a, .flat a:after {
+  border-top-color: #fff;
+  background: transparent;
+  border-top-style: solid;
+  border-left-style: none;
+  border-right-style: none;
+  border-bottom-style: none;
+  border-top-color: #9a9a9a;
+}
+
+.breadcrumb {
+  border-radius: 0px !important;
+}
+.breadcrumb a:first-child {
+  border-radius: 0px !important;
+}
+.breadcrumb a:last-child {
+  border-radius: 0px;
+}
+.flat a, .flat a:after {
+  color: #636363;
+}
+
+.flat a.active span, .flat a.hover span {
+  color: #ffffff;
+}
+
+/////////////
+
 
 .el-upload-list__item-name [class^=el-icon] {
   height: 40px;
@@ -491,12 +540,10 @@ body {
 
 // Custom Button
 .custom-btn {
-  background-color: #ffffff !important;
-  color: $--color-primary !important;
-  font-size: 16px;
   letter-spacing: 0;
   line-height: 18px;
   border-radius: unset;
+  font-size: 16px;
 }
 
 .add-btn {
@@ -505,6 +552,25 @@ body {
   z-index: 1;
   left: 50%;
   margin-left: -100px;
+  background-color: #ffffff !important;
+  color: $--color-primary !important;
+}
+
+.submit-btn {
+  background-color: #5EAB6B !important;
+  border-color: #5EAB6B;
+  color: #FFFFFF !important;
+
+  &:hover,
+  &:focus {
+    border-color: #5EAB6B !important;
+  }
+}
+
+.discard-btn {
+  color: #FF0000 !important;
+  border: unset !important;
+  background: unset !important;
 }
 
 
@@ -519,7 +585,6 @@ body {
     color: #d0d0d0;
     border-radius: 0px;
     border: 1px solid #696969;
-    font-family: 'Helvetica Neue';
 }
 .el-styled-input {
     font-size: 1.2em;
@@ -558,6 +623,7 @@ body {
     -webkit-transition: all 0.225s ease;
     background-color: #000000;
     font-family: 'gotham';
+    text-transform: uppercase;
 }
 
 .form-label {
@@ -568,6 +634,7 @@ body {
     -webkit-transition: all 0.225s ease;
     background-color: #000000;
     font-family: 'gotham';
+    text-transform: uppercase;
 }
 
 input,
@@ -576,12 +643,12 @@ select,
 textarea {
     padding: 18px;
     width: 100%;
-    font-size: 1rem;
+    font-size: 1rem !important;
     background-color: #000000;
-    color: rgb(208, 208, 208);
-    border-radius: 0px;
-    border: 1px solid #696969;
-    font-family: 'Helvetica Neue';
+    color: #FFFFFF !important;
+    border-radius: 0px !important;
+    border: 1px solid #FFFFFF !important;
+    font-family: 'Source Sans Pro', "Helvetica Neue" !important;
 }
 
 .country-select:focus,
@@ -617,6 +684,7 @@ textarea {
     padding: 0px 10px 0px 10px;
     font-family: 'gotham';
     background-color: #000000;
+    text-transform: uppercase;
 }
 .label_above {
     color: rgb(255, 255, 255);
@@ -632,7 +700,6 @@ textarea {
     background-color: #000000;
 }
 .label_bound {
-    float: left;
     width: 90%;
     margin: 1rem 0;
     position: relative;
@@ -648,11 +715,43 @@ textarea {
 .el-upload--picture-card {
     height: 180px;
     width: 100% !important;
-    border: 1px dotted #bababa;
+    border: 1px dotted #FFFFFF !important;
     height: 180px;
     background-color: #000;
     border-radius: 0px;
 }
 .el-upload--picture-card {
     width: 100% !important;
+}
+
+.this-font {
+  font-family: 'gotham';
+}
+.el-form-item.is-error {
+  input,
+  select,
+  .country-select,
+  textarea,
+  .el-upload--picture-card {
+    border-color: #F56C6C !important;
+  }
+}
+
+.el-button.is-loading:before {
+  background-color: unset !important;
+}
+
+.el-button.is-loading {
+  opacity: 0.9;
+}
+
+.wrapper {
+    min-height: 400px;
+    position: relative;
+}
+.inner {
+    position: absolute;
+    height: 100%;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
 }

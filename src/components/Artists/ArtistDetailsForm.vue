@@ -10,12 +10,12 @@
   >
   <el-row :gutter="20" class="form-bg-color">
     <el-col :span="21" :offset="3" class="form-text-title-pad">
-      <span class="form-text-title">Artist Details</span>
+      <span class="form-label">Artist Details</span>
     </el-col>
     <el-col :span="9" :offset="3">
       <div class="grid-content bg-purple" style="max-width:70%;">
         <div class="demo-image__preview">
-          <span class="form-custom">Display Image</span>
+          <label class="img-label">Display Image</label>
           <el-upload
             action=""
             list-type="picture-card"
@@ -28,7 +28,7 @@
             <i v-else class="el-icon-plus"></i>
           </el-upload>
           <i
-            v-if="artistImageUrl"
+            v-if="artistForm.artistImageUrl"
             class="el-icon-error clear-img-icon"
             @click="clearArtistImg"
           ></i>
@@ -38,7 +38,7 @@
     <el-col :span="9">
       <div class="grid-content bg-purple">
         <div class="demo-image__preview">
-          <span class="form-custom">Background Image</span>
+          <label class="img-label">Background Image</label>
           <el-upload
             action=""
             list-type="picture-card"
@@ -51,7 +51,7 @@
             <i v-else class="el-icon-plus"></i>
           </el-upload>
           <i
-            v-if="artistCoverImageUrl"
+            v-if="artistForm.artistCoverImageUrl"
             class="el-icon-error clear-img-icon"
             @click="clearArtistCoverImg"
           ></i>
@@ -62,63 +62,52 @@
 
   <el-row :gutter="20" class="form-bg-color" style="padding-bottom:20px">
     <el-col :span="9" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-form-item label="Artist Name" prop="artistName">
-        <el-input
-          placeholder="Please input Name"
+      <div style="margin-top: 30px;">
+        <TextInput
           v-model="artistForm.artistName"
-          >
-        </el-input>
-        </el-form-item>
+          formProps="artistName"
+          formLabel="Artist Name"
+        />
       </div>
     </el-col>
     <el-col :span="9">
-      <div style="margin-top: 15px;">
-        <el-form-item label="Email Address" prop="artistEmailAddress">
-        <el-input
-          placeholder="Please input Email"
+      <div style="margin-top: 30px;">
+        <TextInput
           v-model="artistForm.artistEmailAddress"
-          >
-        </el-input>
-        </el-form-item>
+          formProps="artistEmailAddress"
+          formLabel="Email Address"
+        />
       </div>
     </el-col>
     <el-col :span="9" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-form-item label="Date" prop="artistDob">
-          <el-date-picker
-            v-model="artistForm.artistDob"
-            type="date"
-            placeholder="Pick a day">
-          </el-date-picker>
-        </el-form-item>
+      <div style="margin-top: 30px;">
+        <Datepicker
+          v-model="artistForm.artistDob"
+          formProps="artistDob"
+          formLabel="Date of Birth"
+        />
       </div>
     </el-col>
     <el-col :span="9">
-      <div style="margin-top: 15px;">
-        <el-form-item label="Artist's Website" prop="artistWebsite">
-        <el-input
-          placeholder="Please input Website"
+      <div style="margin-top: 30px;">
+        <TextInput
           v-model="artistForm.artistWebsite"
-          clearable>
-        </el-input>
-        </el-form-item>
+          formProps="artistWebsite"
+          formLabel="Artist's Website"
+        />
       </div>
     </el-col>
     <el-col :span="18" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-form-item label="Artist's Description" prop="description">
-        <el-input
-          type="textarea"
-          :rows="5"
-          placeholder="Please input Description"
-          v-model="artistForm.description">
-        </el-input>
-        </el-form-item>
+      <div style="margin-top: 30px;">
+        <TextArea
+          v-model="artistForm.artistDescription"
+          formProps="artistDescription"
+          formLabel="Artist's Description"
+        />
       </div>
     </el-col>
     <!-- <el-col :span="18" :offset="3">
-      <div style="margin-top: 15px;">
+      <div style="margin-top: 30px;">
         <span class="form-custom">Artist's Role</span>
         <el-select v-model="artistForm.role" placeholder="Select">
           <el-option
@@ -134,19 +123,24 @@
     <!-- "roleId": "6b8e6cb9-e5e4-492c-6081-08d9621ec80e", -->
 
     <el-col :span="18" :offset="3">
-      <div style="margin-top: 15px;">
-        <el-row justify="end">
-          <el-button>Discard Changes</el-button>
-          <!-- <el-button type="success">Save</el-button> -->
+      <el-row>
+        <el-col style="text-align: right;">
+          <el-button
+            class="custom-btn discard-btn"
+            @click="resetFormOnClick"
+          >
+            Discard
+          </el-button>
           <el-button
             type="success"
-            @click="onSubmit($refs.artistForm)"
+             @click="onSubmit($refs.artistForm)"
             :loading="loading"
+            class="custom-btn submit-btn"
           >
             Submit
           </el-button>
-        </el-row>
-      </div>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 
@@ -191,9 +185,13 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import { IMAGE_FORMAT } from '@/common/constants';
 // import { GET_ROLE_LIST } from '@/store/modules/access/actions-type';
 import { GET_ARTIST,
   UPDATE_ARTIST_PROFILE } from '@/store/modules/artist/actions-type';
+import Datepicker from '@/components/Share/DateInput.vue';
+import TextArea from '@/components/Share/TextArea.vue';
+import TextInput from '@/components/Share/TextInput.vue';
 
 export default {
   props: {
@@ -210,6 +208,11 @@ export default {
       required: true,
     },
   },
+  components: {
+    Datepicker,
+    TextArea,
+    TextInput,
+  },
   data() {
     return {
       // editUserForm: {
@@ -219,13 +222,14 @@ export default {
       //   artistDob: '',
       //   artistWebsite: '',
       // },
+      fileFormat: IMAGE_FORMAT.join(','),
       artistForm: {
         artistId: '',
         artistUserId: '',
         artistName: '',
         artistEmailAddress: '',
-        description: '',
-        artistDob: '',
+        artistDescription: '',
+        artistDob: new Date(),
         artistWebsite: '',
         isAbleLogin: true,
         artistCoverImageUrl: null,
@@ -234,8 +238,6 @@ export default {
         artistImageFile: null,
         oriArtistImageUrl: null,
         oriArtistCoverImageUrl: null,
-        artistStatus: 'Active',
-        role: '6b8e6cb9-e5e4-492c-6081-08d9621ec80e',
       },
       rules: {
         artistName: [
@@ -254,7 +256,7 @@ export default {
             message: 'Please enter correct email address',
           },
         ],
-        description: [
+        artistDescription: [
           {
             required: true,
             message: 'Please enter description',
@@ -300,6 +302,11 @@ export default {
       this.artistForm.artistCoverImageUrl = null;
       this.artistForm.artistCoverImageFile = null;
     },
+    resetFormOnClick() {
+      this.clearArtistImg();
+      this.clearArtistCoverImg();
+      this.resetForm(this.$refs.artistForm);
+    },
   },
   mounted() {
     this.GET_ARTIST(this.$route.params.id);
@@ -311,7 +318,8 @@ export default {
         artistUserId: this.artistProfile.artistUserId,
         artistName: this.artistProfile.artistName,
         artistEmailAddress: this.artistProfile.artistEmailAddress,
-        artistDob: this.artistProfile.artistDob,
+        artistDob: new Date(this.artistProfile.artistDob),
+        artistDescription: this.artistProfile.artistDescription,
         artistStatus: 'Active',
         artistWebsite: this.artistProfile.artistWebsite,
         artistImageUrl: this.artistProfile.artistDisplayPhotoFilePath,

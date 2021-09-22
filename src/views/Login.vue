@@ -1,33 +1,48 @@
 <template>
   <el-container class="login-container">
-    <el-main class="login-body">
-      <h1>Admin Panel - XM</h1>
-      <el-form
-        class="custom-form"
-        label-position="top"
-        label-width="100px"
-        :model="loginForm"
-        :rules="rules"
-        ref="loginForm"
-        @keyup.enter="onSubmit"
-      >
-        <el-form-item label="Username" prop="username">
-          <el-input v-model="loginForm.username"></el-input>
-        </el-form-item>
-        <el-form-item label="Password" prop="secret">
-          <el-input v-model="loginForm.secret" show-password></el-input>
-        </el-form-item>
-        <el-form-item class="button-wrapper">
-          <el-button type="primary" @click="onSubmit" :loading="isSigningIn">Sign In</el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
+    <div>
+      <h1 style="color: #FFFFFF;text-align: center;">WELCOME TO XM STUDIOS ADMIN PANEL!</h1>
+      <el-main class="login-body">
+        <el-form
+          class="custom-form"
+          label-position="top"
+          label-width="100px"
+          :model="loginForm"
+          :rules="rules"
+          ref="loginForm"
+          @keyup.enter="onSubmit"
+        >
+          <TextInput
+            v-model="loginForm.username"
+            formProps="username"
+            formLabel="Username"
+          />
+          <TextInput
+            v-model="loginForm.secret"
+            inputType="password"
+            formProps="secret"
+            formLabel="Password"
+          />
+          <el-form-item class="button-wrapper">
+            <el-button
+              class="custom-btn add-btn"
+              style="position: unset;"
+              @click="onSubmit"
+              :loading="isSigningIn"
+            >
+              Sign In
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-main>
+    </div>
   </el-container>
 </template>
 
 <script>
 import { SIGN_IN } from '@/store/modules/auth/actions-type';
 import { mapActions, mapState } from 'vuex';
+import TextInput from '@/components/Share/TextInput.vue';
 
 export default {
   name: 'Login',
@@ -75,6 +90,9 @@ export default {
       });
     },
   },
+  components: {
+    TextInput,
+  },
 };
 </script>
 
@@ -83,20 +101,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(223, 223, 223);
-}
-
-.login-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-flow: column;
-  max-width: 500px;
-  -webkit-box-shadow: 0px 0px 19px -7px #000000;
-  box-shadow: 0px 0px 19px -7px #000000;
-  border-radius: 5px;
-  background-color: white;
-  margin: 0 15px;
+  background-color: #000000;
 }
 
 .custom-form {

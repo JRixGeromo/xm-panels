@@ -67,6 +67,17 @@ export function ProductApiIni() {
     })
   );
 }
+export function ProductAutographApiIni() {
+  return (
+    axios.create({
+      baseURL: process.env.VUE_APP_BSG_API_DOMAIN,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+  );
+}
 export function CheckAuthStatus(response) {
   if (response.status === 403) {
     removeAuthInfo();

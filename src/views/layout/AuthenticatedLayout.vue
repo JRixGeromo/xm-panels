@@ -92,7 +92,7 @@ export default {
   width: unset !important;
   height: 100%;
   position: absolute;
-  z-index: 10;
+  z-index: 101;
 }
 
 .body-scrollbar {

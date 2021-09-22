@@ -147,25 +147,24 @@
       <el-col :span="9">
         <div style="margin-top: 15px; width: 100%" class="label_bound">
           <el-form-item prop="licenseId">
-          <el-select v-model="productForm.licenseId" @change="getCharacters()" required>
-            <option></option>
-            <option
-              v-for="license in licensorList"
-              :key="license.licenseId"
-              :label="license.licenseName"
-              :value="license.licenseId"
-              @focus="focused.licenseId = true"
-              @blur="setLostFocused('licenseId')"
-            >
-            </option>
+            <el-select v-model="productForm.licenseId" @change="getCharacters()" required>
+              <el-option
+                v-for="license in licensorList"
+                :key="license.licenseId"
+                :label="license.licenseName"
+                :value="license.licenseId"
+                @focus="focused.licenseId = true"
+                @blur="setLostFocused('licenseId')"
+              >
+              </el-option>
+            </el-select>
             <label class="label_middle "
             :class="{label_above:productForm.licenseId.length > 0 || focused.licenseId }">LICENSE</label>
-          </el-select>
           </el-form-item>
         </div>
         <div style="margin-top: 35px; width: 100%" class="label_bound">
           <el-form-item prop="characterId">
-          <el-select v-model="productForm.characterId" required>
+          <el-select v-model="productForm.characterId" >
             <el-option
               v-for="character in characterList"
               :key="character.characterId"
@@ -463,45 +462,11 @@ export default {
       'productDetails',
       'updateProductSuccess',
       'updatingProduct',
+      'productSeriesList',
     ]),
     ...mapState('artist', ['artistList']),
     ...mapState('character', ['characterList']),
     ...mapState('licensor', ['licensorList']),
-    ...mapState('product', ['productSeriesList']),
-  },
-  watch: {
-    productDetails() {
-      this.productForm = {
-        productId: this.productDetails.productId,
-        productCoverImageUrl: this.productDetails.productBackgroundImage,
-        oriProductCoverImageUrl: this.productDetails.productBackgroundImage,
-        productImageUrl: this.productDetails.productDisplayImage,
-        oriProductImageUrl: this.productDetails.productDisplayImage,
-        productImagesUrl: [],
-        oriProductImagesUrl: [],
-        productImagesFile: [],
-        productName: this.productDetails.productName,
-        productDescription: this.productDetails.productDescription,
-        productBackground: this.productDetails.productBackground,
-        productQuantity: this.productDetails.productQuantity,
-        productManufactureCountry: this.productDetails.productManufactureCountry,
-        productReleaseDate: this.productDetails.productReleaseDate,
-        productManufactureDate: this.productDetails.productManufactureDate,
-        characterId: this.productDetails.character.characterId,
-        licenseId: this.productDetails.character.license.licenseId,
-        artistIds: this.productDetails.artistIds,
-        productSeries: this.productDetails.productSeries,
-        productStatus: 'Active',
-        existingImages: this.productDetails.productImages,
-        forDeleteImages: [],
-      };
-      this.defaultValue = {
-        ...this.productForm,
-      };
-      if (this.productForm.productImagesUrl.length > 0 || this.productForm.existingImages.length > 0) {
-        this.productForm.productImagesFileCheck = 'found';
-      }
-    },
   },
   mounted() {
     this.GET_PRODUCT(this.$route.params.id);
@@ -511,7 +476,11 @@ export default {
     this.focused.productSeries = true;
   },
   methods: {
-    ...mapActions('product', [GET_PRODUCT, UPDATE_PRODUCT]),
+    ...mapActions('product', [GET_PRODUCT, UPDATE_PRODUCT, GET_PRODUCT_SERIES_LIST]),
+    ...mapActions('artist', [GET_ARTIST_LIST]),
+    ...mapActions('character', [GET_CHARACTER_LIST]),
+    ...mapActions('licensor', [GET_LICENSOR_LIST]),
+
     handleProductImg(file) {
       this.productForm.productImageUrl = URL.createObjectURL(file.raw);
       this.productForm.productImageFile = file.raw;
@@ -573,10 +542,43 @@ export default {
       this.productForm.productSeries = '';
       this.createSeriesDialog = false;
     },
-    ...mapActions('artist', [GET_ARTIST_LIST]),
-    ...mapActions('character', [GET_CHARACTER_LIST]),
-    ...mapActions('licensor', [GET_LICENSOR_LIST]),
-    ...mapActions('product', [GET_PRODUCT_SERIES_LIST]),
+  },
+  watch: {
+    productDetails() {
+      this.productForm = {
+        productId: this.productDetails.productId,
+        productCoverImageUrl: this.productDetails.productBackgroundImage,
+        oriProductCoverImageUrl: this.productDetails.productBackgroundImage,
+        productImageUrl: this.productDetails.productDisplayImage,
+        oriProductImageUrl: this.productDetails.productDisplayImage,
+        productImagesUrl: [],
+        oriProductImagesUrl: [],
+        productImagesFile: [],
+        productName: this.productDetails.productName,
+        productDescription: this.productDetails.productDescription,
+        productBackground: this.productDetails.productBackground,
+        productQuantity: this.productDetails.productQuantity,
+        productManufactureCountry: this.productDetails.productManufactureCountry,
+        productReleaseDate: this.productDetails.productReleaseDate,
+        productManufactureDate: this.productDetails.productManufactureDate,
+        characterId: this.productDetails.character.characterId,
+        licenseId: this.productDetails.character.license.licenseId,
+        artistIds: this.productDetails.artistIds,
+        productSeries: this.productDetails.productSeries,
+        productStatus: 'Active',
+        existingImages: this.productDetails.productImages,
+        forDeleteImages: [],
+      };
+      this.defaultValue = {
+        ...this.productForm,
+      };
+      if (this.productForm.productImagesUrl.length > 0 || this.productForm.existingImages.length > 0) {
+        this.productForm.productImagesFileCheck = 'found';
+      }
+    },
+    licensorList() {
+      console.log(this.licensorList);
+    },
   },
 };
 </script>

@@ -16,18 +16,19 @@
   <el-container>
     <el-main v-if="this.$route.params.id" :router="true" style="text-align: center; padding:2px">
       <div class="breadcrumb flat">
-        <a @click="$router.push(`/product/${this.$route.params.id}/details`)">Product Detail</a>
-        <a @click="$router.push(`/product/${this.$route.params.id}/sustainability`)">Sustainability Report</a>
-        <a @click="$router.push({path:`/product/${this.$route.params.id}/designs`})">Artist Details</a>
-        <a @click="$router.push(`/product/${this.$route.params.id}/serialnumbers`)">Serial Numbers</a>
+        <a  @click="$router.push(`/product/${this.$route.params.id}/details`)"
+        :class="{ active:selectedMenu==='details' }">Product Detail</a>
+        <a @click="$router.push(`/product/${this.$route.params.id}/sustainability`)"
+        :class="{ active:selectedMenu==='sustainability' }">Sustainability Report</a>
+        <a @click="$router.push({path:`/product/${this.$route.params.id}/designs`})"
+        :class="{ active:selectedMenu==='designs' }">Artist Details</a>
+        <a @click="$router.push(`/product/${this.$route.params.id}/serialnumbers`)"
+        :class="{ active:selectedMenu==='serialnumbers' }">Serial Numbers</a>
       </div>
     </el-main>
     <el-main v-else :router="true" style="text-align: center; padding:2px">
       <div class="breadcrumb flat" :router="true">
         <router-link to="/create/product">Product Detail</router-link>
-        <!-- <router-link to="/create/sustainability">Sustainability Report</router-link>
-        <router-link to="/create/productdesigns">Artist Details</router-link>
-        <router-link to="/create/productserialnumbers">Serial Numbers</router-link> -->
       </div>
     </el-main>
   </el-container>
@@ -59,7 +60,8 @@ export default {
   data() {
     return {
       // tempId: 1,
-      activeMenu: 'productDetails',
+      activeMenu: 'details',
+      selectedMenu: 'details',
     };
   },
   mounted() {
@@ -69,6 +71,7 @@ export default {
   watch: {
     $route() {
       this.activeMenu = this.$router.currentRoute.value.fullPath;
+      this.selectedMenu = window.location.pathname.split('/').pop();
     },
   },
 };
