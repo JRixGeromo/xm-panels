@@ -13,6 +13,7 @@ import ProductForm from '@/components/Products/ProductForm.vue';
 // import { randomPassword } from '@/helpers';
 import { CREATE_PRODUCT } from '@/store/modules/product/actions-type';
 import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
+import dayjs from 'dayjs';
 
 export default {
   name: 'ProductCreate',
@@ -37,6 +38,8 @@ export default {
           productImages = form.model.productImagesUrl;
           const productDetail = {
             ...form.model,
+            productManufactureDate: dayjs(form.model.productManufactureDate).format('YYYY-MM-DDT00:00:00'),
+            productReleaseDate: dayjs(form.model.productReleaseDate).format('YYYY-MM-DDT00:00:00'),
             applicationDomain: process.env.VUE_APP_APPLICATION_DOMAIN,
             productImages,
           };

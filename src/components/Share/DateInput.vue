@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%" class="label_bound">
-    <el-form-item :prop="formProps" ref="formitem">
+    <el-form-item :prop="formProps">
       <el-date-picker
         :type="inputType"
         v-model="date"
@@ -22,7 +22,7 @@
 <script>
 export default {
   props: {
-    modelValue: Date,
+    modelValue: String,
     inputType: {
       type: String,
       default: 'date',
@@ -54,9 +54,7 @@ export default {
   emits: ['update:modelValue'],
   methods: {
     onChange(value) {
-      console.log(value);
       this.$emit('update:modelValue', value);
-      this.$refs.formitem.elForm.validateField(this.formProps);
     },
   },
 };

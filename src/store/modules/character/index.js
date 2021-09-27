@@ -26,7 +26,7 @@ import {
   SEARCHED_CHARACTER,
 } from '@/store/modules/character/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 import router from '@/router';
 
 const state = {
@@ -97,36 +97,20 @@ const actions = {
     // });
   },
   async [CREATE_CHARACTER]({ commit }, characterDetails) {
-    console.log(characterDetails);
-    // upload
-    let characterPicUrl = characterDetails.oriLicenseDisplayImage;
-
-    if (characterDetails.characterImageFile) {
-      await fileUploadServices.uploadFile(characterDetails.characterImageFile).then(
-        (uploadData) => {
-          characterPicUrl = process.env.VUE_APP_FILE_DOMAIN + uploadData;
-        },
-      );
-    }
-    // end of: upload
-    const characterDetailsSource = {
-      ...characterDetails,
-      characterDisplayImage: characterPicUrl,
-      // characterDisplayBannerFilePath: isCoverPicSuccess ? coverPicUrl : null,
-    };
-
-    console.log(characterDetailsSource);
-    const characterDetailsArray = [];
-    characterDetailsArray.push(characterDetailsSource);
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
+    const characterDetailsSource = [];
+    characterDetailsSource.push(characterDetails);
     commit(CREATE_CHARACTER_START);
-    characterServices.createCharacter(characterDetailsArray).then(
+    characterServices.createCharacter(characterDetailsSource).then(
       () => {
         ElMessage.success({
           showClose: true,
           message: 'Character created successfully',
         });
         commit(CREATE_CHARACTER_SUCCESS);
-        router.push('/allcharacters');
+        // router.push('/allcharacters');
       },
       (error) => {
         ElMessage.error({
@@ -135,7 +119,9 @@ const actions = {
         });
         commit(CREATE_CHARACTER_FAILURE);
       },
-    );
+    ).finally(() => {
+      fullpageLoader.close();
+    });
   },
   async [UPDATE_CHARACTER]({ commit }, characterDetails) {
     // upload
@@ -156,9 +142,6 @@ const actions = {
       // characterDisplayBannerFilePath: isCoverPicSuccess ? coverPicUrl : null,
     };
 
-    // console.log(characterDetailsSource);
-    // const characterDetailsArray = [];
-    // characterDetailsArray.push(characterDetailsSource);
     commit(UPDATE_CHARACTER_START);
     characterServices.updateCharacter(characterDetailsSource).then(
       () => {

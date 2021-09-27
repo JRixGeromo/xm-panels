@@ -15,56 +15,10 @@ function getProductAutographList($status) {
     });
 }
 
-function getProductAutograph(artistId) {
+function updateProductAutographStatus(autographInfo) {
   SetAuthHeader();
-  return ProductAutographApiIni().get(`/api/xm/artist/v1/artist/${artistId}`)
-    .then((response) => {
-      extendAuthCookiesTime();
-      return response.data;
-    })
-    .catch((error) => {
-      CheckAuthStatus(error.response);
-      throw error.response.data;
-    });
-}
-
-function getProductAutographProfile(artistUserId) {
-  SetAuthHeader();
-  return ProductAutographApiIni().get(`/api/xm/artist/v1/${artistUserId}/artistprofile`)
-    .then((response) => {
-      extendAuthCookiesTime();
-      return response.data;
-    })
-    .catch((error) => {
-      CheckAuthStatus(error.response);
-      throw error.response.data;
-    });
-}
-
-function updateProductAutographProfile(profileDetails) {
-  const body = {
-    ...profileDetails,
-  };
-  delete body.artistId;
-  SetAuthHeader();
-  return ProductAutographApiIni().post(`/api/xm/artist/v1/${profileDetails.artistId}/artist`, body)
-    .then((response) => {
-      extendAuthCookiesTime();
-      return response.data;
-    })
-    .catch((error) => {
-      CheckAuthStatus(error.response);
-      throw error.response.data;
-    });
-}
-
-function updateProductAutograph(profileDetails) {
-  const body = {
-    ...profileDetails,
-  };
-  // delete body.artistId;
-  SetAuthHeader();
-  return ProductAutographApiIni().put(`/api/xm/artist/v1/${profileDetails.artistId}/artist`, body)
+  return ProductAutographApiIni()
+    .put(`/api/xm/product/v1/${autographInfo.productAutographId}/productautograph/${autographInfo.status}`, autographInfo)
     .then((response) => {
       extendAuthCookiesTime();
       return response.data;
@@ -99,10 +53,7 @@ function createProductAutograph(artistDetails) {
 }
 const services = {
   getProductAutographList,
-  getProductAutograph,
-  getProductAutographProfile,
-  updateProductAutographProfile,
-  updateProductAutograph,
+  updateProductAutographStatus,
   searchProductAutograph,
   createProductAutograph,
 };

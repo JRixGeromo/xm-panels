@@ -13,6 +13,7 @@ import ArtistForm from '@/components/Artists/ArtistForm.vue';
 // import { randomPassword } from '@/helpers';
 import { CREATE_USER } from '@/store/modules/user/actions-type';
 import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
+import dayjs from 'dayjs';
 
 export default {
   name: 'ArtistCreate',
@@ -46,6 +47,7 @@ export default {
             emailAddress: form.model.artistEmailAddress,
             displayName: form.model.artistEmailAddress,
             secret: '123123',
+            artistDob: dayjs(form.model.artistDob).format('YYYY-MM-DDT00:00:00'),
             applicationDomain: process.env.VUE_APP_APPLICATION_DOMAIN,
           };
           this.createUser(userDetail);

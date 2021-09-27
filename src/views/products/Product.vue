@@ -1,5 +1,5 @@
 <template>
-  <el-affix :offset="10">
+  <!-- <el-affix :offset="10"> -->
     <el-breadcrumb separator="/">
       <!-- <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item> -->
       <el-breadcrumb-item :to="{ path: '/allproducts' }">
@@ -12,7 +12,7 @@
         Create
       </el-breadcrumb-item>
     </el-breadcrumb>
-  </el-affix>
+  <!-- </el-affix> -->
   <el-container>
     <el-main v-if="this.$route.params.id" :router="true" style="text-align: center; padding:2px">
       <div class="breadcrumb flat">

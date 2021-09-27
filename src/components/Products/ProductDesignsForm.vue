@@ -11,8 +11,10 @@
     <el-row :gutter="20" class="form-bg-color">
       <el-col :span="18" :offset="3">
         <div style="margin-top: 30px; text-align:center">
-          <span v-for="(page, i) in designForm.inputs" :key="i" >
-            <a href="#" @click="go(i)"><span style="padding: 0px 4px  0px  4px" :class="{ current: i == current }">{{i+1}}</span></a>
+          <span v-for="(page, i) in designForm.inputs" :key="i" style="margin-right:10px">
+            <a href="#" @click="go(i)" style="text-decoration: none;">
+              <span class="artist-page" :class="{ current: i == current }">{{i+1}}</span>
+              </a>
           </span>
         </div>
       </el-col>
@@ -20,7 +22,7 @@
     <el-row :gutter="20" class="form-bg-color" v-for="(input, i) in designForm.inputs" :key="i">
       <el-col :span="18" :offset="3" v-show="input.show">
         <div>
-          <el-form-item label="Artists / Designer" prop="designArtistId">
+          <!-- <el-form-item label="Artists / Designer" prop="designArtistId">
           <el-select v-model="input.designArtistId" placeholder="Select" style="max-width:800px">
             <el-option
               v-for="artist in existingArtistList"
@@ -29,11 +31,24 @@
               :value="artist.artistId">
             </el-option>
           </el-select>
-          </el-form-item>
+          </el-form-item> -->
+          <SelectInput
+            v-model="input.designArtistId"
+            formProps="designArtistId"
+            formLabel="Artists / Designer"
+          >
+            <el-option
+              v-for="artist in existingArtistList"
+              :key="artist.artistId"
+              :label="artist.artistName"
+              :value="artist.artistId"
+            >
+            </el-option>
+          </SelectInput>
         </div>
         <div class="grid-content bg-purple">
-          <span class="form-custom">Display Image</span>
-          <div class="demo-image__preview" @click="handleClick(i)">
+          <span class="img-label">Display Image</span>
+          <div class="upload-container" @click="handleClick(i)">
             <el-upload
               drag
               action=""
@@ -44,31 +59,28 @@
               :accept="fileFormat"
             >
               <img v-if="input.designImageUrl" :src="input.designImageUrl" class="image" />
-              <i v-else class="el-icon-plus" style="padding-top:70px"></i>
+              <i v-else class="el-icon-upload"></i>
             </el-upload>
             <i
               v-if="input.designImageUrl"
-              class="el-icon-error clear-img-icon"
+              class="el-icon-delete clear-img-icon"
               @click="clearDesignImg(i)"
             ></i>
           </div>
         </div>
         <div style="margin-top: 15px;">
-          <el-form-item label="Product Design Concept" prop="designConcept">
-          <el-input
-            type="textarea"
-            :rows="7"
-            placeholder="Please input design concept"
-            v-model="input.designConcept">
-          </el-input>
-          </el-form-item>
+          <TextArea
+            v-model="input.designConcept"
+            formProps="designConcept"
+            formLabel="Product Design Concept"
+          />
         </div>
       </el-col>
       <el-col :span="18" :offset="3">
         <div v-show="input.show">
           <el-row justify="center">
             <el-button  @click="deleteForm(i)" v-if="designForm.inputs.length > 1">Delete Page</el-button>
-            <el-button type="primary" @click="addForm">Add Page</el-button>
+            <el-button type="default" @click="addForm">Add Page</el-button>
           </el-row>
         </div>
       </el-col>
@@ -77,14 +89,16 @@
       <el-col :span="2" :offset="3">
         <div style="margin: 20px 0px 20px 0px;">
           <el-row>
-            <el-button>Preview</el-button>
+            <el-button
+            class="custom-btn preview-btn"
+            >Preview</el-button>
           </el-row>
         </div>
       </el-col>
       <el-col :span="16">
         <div style="margin: 20px 0px 20px 0px;">
           <el-row justify="end">
-            <el-button>Discard Changes</el-button>
+            <!-- <el-button>Discard Changes</el-button>
             <el-button>Save and Exit</el-button>
             <el-button
               type="success"
@@ -92,6 +106,21 @@
               :loading="loading"
             >
               Save and Proceed
+            </el-button> -->
+
+            <el-button
+              class="custom-btn discard-btn"
+              @click="$router.push(`/allproducts`)">DISCARD</el-button>
+            <el-button
+              class="custom-btn save-exit-btn"
+              @click="onSubmit($refs.designForm)">SAVE AND EXIT</el-button>
+            <el-button
+              class="custom-btn submit-btn"
+              type="success"
+              @click="onSubmit($refs.designForm)"
+              :loading="loading"
+            >
+              SAVE AND PROCEED
             </el-button>
           </el-row>
         </div>
@@ -105,6 +134,9 @@ import { mapActions, mapState } from 'vuex';
 import { GET_ARTIST_LIST } from '@/store/modules/artist/actions-type';
 import { GET_DESIGNS, GET_PRODUCT } from '@/store/modules/product/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
+// import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
+import TextArea from '@/components/Share/TextArea.vue';
+import SelectInput from '@/components/Share/SelectInput.vue';
 
 export default {
   props: {
@@ -120,6 +152,11 @@ export default {
       type: Boolean,
       required: true,
     },
+  },
+  components: {
+    // SingleImageUpload,
+    TextArea,
+    SelectInput,
   },
   data() {
     return {
@@ -263,7 +300,25 @@ export default {
 </script>
 <style lang="scss" scoped>
   .current {
-      color: red;
+      color: #fff !important;
       font-weight: bold;
+      text-decoration: underline;
+      font-weight: bold;
+  }
+  .artist-page {
+      color: #cccccc;
+      padding: 0px 4px  0px  4px;
+  }
+
+  .upload-container .clear-img-icon {
+    position: absolute;
+    margin-top: -10px;
+    right: 0;
+    top: 0;
+    margin-right: -10px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #FF0000 !important;
+    background: #000;
   }
 </style>

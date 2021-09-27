@@ -1,19 +1,19 @@
 <template>
   <div style="width: 100%" class="label_bound">
     <el-form-item :prop="formProps">
-      <el-input
-        :rows="5"
-        type="textarea"
+      <el-select
         :model-value="modelValue"
-        @focus="isFocus = true"
-        @blur="isFocus = false"
-        @input="onChange"
+        @change="onChange"
+        multiple
       >
-      </el-input>
+        <slot></slot>
+      </el-select>
       <label
         class="label_middle"
-        :class="{ label_above: isFocus || modelValue }"
-      >{{ formLabel }}</label>
+        :class="{ label_above: isFocus || modelValue.length > 0 }"
+      >
+        {{ formLabel }}
+      </label>
     </el-form-item>
   </div>
 </template>
@@ -21,7 +21,7 @@
 <script>
 export default {
   props: {
-    modelValue: String,
+    modelValue: Array,
     formProps: {
       type: String,
       required: true,
@@ -29,6 +29,10 @@ export default {
     formLabel: {
       type: String,
       required: true,
+    },
+    onChangeFunc: {
+      type: Function,
+      default: null,
     },
   },
   emits: ['update:modelValue'],
@@ -40,6 +44,9 @@ export default {
   methods: {
     onChange(value) {
       this.$emit('update:modelValue', value);
+      if (this.onChangeFunc !== null) {
+        this.onChangeFunc();
+      }
     },
   },
 };

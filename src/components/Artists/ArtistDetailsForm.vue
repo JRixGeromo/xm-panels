@@ -14,48 +14,22 @@
     </el-col>
     <el-col :span="9" :offset="3">
       <div class="grid-content bg-purple" style="max-width:70%;">
-        <div class="demo-image__preview">
-          <label class="img-label">Display Image</label>
-          <el-upload
-            action=""
-            list-type="picture-card"
-            :show-file-list="false"
-            :on-change="handleArtistImg"
-            :auto-upload="false"
-            :accept="fileFormat"
-          >
-            <img v-if="artistForm.artistImageUrl" :src="artistForm.artistImageUrl" class="image" />
-            <i v-else class="el-icon-plus"></i>
-          </el-upload>
-          <i
-            v-if="artistForm.artistImageUrl"
-            class="el-icon-error clear-img-icon"
-            @click="clearArtistImg"
-          ></i>
-        </div>
+        <SingleImageUpload
+          v-model:imgUrl="artistForm.artistImageUrl"
+          v-model:imgFile="artistForm.artistImageFile"
+          formProps="artistImageUrl"
+          formLabel="Display Image"
+        />
       </div>
     </el-col>
     <el-col :span="9">
       <div class="grid-content bg-purple">
-        <div class="demo-image__preview">
-          <label class="img-label">Background Image</label>
-          <el-upload
-            action=""
-            list-type="picture-card"
-            :show-file-list="false"
-            :on-change="handleArtistCoverImg"
-            :auto-upload="false"
-            :accept="fileFormat"
-          >
-            <img v-if="artistForm.artistCoverImageUrl" :src="artistForm.artistCoverImageUrl" class="image" />
-            <i v-else class="el-icon-plus"></i>
-          </el-upload>
-          <i
-            v-if="artistForm.artistCoverImageUrl"
-            class="el-icon-error clear-img-icon"
-            @click="clearArtistCoverImg"
-          ></i>
-        </div>
+        <SingleImageUpload
+          v-model:imgUrl="artistForm.artistCoverImageUrl"
+          v-model:imgFile="artistForm.artistCoverImageFile"
+          formProps="artistCoverImageUrl"
+          formLabel="Background Image"
+        />
       </div>
     </el-col>
   </el-row>
@@ -192,6 +166,8 @@ import { GET_ARTIST,
 import Datepicker from '@/components/Share/DateInput.vue';
 import TextArea from '@/components/Share/TextArea.vue';
 import TextInput from '@/components/Share/TextInput.vue';
+import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
+import dayjs from 'dayjs';
 
 export default {
   props: {
@@ -212,6 +188,7 @@ export default {
     Datepicker,
     TextArea,
     TextInput,
+    SingleImageUpload,
   },
   data() {
     return {
@@ -223,13 +200,14 @@ export default {
       //   artistWebsite: '',
       // },
       fileFormat: IMAGE_FORMAT.join(','),
+      defaultValue: null,
       artistForm: {
         artistId: '',
         artistUserId: '',
         artistName: '',
         artistEmailAddress: '',
         artistDescription: '',
-        artistDob: new Date(),
+        artistDob: '',
         artistWebsite: '',
         isAbleLogin: true,
         artistCoverImageUrl: null,
@@ -240,6 +218,18 @@ export default {
         oriArtistCoverImageUrl: null,
       },
       rules: {
+        artistImageUrl: [
+          {
+            required: true,
+            message: 'Please upload artist display image',
+          },
+        ],
+        artistCoverImageUrl: [
+          {
+            required: true,
+            message: 'Please upload artist background image',
+          },
+        ],
         artistName: [
           {
             required: true,
@@ -286,26 +276,13 @@ export default {
   },
   methods: {
     ...mapActions('artist', [GET_ARTIST, UPDATE_ARTIST_PROFILE]),
-    handleArtistImg(file) {
-      this.artistForm.artistImageUrl = URL.createObjectURL(file.raw);
-      this.artistForm.artistImageFile = file.raw;
-    },
-    handleArtistCoverImg(file) {
-      this.artistForm.artistCoverImageUrl = URL.createObjectURL(file.raw);
-      this.artistForm.artistCoverImageFile = file.raw;
-    },
-    clearArtistImg() {
-      this.artistForm.artistImageUrl = null;
-      this.artistForm.artistImageFile = null;
-    },
-    clearArtistCoverImg() {
-      this.artistForm.artistCoverImageUrl = null;
-      this.artistForm.artistCoverImageFile = null;
-    },
     resetFormOnClick() {
-      this.clearArtistImg();
-      this.clearArtistCoverImg();
-      this.resetForm(this.$refs.artistForm);
+      this.artistForm = {
+        ...this.defaultValue,
+      };
+      setTimeout(() => {
+        this.$refs.artistForm.validate();
+      }, 1);
     },
   },
   mounted() {
@@ -318,7 +295,7 @@ export default {
         artistUserId: this.artistProfile.artistUserId,
         artistName: this.artistProfile.artistName,
         artistEmailAddress: this.artistProfile.artistEmailAddress,
-        artistDob: new Date(this.artistProfile.artistDob),
+        artistDob: dayjs(this.artistProfile.artistDob).format('YYYY-MM-DDT00:00:00'),
         artistDescription: this.artistProfile.artistDescription,
         artistStatus: 'Active',
         artistWebsite: this.artistProfile.artistWebsite,
@@ -331,11 +308,6 @@ export default {
         ...this.artistForm,
       };
     },
-    // updateArtistProfileSuccess(newUpdateArtistProfileSuccess) {
-    //   if (newUpdateArtistProfileSuccess) {
-    //     this.GET_ARTIST(this.$route.params.id);
-    //   }
-    // },
   },
 };
 </script>

@@ -14,10 +14,10 @@
         <div style="font-size: 18px;
             font-weight: bold;
             }">
-          <label>Upload Serial Numbers</label>
+          <span class="img-label">Upload Serial Numbers</span>
           <div style="margin-top: 10px; text-align:center" class="dropbox">
             <input type="file" @change="onFileChange" :auto-upload="false" accept=".csv,.xls,.xlsx" class="input-file">
-            <i class="el-icon-plus" style="padding-top:90px; font-size:20px"></i>
+            <i class="el-icon-upload" style="padding-top:60px; font-size:67px"></i>
           </div>
         </div>
       </el-col>
@@ -41,8 +41,7 @@
         <el-card :body-style="{ padding: '0px' }">
           <div style="padding: 30px; text-align: center">
             <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
-            <div class="bottom" style="padding-top:10px; font-size:18px">
-              <span>{{ each.edition }}</span>
+            <div class="bottom font-text" style="padding-top:10px; font-size:18px">
             </div>
           </div>
         </el-card>
@@ -62,8 +61,8 @@
             </div>
             <div style="padding: 30px; text-align: center" @click="go(each.serialNumber)">
               <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
-              <div class="bottom" style="padding-top:10px; font-size:18px">
-                <span>{{ each.edition }}</span>
+              <div class="bottom font-text" style="padding-top:10px; font-size:18px">
+                <span>EDITION {{ each.edition }}/ {{ each.total }}</span>
               </div>
             </div>
           </el-card>
@@ -74,7 +73,11 @@
       <el-col :span="18" :offset="3">
         <div style="margin: 20px 0px 20px 0px;">
           <el-row justify="end">
-            <el-button @click="changeFile" v-if="showUploadBut && !serialNumberForm.forDeleteSN.length > 0">Upload Another</el-button>
+            <el-button
+            @click="changeFile"
+            class="custom-btn upload-btn"
+            v-if="showUploadBut && !serialNumberForm.forDeleteSN.length > 0"
+            >Upload Another</el-button>
             <el-button
               type="danger"
                v-if="serialNumberForm.forDeleteSN.length > 0"
@@ -85,6 +88,7 @@
             </el-button>
             <el-button
               type="success"
+              class="custom-btn submit-btn"
                v-if="localData.length > 0"
               @click="onSubmit($refs.serialNumberForm)"
               :loading="loading"
@@ -97,7 +101,6 @@
     </el-row>
   </el-form>
 </template>
-
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GET_PRODUCT } from '@/store/modules/product/actions-type';
@@ -314,8 +317,9 @@ export default {
 </script>
 <style lang="scss" scoped>
   .dropbox {
-    outline: 2px dashed grey; /* the dash box */
-    outline-offset: -10px;
+    // outline: 2px dashed grey;
+    outline: 2px solid grey;
+    // outline-offset: -10px;
     /* background: lightcyan; */
     color: dimgray;
     padding: 10px 10px;
@@ -332,9 +336,9 @@ export default {
     cursor: pointer;
   }
 
-  .dropbox:hover {
-    background: lightblue; /* when mouse over to the drop zone, change color */
-  }
+  // .dropbox:hover {
+  //   background: lightblue;
+  // }
 
   .dropbox p {
     font-size: 1.2em;
@@ -343,7 +347,7 @@ export default {
   }
 
   .font-text {
-    font-family: 'ocr a std'
+    font-family: 'gotham';
   }
 
 </style>
@@ -362,7 +366,10 @@ export default {
     background-color:WHITE !important;
   }
   .checkbox {
-    text-align: end !important;
-    padding-right: 7px !important;
+    position:absolute !important;
+    right: 10px !important;
+  }
+  .el-card {
+    position: relative !important;
   }
 </style>

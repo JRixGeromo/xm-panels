@@ -41,6 +41,16 @@ function getCharacterProfile(artistUserId) {
     });
 }
 
+function createCharacter(characterDetails) {
+  SetAuthHeader();
+  return CharacterApiIni().post(`/api/xm/product/v1/${characterDetails[0].license_uuid}/character`, characterDetails)
+    .then((response) => response.data)
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
 function updateCharacter(characterDetails) {
   const body = {
     ...characterDetails,
@@ -71,15 +81,6 @@ function searchCharacter(query) {
     });
 }
 
-function createCharacter(characterDetails) {
-  SetAuthHeader();
-  return CharacterApiIni().post('/api/xm/product/v1/character', characterDetails)
-    .then((response) => response.data)
-    .catch((error) => {
-      CheckAuthStatus(error.response);
-      throw error.response.data;
-    });
-}
 const services = {
   getCharacters,
   getCharacter,

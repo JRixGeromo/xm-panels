@@ -1,19 +1,13 @@
 <template>
   <div style="width: 100%" class="label_bound">
     <el-form-item :prop="formProps">
-      <el-input
-        :rows="5"
-        type="textarea"
-        :model-value="modelValue"
-        @focus="isFocus = true"
-        @blur="isFocus = false"
-        @input="onChange"
-      >
-      </el-input>
+      <slot></slot>
       <label
         class="label_middle"
         :class="{ label_above: isFocus || modelValue }"
-      >{{ formLabel }}</label>
+      >
+        {{ formLabel }}
+      </label>
     </el-form-item>
   </div>
 </template>

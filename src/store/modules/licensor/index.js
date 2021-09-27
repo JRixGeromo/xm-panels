@@ -254,13 +254,13 @@ const mutations = {
     state.creatingLicensor = false;
   },
   [UPDATE_LICENSOR_START](state) {
-    state.updatingPassword = true;
+    state.updatingLicensor = true;
   },
   [UPDATE_LICENSOR_SUCCESS](state) {
-    state.updatingPassword = false;
+    state.updatingLicensor = false;
   },
   [UPDATE_LICENSOR_FAILURE](state) {
-    state.updatingPassword = false;
+    state.updatingLicensor = false;
   },
   [SEARCHED_LICENSOR](state, data) {
     state.licensorList = data;

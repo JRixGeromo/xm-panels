@@ -1,19 +1,18 @@
 <template>
   <div style="width: 100%" class="label_bound">
     <el-form-item :prop="formProps">
-      <el-input
-        :rows="5"
-        type="textarea"
+      <el-select
         :model-value="modelValue"
-        @focus="isFocus = true"
-        @blur="isFocus = false"
-        @input="onChange"
+        @change="onChange"
       >
-      </el-input>
+        <slot></slot>
+      </el-select>
       <label
         class="label_middle"
         :class="{ label_above: isFocus || modelValue }"
-      >{{ formLabel }}</label>
+      >
+        {{ formLabel }}
+      </label>
     </el-form-item>
   </div>
 </template>
@@ -30,6 +29,10 @@ export default {
       type: String,
       required: true,
     },
+    onChangeFunc: {
+      type: Function,
+      default: null,
+    },
   },
   emits: ['update:modelValue'],
   data() {
@@ -40,6 +43,9 @@ export default {
   methods: {
     onChange(value) {
       this.$emit('update:modelValue', value);
+      if (this.onChangeFunc !== null) {
+        this.onChangeFunc();
+      }
     },
   },
 };

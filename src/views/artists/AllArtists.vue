@@ -1,44 +1,14 @@
 <template>
-  <!-- <el-affix :offset="10">
-    <el-menu
-      :default-active="activeIndex2"
-      class="el-menu-demo"
-      mode="horizontal"
-      @select="handleSelect"
-      background-color="#2a2a2a"
-      text-color="#fff"
-      active-text-color="#ffd04b">
-      <el-menu-item index="1" class="mf-size">All Products</el-menu-item>
-      <el-menu-item index="2" class="mf-size">Century Fox</el-menu-item>
-      <el-menu-item index="3" class="mf-size">DC</el-menu-item>
-      <el-menu-item index="4" class="mf-size">Marvel</el-menu-item>
-      <el-submenu index="5">
-        <template #title><span class="mf-size">Star  Wars</span></template>
-        <el-menu-item index="5-1" class="mf-size">item one</el-menu-item>
-        <el-menu-item index="5-2" class="mf-size">item two</el-menu-item>
-        <el-menu-item index="5-3" class="mf-size">item three</el-menu-item>
-      </el-submenu>
-    </el-menu>
-  </el-affix> -->
-  <!-- <el-breadcrumb separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-    <el-breadcrumb-item>
-      User Listing
-    </el-breadcrumb-item>
-  </el-breadcrumb> -->
   <el-container class="bg-portion el-container-search">
     <div class="search">
       <el-row :gutter="20">
-        <el-col :span="18"><label class="search" for="searchArtist">Search Artist</label>
+        <el-col :span="18">
+          <label class="search" for="searchArtist">Search Artist</label>
           <el-input
-            placeholder="Type something to start searching..."
             v-model="searchKeyword"
             @input="searchOnChange"
-            class="search-padding"
+            suffix-icon="el-icon-search"
             >
-            <template #prefix>
-              <i class="el-input__icon el-icon-search search-margin"></i>
-            </template>
           </el-input>
         </el-col>
         <el-col :span="6">
@@ -158,7 +128,7 @@ import { mapActions, mapState, mapGetters, mapMutations } from 'vuex';
 import { getAuthID } from '@/helpers';
 
 const defaultPagination = {
-  itemPerPage: 10,
+  itemPerPage: 8,
   totalRecord: 0,
   currentPage: 0,
 };
@@ -254,7 +224,7 @@ export default {
           label: 'Oldest',
         },
       ],
-      value: '',
+      value: 'newest',
     };
   },
   components: {

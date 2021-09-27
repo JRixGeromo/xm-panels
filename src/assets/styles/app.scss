@@ -1,23 +1,23 @@
 @font-face {
   font-family: 'gotham';
-  src: url('assets/fonts/gotham-black/gotham_black_regular-webfont.woff2') format('woff2'),
-       url('assets/fonts/gotham-black/gotham_black_regular-webfont.woff') format('woff');
+  src        : url('assets/fonts/gotham-black/gotham_black_regular-webfont.woff2') format('woff2'),
+    url('assets/fonts/gotham-black/gotham_black_regular-webfont.woff') format('woff');
   font-weight: normal;
-  font-style: normal;
+  font-style : normal;
 }
 
 @font-face {
   font-family: 'Helvetica Neue';
-  src: url('assets/fonts/helvetica-neue-ragular/helveticaneue_regular-webfont.woff2') format('woff2'),
-       url('assets/fonts/helvetica-neue-ragular/helveticaneue_regular-webfont.woff') format('woff');
+  src        : url('assets/fonts/helvetica-neue-ragular/helveticaneue_regular-webfont.woff2') format('woff2'),
+    url('assets/fonts/helvetica-neue-ragular/helveticaneue_regular-webfont.woff') format('woff');
   font-weight: normal;
-  font-style: normal;
+  font-style : normal;
 }
 
 body {
   margin     : 0;
   font-weight: normal;
-  font-size: 16px;
+  font-size  : 18px;
   font-family: 'Source Sans Pro', "Helvetica Neue";
 }
 
@@ -27,8 +27,9 @@ h3,
 h4,
 h5,
 h6,
-button {
-  font-family: 'gotham';
+button,
+.search {
+  font-family   : 'gotham';
   text-transform: uppercase;
 }
 
@@ -42,8 +43,8 @@ button {
 }
 
 .table-pagination {
-  text-align: center;
-  margin-top: 20px;
+  text-align: right;
+  margin: 10px 0;
 }
 
 .button-wrapper {
@@ -55,7 +56,6 @@ button {
   height       : auto;
   max-height   : 100%;
   max-width    : 100%;
-  border-radius: 5px;
   object-fit   : contain;
 }
 
@@ -85,12 +85,14 @@ button {
 
   .clear-img-icon {
     position    : absolute;
-    margin-top  : -9px;
+    margin-top  : -10px;
     right       : 0;
     top         : 0;
-    margin-right: -9px;
+    margin-right: -10px;
     font-size   : 20px;
     cursor      : pointer;
+    color       : #FF0000 !important;
+    background: $--color-primary;
   }
 }
 
@@ -99,6 +101,8 @@ button {
   align-items    : center;
   justify-content: center;
   width          : 100%;
+  line-height: unset;
+  color: #FFFFFF !important;
 }
 
 .font-bold {

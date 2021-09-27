@@ -97,11 +97,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "@/assets/styles/_variables.scss";
+
 .login-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #000000;
+  background-color: $--color-primary;
 }
 
 .custom-form {

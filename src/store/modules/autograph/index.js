@@ -2,9 +2,9 @@ import autographServices from '@/services/autograph-service';
 import moment from 'moment';
 // import fileUploadServices from '@/services/file-upload-service';
 import {
-  GET_AUTOGRAPH_PROFILE,
+  GET_AUTOGRAPH_STATUS,
   GET_AUTOGRAPH,
-  UPDATE_AUTOGRAPH_PROFILE,
+  UPDATE_AUTOGRAPH_STATUS,
   GET_AUTOGRAPH_LIST,
   GET_AUTOGRAPH_APPROVALS_LIST,
   GET_AUTOGRAPH_ARCHIVES_LIST,
@@ -21,12 +21,12 @@ import {
   GET_AUTOGRAPH_ARCHIVES_LIST_START,
   GET_AUTOGRAPH_ARCHIVES_LIST_SUCCESS,
   GET_AUTOGRAPH_ARCHIVES_LIST_FAILURE,
-  GET_AUTOGRAPH_PROFILE_START,
-  GET_AUTOGRAPH_PROFILE_SUCCESS,
-  GET_AUTOGRAPH_PROFILE_FAILURE,
-  UPDATE_AUTOGRAPH_PROFILE_START,
-  UPDATE_AUTOGRAPH_PROFILE_SUCCESS,
-  UPDATE_AUTOGRAPH_PROFILE_FAILURE,
+  GET_AUTOGRAPH_STATUS_START,
+  GET_AUTOGRAPH_STATUS_SUCCESS,
+  GET_AUTOGRAPH_STATUS_FAILURE,
+  UPDATE_AUTOGRAPH_STATUS_START,
+  UPDATE_AUTOGRAPH_STATUS_SUCCESS,
+  UPDATE_AUTOGRAPH_STATUS_FAILURE,
   SEARCHED_AUTOGRAPH,
   SORTED_AUTOGRAPHS,
   RESET_AUTOGRAPH_STATE,
@@ -152,53 +152,60 @@ const actions = {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
-    commit(GET_AUTOGRAPH_PROFILE_START);
+    commit(GET_AUTOGRAPH_STATUS_START);
     autographServices.getAutograph(autographId).then(
       (data) => {
-        commit(GET_AUTOGRAPH_PROFILE_SUCCESS, data);
+        commit(GET_AUTOGRAPH_STATUS_SUCCESS, data);
       },
       () => {
-        commit(GET_AUTOGRAPH_PROFILE_FAILURE);
+        commit(GET_AUTOGRAPH_STATUS_FAILURE);
       },
     ).finally(() => {
       fullpageLoader.close();
     });
   },
-  [GET_AUTOGRAPH_PROFILE]({ commit }, payload) {
+  [GET_AUTOGRAPH_STATUS]({ commit }, payload) {
     const { userId, loader } = payload;
-    commit(GET_AUTOGRAPH_PROFILE_START);
+    commit(GET_AUTOGRAPH_STATUS_START);
     const fullPageLoader = loader.show();
     autographServices.getAutographProfile(userId).then(
       (data) => {
-        commit(GET_AUTOGRAPH_PROFILE_SUCCESS, data);
+        commit(GET_AUTOGRAPH_STATUS_SUCCESS, data);
       },
       () => {
-        commit(GET_AUTOGRAPH_PROFILE_FAILURE);
+        commit(GET_AUTOGRAPH_STATUS_FAILURE);
       },
     ).finally(() => {
       fullPageLoader.hide();
     });
   },
-  async [UPDATE_AUTOGRAPH_PROFILE]({ commit }, payload) {
-    const { autographDetails, callbackFunc } = payload;
+  async [UPDATE_AUTOGRAPH_STATUS]({ commit }, autographInfo) {
+    // const { autographInfo, callbackFunc } = payload;
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
-    commit(UPDATE_AUTOGRAPH_PROFILE_START);
+    const autographInfoSource = {
+      productAutographId: autographInfo.productAutographId,
+      status: autographInfo.productAutographStatus,
+      remark: autographInfo.remark,
+    };
 
-    await autographServices.updateAutographProfile(autographDetails).then(
+    commit(UPDATE_AUTOGRAPH_STATUS_START);
+
+    await autographServices.updateProductAutographStatus(autographInfoSource).then(
       (updateData) => {
         ElMessage.success({
           showClose: true,
-          message: "Edit user's profile successfully",
+          message: 'Edit product Autograph updated status successfully',
         });
-        if (callbackFunc) {
-          callbackFunc();
-        }
-        commit(UPDATE_AUTOGRAPH_PROFILE_SUCCESS, updateData);
+
+        // if (callbackFunc) {
+        //   callbackFunc();
+        // }
+        commit(UPDATE_AUTOGRAPH_STATUS_SUCCESS, updateData);
       },
       () => {
-        commit(UPDATE_AUTOGRAPH_PROFILE_FAILURE);
+        commit(UPDATE_AUTOGRAPH_STATUS_FAILURE);
       },
     ).finally(() => {
       fullpageLoader.close();
@@ -272,28 +279,28 @@ const mutations = {
     state.gettingAutographArchivesList = false;
   },
 
-  [GET_AUTOGRAPH_PROFILE_START](state) {
+  [GET_AUTOGRAPH_STATUS_START](state) {
     state.gettingAutographProfile = true;
   },
-  [GET_AUTOGRAPH_PROFILE_SUCCESS](state, data) {
+  [GET_AUTOGRAPH_STATUS_SUCCESS](state, data) {
     state.gettingAutographProfile = false;
     state.autographProfile = {
       ...data[0],
     };
   },
-  [GET_AUTOGRAPH_PROFILE_FAILURE](state) {
+  [GET_AUTOGRAPH_STATUS_FAILURE](state) {
     state.gettingAutographProfile = false;
     state.getAutographProfileFail = true;
   },
-  [UPDATE_AUTOGRAPH_PROFILE_START](state) {
+  [UPDATE_AUTOGRAPH_STATUS_START](state) {
     state.updatingAutographProfile = true;
     state.updateAutographProfileSuccess = false;
   },
-  [UPDATE_AUTOGRAPH_PROFILE_SUCCESS](state) {
+  [UPDATE_AUTOGRAPH_STATUS_SUCCESS](state) {
     state.updatingAutographProfile = false;
     state.updateAutographProfileSuccess = true;
   },
-  [UPDATE_AUTOGRAPH_PROFILE_FAILURE](state) {
+  [UPDATE_AUTOGRAPH_STATUS_FAILURE](state) {
     state.updatingAutographProfile = false;
     state.updateAutographProfileSuccess = false;
   },

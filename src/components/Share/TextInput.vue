@@ -1,12 +1,13 @@
 <template>
   <div style="width: 100%" class="label_bound">
-    <el-form-item :prop="formProps" ref="formitem">
+    <el-form-item :prop="formProps">
       <el-input
         :type="inputType"
         :model-value="modelValue"
         @focus="isFocus = true"
         @blur="isFocus = false"
         @input="onChange"
+        :show-password="inputType === 'password'"
       >
       </el-input>
       <label
@@ -43,7 +44,6 @@ export default {
   methods: {
     onChange(value) {
       this.$emit('update:modelValue', value);
-      this.$refs.formitem.elForm.validateField(this.formProps);
     },
   },
 };
