@@ -79,8 +79,8 @@
   <el-row :gutter="20" class="form-bg-color pt-3" style="padding:20px 0" v-else>
     <el-col :span="18" :offset="3">
       <div class="show-character" v-for="(each) in data" :key="each.characterId">
-        <span class="remove-char" @click="deleteCharacter()"><i class="el-icon-circle-close"></i></span>
-        <div style="width: 100%"  @click="updateCharacter()">
+        <span class="remove-char" @click="deleteCharacter(each.characterId)"><i class="el-icon-circle-close"></i></span>
+        <div style="width: 100%"  @click="updateRelationship(each.characterId)">
         {{ each.characterName }}
         </div>
       </div>
@@ -125,23 +125,22 @@
     </el-form-item>
   </el-dialog>
   <el-dialog
-    title="EDIT CHARACTER"
+    title="RELATIONSHIP"
     custom-class="custom-dialog"
-    v-model="editCharacterDialog"
+    v-model="relationshipDialog"
     :destroy-on-close="true"
-    width = 80%
+    width = 55%
   >
   <el-form-item>
-  <el-row>
+  <el-row  v-for="(input, i) in relationshipForm.inputs" :key="i" >
     <el-col :span="10" :offset="1" style="text-align: center;">
       <SelectInput
-        v-model="relationshipForm.characterName"
+        v-model="input.relatedCharacter"
         formProps="characterName"
         formLabel="Character"
       >
-        <el-option value="Select Another Character">Select Another Character</el-option>
         <el-option
-          v-for="character in data"
+          v-for="character in characterOptions"
           :key="character.characterId"
           :label="character.characterName"
           :value="character.characterId"
@@ -151,14 +150,23 @@
     </el-col>
     <el-col :span="10" :offset="1" style="text-align: center;">
       <TextInput
-        v-model="relationshipForm.relationship"
+        v-model="input.relation"
         formProps="relationship"
         formLabel="RELATIONSHP"
       />
     </el-col>
     <el-col :span="1" :offset="1" style="text-align: center;">
-      X
+      <div style="width: 100%; text-align: center; margin-top: 27px">
+        <i class="el-icon-circle-close" style="color:#ff0000; font-size: 35px;" @click="deleteForm(input, i)"></i>
+      </div>
     </el-col>
+  </el-row>
+  <el-row>
+  <el-col :span="23" :offset="1">
+    <div style="width: 100%; text-align: center">
+      <el-button type="default" @click="addForm"><i class="el-icon-plus"></i></el-button>
+    </div>
+  </el-col>
   </el-row>
   </el-form-item>
   <el-form-item>
@@ -169,11 +177,34 @@
       </el-col>
       <el-col :span="8" :offset="1" style="padding: 23px">
         <el-button  class="custom-btn submit-btn"
-          @click="save()">SAVE</el-button>
+          @click="saveRelations()" :disabled="!allowSave">SAVE</el-button>
       </el-col>
     </el-row>
     </el-form-item>
   </el-dialog>
+  <el-dialog
+    title="DELETE?"
+    custom-class="custom-dialog"
+    v-model="confirmationDialog"
+    :destroy-on-close="true"
+    width = 55%
+  >
+  <!-- <el-form-item>
+  </el-form-item> -->
+  <el-form-item>
+    <el-row>
+      <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
+        <el-button
+          class="custom-btn discard-btn" @click="confirmationDialog = false">CANCEL</el-button>
+      </el-col>
+      <el-col :span="8" :offset="1" style="padding: 23px">
+        <el-button  class="custom-btn submit-btn"
+          @click="deleteRelation(relationCurrent)">DELETE</el-button>
+      </el-col>
+    </el-row>
+    </el-form-item>
+  </el-dialog>
+
 </template>
 
 <script>
@@ -186,6 +217,7 @@ import TextInput from '@/components/Share/TextInput.vue';
 import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 import SelectInput from '@/components/Share/SelectInput.vue';
 import { GET_CHARACTER_LIST, CREATE_CHARACTER } from '@/store/modules/character/actions-type';
+import { GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP } from '@/store/modules/relationship/actions-type';
 
 export default {
   props: {
@@ -206,9 +238,13 @@ export default {
     return {
       show: 'licensor-details',
       newCharacterDialog: false,
-      editCharacterDialog: false,
+      relationshipDialog: false,
+      confirmationDialog: false,
       fileFormat: IMAGE_FORMAT.join(','),
       defaultValue: null,
+      characterCurrent: null,
+      selectedRelation: null,
+      allowSave: false,
       licensorForm: {
         licenseName: '',
         licenseDescription: '',
@@ -223,7 +259,9 @@ export default {
       relationshipForm: {
         characterName: 'Select Another Character',
         relationship: null,
+        inputs: [],
       },
+      characterOptions: [],
       data: [],
       rules: {
         licenseName: [
@@ -254,10 +292,12 @@ export default {
       'updatingLicensor',
     ]),
     ...mapState('character', ['characterList', 'characterDetails']),
+    ...mapState('relation', ['relationshipDetails']),
   },
   methods: {
     ...mapActions('licensor', [GET_LICENSOR, UPDATE_LICENSOR]),
     ...mapActions('character', [GET_CHARACTER_LIST, CREATE_CHARACTER]),
+    ...mapActions('relation', [GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP]),
     resetFormOnClick() {
       this.licensorForm = {
         ...this.defaultValue,
@@ -280,16 +320,48 @@ export default {
       this.newCharacterDialog = false;
       await this.CREATE_CHARACTER(this.characterForm);
       this.GET_CHARACTER_LIST(this.licensorDetails.licenseId);
+      this.updateRelationship(this.characterDetails.characterId);
+      console.log(this.data);
     },
-    updateCharacter() {
-      this.editCharacterDialog = !this.editCharacterDialog;
+    async saveRelations() {
+      this.relationshipDialog = false;
+      await this.CREATE_RELATIONSHIP(this.relationshipForm);
+      console.log(this.data);
+    },
+    async updateRelationship(cid) {
+      this.characterOptions = this.data.filter((x) => x.characterId !== cid);
+      this.characterCurrent = cid;
+      this.relationshipForm.inputs = [];
+      this.relationshipDialog = !this.relationshipDialog;
+      await this.GET_RELATIONSHIP(cid);
     },
     deleteCharacter() {
-      // alert(2);
+      // this.confirmationDialog = true;
     },
     discard() {
-      this.editCharacterDialog = false;
+      this.relationshipDialog = false;
       this.newCharacterDialog = false;
+    },
+    addForm() {
+      this.relationshipForm.inputs.push({
+        characterRelationId: '',
+        relatedCharacter: '',
+        relation: '',
+      });
+      // this.go(this.relationshipForm.inputs.length - 1);
+    },
+    deleteForm(selectedRelation, i) {
+      if (selectedRelation.relatedCharacter === '') {
+        this.relationshipForm.inputs.splice(i, 1);
+      } else {
+        this.selectedRelation = selectedRelation;
+        this.confirmationDialog = true;
+      }
+    },
+    async deleteRelation(i) {
+      this.confirmationDialog = false;
+      this.relationshipForm.inputs.splice(i, 1);
+      await this.UPDATE_RELATIONSHIP(this.selectedRelation);
     },
   },
   mounted() {
@@ -312,6 +384,39 @@ export default {
     },
     characterList() {
       this.data = this.characterList;
+    },
+    relationshipDetails() {
+      this.relationshipForm.characterId = this.characterCurrent;
+      if (this.relationshipDetails.length > 0) {
+        for (let i = 0; i < this.relationshipDetails.length; i++) {
+          this.relationshipForm.inputs.push({
+            characterRelationId: this.relationshipDetails[i].characterRelationId,
+            relatedCharacter: this.relationshipDetails[i].relatedCharacter.characterId,
+            relation: this.relationshipDetails[i].relation,
+          });
+        }
+      } else {
+        this.relationshipForm.inputs.push({
+          characterRelationId: '',
+          relatedCharacter: '',
+          relation: '',
+        });
+      }
+      console.log(JSON.stringify(this.relationshipForm.inputs));
+    },
+    relationshipForm: {
+      handler(val) {
+        if (val.inputs.length > 0) {
+          if ((val.inputs[0].relatedCharacter.length > 0) && (val.inputs[0].relation.length > 0)) {
+            this.allowSave = true;
+          } else {
+            this.allowSave = false;
+          }
+        } else {
+          this.allowSave = false;
+        }
+      },
+      deep: true,
     },
   },
   components: {

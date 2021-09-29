@@ -6,6 +6,7 @@ import product from './modules/product';
 import autograph from './modules/autograph';
 import licensor from './modules/licensor';
 import character from './modules/character';
+import relation from './modules/relationship';
 import access from './modules/access';
 import configuration from './modules/configuration';
 
@@ -20,6 +21,7 @@ export default createStore({
     artist,
     licensor,
     character,
+    relation,
     access,
     configuration,
   },
