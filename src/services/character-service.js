@@ -51,6 +51,19 @@ function createCharacter(characterDetails) {
     });
 }
 
+function deleteCharacter(characterId) {
+  SetAuthHeader();
+  return CharacterApiIni().delete(`/api/xm/product/v1/${characterId}/character`)
+    .then((response) => {
+      extendAuthCookiesTime();
+      return response.data;
+    })
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
 function updateCharacter(characterDetails) {
   const body = {
     ...characterDetails,
@@ -88,6 +101,7 @@ const services = {
   updateCharacter,
   searchCharacter,
   createCharacter,
+  deleteCharacter,
 };
 
 export default services;

@@ -2,7 +2,7 @@ import characterServices from '@/services/character-service';
 // import authServices from '@/services/auth-service';
 // import accessServices from '@/services/access-service';
 // import artistService from '@/services/artist-service';
-import fileUploadServices from '@/services/file-upload-service';
+// import fileUploadServices from '@/services/file-upload-service';
 import {
   GET_CHARACTER_LIST,
   GET_CHARACTER,
@@ -27,7 +27,7 @@ import {
 } from '@/store/modules/character/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
-import router from '@/router';
+// import router from '@/router';
 
 const state = {
   gettingCharacterList: false,
@@ -36,6 +36,8 @@ const state = {
   creatingCharacter: false,
   gettingCharacterDetails: false,
   updatingCharacter: false,
+  newCharacterId: '',
+  deleteSuccess: false,
 };
 
 // const initialState = {
@@ -104,12 +106,12 @@ const actions = {
     characterDetailsSource.push(characterDetails);
     commit(CREATE_CHARACTER_START);
     characterServices.createCharacter(characterDetailsSource).then(
-      () => {
+      (data) => {
         ElMessage.success({
           showClose: true,
           message: 'Character created successfully',
         });
-        commit(CREATE_CHARACTER_SUCCESS);
+        commit(CREATE_CHARACTER_SUCCESS, data);
         // router.push('/allcharacters');
       },
       (error) => {
@@ -124,33 +126,18 @@ const actions = {
     });
   },
   async [UPDATE_CHARACTER]({ commit }, characterDetails) {
-    // upload
-
-    let characterPicUrl = characterDetails.oriLicenseDisplayImage;
-
-    if (characterDetails.characterImageFile) {
-      await fileUploadServices.uploadFile(characterDetails.characterImageFile).then(
-        (uploadData) => {
-          characterPicUrl = process.env.VUE_APP_FILE_DOMAIN + uploadData;
-        },
-      );
-    }
-    // end of: upload
-    const characterDetailsSource = {
-      ...characterDetails,
-      characterDisplayImage: characterPicUrl,
-      // characterDisplayBannerFilePath: isCoverPicSuccess ? coverPicUrl : null,
-    };
-
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
     commit(UPDATE_CHARACTER_START);
-    characterServices.updateCharacter(characterDetailsSource).then(
-      () => {
+    characterServices.deleteCharacter(characterDetails).then(
+      (data) => {
         ElMessage.success({
           showClose: true,
-          message: 'Character updated successfully',
+          message: 'Character deleted successfully',
         });
-        commit(UPDATE_CHARACTER_SUCCESS);
-        router.push('/allcharacters');
+        commit(UPDATE_CHARACTER_SUCCESS, data);
+        // router.push('/allcharacters');
       },
       (error) => {
         ElMessage.error({
@@ -159,7 +146,9 @@ const actions = {
         });
         commit(UPDATE_CHARACTER_FAILURE);
       },
-    );
+    ).finally(() => {
+      fullpageLoader.close();
+    });
   },
   [SEARCH_CHARACTER_IN_LIST]({ commit, state }, searchKeyword) {
     const characterList = [...state.oriCharacterList];
@@ -200,8 +189,9 @@ const mutations = {
   [CREATE_CHARACTER_START](state) {
     state.creatingCharacter = true;
   },
-  [CREATE_CHARACTER_SUCCESS](state) {
+  [CREATE_CHARACTER_SUCCESS](state, data) {
     state.creatingCharacter = false;
+    state.newCharacterId = data;
   },
   [CREATE_CHARACTER_FAILURE](state) {
     state.creatingCharacter = false;

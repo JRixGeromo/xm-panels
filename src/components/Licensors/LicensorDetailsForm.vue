@@ -78,8 +78,8 @@
   </el-row>
   <el-row :gutter="20" class="form-bg-color pt-3" style="padding:20px 0" v-else>
     <el-col :span="18" :offset="3">
-      <div class="show-character" v-for="(each) in data" :key="each.characterId">
-        <span class="remove-char" @click="deleteCharacter(each.characterId)"><i class="el-icon-circle-close"></i></span>
+      <div class="show-character" v-for="(each, i) in characterData.inputs" :key="i">
+        <span class="remove-char" @click="deleteCharacter(each.characterId, i)"><i class="el-icon-circle-close"></i></span>
         <div style="width: 100%"  @click="updateRelationship(each.characterId)">
         {{ each.characterName }}
         </div>
@@ -157,7 +157,7 @@
     </el-col>
     <el-col :span="1" :offset="1" style="text-align: center;">
       <div style="width: 100%; text-align: center; margin-top: 27px">
-        <i class="el-icon-circle-close" style="color:#ff0000; font-size: 35px;" @click="deleteForm(input, i)"></i>
+        <i class="el-icon-circle-close" style="color:#ff0000; font-size: 35px;" @click="deleteRelation(input, i)"></i>
       </div>
     </el-col>
   </el-row>
@@ -170,7 +170,7 @@
   </el-row>
   </el-form-item>
   <el-form-item>
-    <el-row>
+    <el-row v-if="hideButtons">
       <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
         <el-button
           class="custom-btn discard-btn" @click="discard()">DISCARD</el-button>
@@ -199,7 +199,7 @@
       </el-col>
       <el-col :span="8" :offset="1" style="padding: 23px">
         <el-button  class="custom-btn submit-btn"
-          @click="deleteRelation(relationCurrent)">DELETE</el-button>
+          @click="executeDelete()">DELETE</el-button>
       </el-col>
     </el-row>
     </el-form-item>
@@ -216,7 +216,7 @@ import TextArea from '@/components/Share/TextArea.vue';
 import TextInput from '@/components/Share/TextInput.vue';
 import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 import SelectInput from '@/components/Share/SelectInput.vue';
-import { GET_CHARACTER_LIST, CREATE_CHARACTER } from '@/store/modules/character/actions-type';
+import { GET_CHARACTER_LIST, CREATE_CHARACTER, UPDATE_CHARACTER } from '@/store/modules/character/actions-type';
 import { GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP } from '@/store/modules/relationship/actions-type';
 
 export default {
@@ -237,13 +237,18 @@ export default {
   data() {
     return {
       show: 'licensor-details',
+      confirm: '',
+      action: '',
+      hideButtons: false,
       newCharacterDialog: false,
       relationshipDialog: false,
       confirmationDialog: false,
       fileFormat: IMAGE_FORMAT.join(','),
       defaultValue: null,
-      characterCurrent: null,
+      // characterCurrent: null,
       selectedRelation: null,
+      selectedCharacter: null,
+      selectedIndex: null,
       allowSave: false,
       licensorForm: {
         licenseName: '',
@@ -257,12 +262,14 @@ export default {
         characterName: null,
       },
       relationshipForm: {
-        characterName: 'Select Another Character',
+        characterName: '',
         relationship: null,
         inputs: [],
       },
       characterOptions: [],
-      data: [],
+      characterData: {
+        inputs: [],
+      },
       rules: {
         licenseName: [
           {
@@ -291,12 +298,12 @@ export default {
       'updateLicensorSuccess',
       'updatingLicensor',
     ]),
-    ...mapState('character', ['characterList', 'characterDetails']),
+    ...mapState('character', ['characterList', 'characterDetails', 'newCharacterId', 'deleteSuccess']),
     ...mapState('relation', ['relationshipDetails']),
   },
   methods: {
     ...mapActions('licensor', [GET_LICENSOR, UPDATE_LICENSOR]),
-    ...mapActions('character', [GET_CHARACTER_LIST, CREATE_CHARACTER]),
+    ...mapActions('character', [GET_CHARACTER_LIST, CREATE_CHARACTER, UPDATE_CHARACTER]),
     ...mapActions('relation', [GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP]),
     resetFormOnClick() {
       this.licensorForm = {
@@ -319,24 +326,46 @@ export default {
     async saveCharacter() {
       this.newCharacterDialog = false;
       await this.CREATE_CHARACTER(this.characterForm);
-      this.GET_CHARACTER_LIST(this.licensorDetails.licenseId);
-      this.updateRelationship(this.characterDetails.characterId);
-      console.log(this.data);
+      await this.GET_CHARACTER_LIST(this.licensorDetails.licenseId);
+      this.action = 'addedCharacter';
     },
     async saveRelations() {
       this.relationshipDialog = false;
       await this.CREATE_RELATIONSHIP(this.relationshipForm);
-      console.log(this.data);
     },
     async updateRelationship(cid) {
-      this.characterOptions = this.data.filter((x) => x.characterId !== cid);
-      this.characterCurrent = cid;
+      this.characterOptions = this.characterData.inputs.filter((x) => x.characterId !== cid);
+      this.selectedCharacter = cid;
       this.relationshipForm.inputs = [];
       this.relationshipDialog = !this.relationshipDialog;
       await this.GET_RELATIONSHIP(cid);
     },
-    deleteCharacter() {
-      // this.confirmationDialog = true;
+    deleteCharacter(selectedCharacter, i) {
+      this.confirm = 'character';
+      this.selectedIndex = i;
+      this.selectedCharacter = selectedCharacter;
+      this.confirmationDialog = true;
+      this.action = '';
+    },
+    deleteRelation(selectedRelation, i) {
+      this.confirm = 'relation';
+      this.selectedIndex = i;
+      if (selectedRelation.relatedCharacter === '') {
+        this.relationshipForm.inputs.splice(i, 1);
+      } else {
+        this.selectedRelation = selectedRelation;
+        this.confirmationDialog = true;
+      }
+    },
+    async executeDelete() {
+      this.confirmationDialog = false;
+      if (this.confirm === 'relation') {
+        await this.UPDATE_RELATIONSHIP(this.selectedRelation);
+        this.relationshipForm.inputs.splice(this.selectedIndex, 1);
+      } else {
+        await this.UPDATE_CHARACTER(this.selectedCharacter);
+        this.characterData.inputs.splice(this.selectedIndex, 1);
+      }
     },
     discard() {
       this.relationshipDialog = false;
@@ -348,20 +377,6 @@ export default {
         relatedCharacter: '',
         relation: '',
       });
-      // this.go(this.relationshipForm.inputs.length - 1);
-    },
-    deleteForm(selectedRelation, i) {
-      if (selectedRelation.relatedCharacter === '') {
-        this.relationshipForm.inputs.splice(i, 1);
-      } else {
-        this.selectedRelation = selectedRelation;
-        this.confirmationDialog = true;
-      }
-    },
-    async deleteRelation(i) {
-      this.confirmationDialog = false;
-      this.relationshipForm.inputs.splice(i, 1);
-      await this.UPDATE_RELATIONSHIP(this.selectedRelation);
     },
   },
   mounted() {
@@ -383,10 +398,24 @@ export default {
       this.GET_CHARACTER_LIST(this.licensorDetails.licenseId);
     },
     characterList() {
-      this.data = this.characterList;
+      // this.characterData = this.characterList;
+      this.characterData.inputs = [];
+      if (this.characterList.length > 0) {
+        for (let i = 0; i < this.characterList.length; i++) {
+          this.characterData.inputs.push({
+            characterId: this.characterList[i].characterId,
+            characterName: this.characterList[i].characterName,
+          });
+        }
+      }
+    },
+    newCharacterId() {
+      this.GET_CHARACTER_LIST(this.licensorDetails.licenseId);
+      this.selectedCharacter = this.newCharacterId;
+      this.updateRelationship(this.newCharacterId);
     },
     relationshipDetails() {
-      this.relationshipForm.characterId = this.characterCurrent;
+      this.relationshipForm.characterId = this.selectedCharacter;
       if (this.relationshipDetails.length > 0) {
         for (let i = 0; i < this.relationshipDetails.length; i++) {
           this.relationshipForm.inputs.push({
@@ -412,8 +441,10 @@ export default {
           } else {
             this.allowSave = false;
           }
+          this.hideButtons = true;
         } else {
           this.allowSave = false;
+          this.hideButtons = false;
         }
       },
       deep: true,
