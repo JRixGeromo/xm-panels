@@ -79,12 +79,12 @@ const actions = {
       },
     );
   },
-  [GET_RELATIONSHIP]({ commit }, characterRelationId) {
+  [GET_RELATIONSHIP]({ commit }, relationInfo) {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
     commit(GET_RELATIONSHIP_START);
-    relationshipServices.getRelationship(characterRelationId).then(
+    relationshipServices.getRelationship(relationInfo).then(
       (data) => {
         commit(GET_RELATIONSHIP_SUCCESS, data);
       },
@@ -99,28 +99,38 @@ const actions = {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
-    console.log(relationshipDetails);
     const relationships = [];
     if (relationshipDetails.inputs.length > 0) {
-      for (let i = 0; i < relationshipDetails.inputs.length; i++) {
-        if (relationshipDetails.inputs[i].characterRelationId === '') {
+      if (relationshipDetails.relationship === 'product') {
+        for (let i = 0; i < relationshipDetails.inputs.length; i++) {
+          // if (relationshipDetails.inputs[i].characterRelationId === '') {
+          relationships.push({
+            product: relationshipDetails.productId,
+            relatedProduct: relationshipDetails.inputs[i].relatedProduct,
+            relation: relationshipDetails.inputs[i].relation,
+          });
+          // }
+        }
+      } else {
+        for (let i = 0; i < relationshipDetails.inputs.length; i++) {
+          // if (relationshipDetails.inputs[i].characterRelationId === '') {
           relationships.push({
             character: relationshipDetails.characterId,
             relatedCharacter: relationshipDetails.inputs[i].relatedCharacter,
             relation: relationshipDetails.inputs[i].relation,
           });
+          // }
         }
       }
     }
     commit(CREATE_RELATIONSHIP_START);
-    relationshipServices.createRelationship(relationships).then(
+    relationshipServices.createRelationship(relationships, relationshipDetails.relationship).then(
       () => {
         ElMessage.success({
           showClose: true,
           message: 'Relationship created successfully',
         });
         commit(CREATE_RELATIONSHIP_SUCCESS);
-        // router.push('/allrelationships');
       },
       (error) => {
         ElMessage.error({

@@ -15,9 +15,13 @@ function getRelationships() {
     });
 }
 
-function getRelationship(relationshipId) {
+function getRelationship(relationInfo) {
+  let relation = 'characterrelation';
+  if (relationInfo.relation === 'product') {
+    relation = 'productrelation';
+  }
   SetAuthHeader();
-  return RelationshipApiIni().get(`/api/xm/product/v1/characterrelation/${relationshipId}`)
+  return RelationshipApiIni().get(`/api/xm/product/v1/${relation}/${relationInfo.id}`)
     .then((response) => {
       extendAuthCookiesTime();
       return response.data;
@@ -41,9 +45,14 @@ function getRelationshipProfile(artistUserId) {
     });
 }
 
-function createRelationship(relationshipDetails) {
+function createRelationship(relationshipDetails, relationship) {
+  console.log(relationshipDetails);
   SetAuthHeader();
-  return RelationshipApiIni().post('/api/xm/product/v1/characterrelation', relationshipDetails)
+  let relation = 'characterrelation';
+  if (relationship === 'product') {
+    relation = 'productrelation';
+  }
+  return RelationshipApiIni().post(`/api/xm/product/v1/${relation}`, relationshipDetails)
     .then((response) => response.data)
     .catch((error) => {
       CheckAuthStatus(error.response);

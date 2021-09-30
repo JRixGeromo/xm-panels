@@ -1,5 +1,5 @@
 <template>
-  <el-form
+  <el-form v-if="show=='products'"
     class="custom-form"
     label-position="top"
     label-width="100px"
@@ -118,6 +118,9 @@
               + Create New
             </el-option>
           </CreateNewSelectInput>
+          <div style="width: 100%; text-align:right; margin-top: -20px">
+            <span style="text-decoration: underline" @click="relationships()">View product relatipnships</span>
+          </div>
         </div>
         <div style="margin-top: 35px;">
           <CountrySelectInput
@@ -193,16 +196,112 @@
       </el-col>
     </el-row>
   </el-form>
+  <el-form v-else>
+    <el-row justify="space-between">
+      <el-col :span="2">
+        <div style="width: 100%; text-align:center; margin-top: -20px">
+        <span style="text-decoration: underline" @click="products()">back</span>
+      </div>
+      </el-col>
+      <el-col :span="2">
+        <div style="width: 100%; text-align:center; margin-top: -20px">
+          <span style="text-decoration: underline" @click="popoutRelationship(this.$route.params.id)">edit</span>
+        </div>
+      </el-col>
+    </el-row>
+
+    <el-dialog
+      title="RELATIONSHIP"
+      custom-class="custom-dialog"
+      v-model="relationshipDialog"
+      :destroy-on-close="true"
+      width = 55%
+    >
+    <el-form-item>
+    <el-row  v-for="(input, i) in relationshipForm.inputs" :key="i" >
+      <el-col :span="10" :offset="1" style="text-align: center;">
+        <SelectInput
+          v-model="input.relatedProduct"
+          formProps="productName"
+          formLabel="Product"
+        >
+          <el-option
+            v-for="product in productOptions"
+            :key="product.productId"
+            :label="product.productName"
+            :value="product.productId"
+          >
+          </el-option>
+        </SelectInput>
+      </el-col>
+      <el-col :span="10" :offset="1" style="text-align: center;">
+        <TextInput
+          v-model="input.relation"
+          formProps="relationship"
+          formLabel="RELATIONSHP"
+        />
+      </el-col>
+      <el-col :span="1" :offset="1" style="text-align: center;">
+        <div style="width: 100%; text-align: center; margin-top: 27px">
+          <i class="el-icon-circle-close" style="color:#ff0000; font-size: 35px;" @click="deleteRelation(input, i)"></i>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row>
+    <el-col :span="23" :offset="1">
+      <div style="width: 100%; text-align: center">
+        <el-button type="default" @click="addForm"><i class="el-icon-plus"></i></el-button>
+      </div>
+    </el-col>
+    </el-row>
+    </el-form-item>
+    <el-form-item>
+      <el-row v-if="hideButtons">
+        <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
+          <el-button
+            class="custom-btn discard-btn" @click="discard()">DISCARD</el-button>
+        </el-col>
+        <el-col :span="8" :offset="1" style="padding: 23px">
+          <el-button  class="custom-btn submit-btn"
+            @click="saveRelations()" :disabled="!allowSave">SAVE</el-button>
+        </el-col>
+      </el-row>
+      </el-form-item>
+    </el-dialog>
+    <el-dialog
+      title="DELETE?"
+      custom-class="custom-dialog"
+      v-model="confirmationDialog"
+      :destroy-on-close="true"
+      width = 55%
+    >
+    <!-- <el-form-item>
+    </el-form-item> -->
+    <el-form-item>
+      <el-row>
+        <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
+          <el-button
+            class="custom-btn discard-btn" @click="confirmationDialog = false">CANCEL</el-button>
+        </el-col>
+        <el-col :span="8" :offset="1" style="padding: 23px">
+          <el-button  class="custom-btn submit-btn"
+            @click="executeDelete()">DELETE</el-button>
+        </el-col>
+      </el-row>
+      </el-form-item>
+    </el-dialog>
+
+  </el-form>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import { GET_CHARACTER_LIST } from '@/store/modules/character/actions-type';
 import { GET_ARTIST_LIST } from '@/store/modules/artist/actions-type';
 import { GET_LICENSOR_LIST } from '@/store/modules/licensor/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 import { GET_PRODUCT,
   UPDATE_PRODUCT,
+  GET_PRODUCT_LIST,
   GET_PRODUCT_SERIES_LIST } from '@/store/modules/product/actions-type';
 import MultipleImagesUpload from '@/components/Share/MultipleImagesUpload.vue';
 import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
@@ -214,6 +313,8 @@ import dayjs from 'dayjs';
 import MultipleSelectInput from '@/components/Share/MultipleSelectInput.vue';
 import CountrySelectInput from '@/components/Share/CountrySelectInput.vue';
 import CreateNewSelectInput from '@/components/Share/CreateNewSelectInput.vue';
+import { GET_CHARACTER_LIST } from '@/store/modules/character/actions-type';
+import { GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP } from '@/store/modules/relationship/actions-type';
 
 export default {
   props: {
@@ -243,6 +344,14 @@ export default {
   },
   data() {
     return {
+      relationshipDialog: false,
+      confirmationDialog: false,
+      selectedRelation: null,
+      selectedProduct: null,
+      selectedIndex: null,
+      show: 'products',
+      hideButtons: false,
+      allowSave: false,
       country: '',
       region: '',
       middle: true,
@@ -274,6 +383,12 @@ export default {
         forDeleteImages: [],
         existingImages: [],
       },
+      relationshipForm: {
+        productName: '',
+        relationship: 'product',
+        inputs: [],
+      },
+      productOptions: [],
       rules: {
         productName: [
           {
@@ -369,22 +484,92 @@ export default {
       'updatingProduct',
       'productSeriesList',
     ]),
+    ...mapState('product', ['productList']),
     ...mapState('artist', ['artistList']),
-    ...mapState('character', ['characterList']),
     ...mapState('licensor', ['licensorList']),
+    ...mapState('character', ['characterList']),
+    ...mapState('relation', ['relationshipDetails']),
   },
   mounted() {
     this.GET_PRODUCT(this.$route.params.id);
     this.GET_ARTIST_LIST();
     this.GET_LICENSOR_LIST();
+    this.GET_PRODUCT_LIST();
     this.GET_PRODUCT_SERIES_LIST();
     this.focused.productSeries = true;
   },
   methods: {
-    ...mapActions('product', [GET_PRODUCT, UPDATE_PRODUCT, GET_PRODUCT_SERIES_LIST]),
+    ...mapActions('product', [GET_PRODUCT, UPDATE_PRODUCT, GET_PRODUCT_LIST, GET_PRODUCT_SERIES_LIST]),
     ...mapActions('artist', [GET_ARTIST_LIST]),
-    ...mapActions('character', [GET_CHARACTER_LIST]),
     ...mapActions('licensor', [GET_LICENSOR_LIST]),
+    ...mapActions('character', [GET_CHARACTER_LIST]),
+    ...mapActions('relation', [GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP]),
+    products() {
+      this.show = 'products';
+    },
+    relationships() {
+      this.show = 'relationships';
+    },
+    async saveRelations() {
+      this.relationshipDialog = false;
+      await this.CREATE_RELATIONSHIP(this.relationshipForm);
+    },
+    async popoutRelationship(pid) {
+      this.productOptions = this.productList.filter((x) => x.productId !== pid);
+      this.selectedProduct = pid;
+      this.relationshipDialog = !this.relationshipDialog;
+      const criteria = {
+        id: pid,
+        relation: 'product',
+      };
+      await this.GET_RELATIONSHIP(criteria);
+      this.refreshRelation();
+    },
+    deleteRelation(selectedRelation, i) {
+      this.selectedIndex = i;
+      if (selectedRelation.relatedProduct === '') {
+        this.relationshipForm.inputs.splice(i, 1);
+      } else {
+        this.selectedRelation = selectedRelation;
+        this.confirmationDialog = true;
+      }
+    },
+    async executeDelete() {
+      this.confirmationDialog = false;
+      await this.UPDATE_RELATIONSHIP(this.selectedRelation);
+      this.relationshipForm.inputs.splice(this.selectedIndex, 1);
+    },
+    discard() {
+      this.relationshipDialog = false;
+      // this.newCharacterDialog = false;
+    },
+    addForm() {
+      this.relationshipForm.inputs.push({
+        productRelationId: this.selectedProduct,
+        relatedProduct: '',
+        relation: '',
+      });
+    },
+    refreshRelation() {
+      console.log(this.relationshipDetails);
+      this.relationshipForm.productId = this.selectedProduct;
+      if (this.relationshipDetails.length > 0) {
+        for (let i = 0; i < this.relationshipDetails.length; i++) {
+          this.relationshipForm.inputs.push({
+            productRelationId: this.relationshipDetails[i].productRelationId,
+            relatedProduct: this.relationshipDetails[i].relatedProduct.productId,
+            relation: this.relationshipDetails[i].relation,
+          });
+        }
+      } else {
+        this.relationshipForm.inputs.push({
+          productRelationId: this.selectedProduct,
+          relatedProduct: '',
+          relation: '',
+        });
+      }
+      console.log(JSON.stringify(this.relationshipDetails));
+    },
     getCountry(country) {
       let c = 'US';
       if (country) {
@@ -436,6 +621,28 @@ export default {
     },
     licensorList() {
       console.log(this.licensorList);
+    },
+    // productList() {
+    // },
+    relationshipDetails() {
+      this.relationshipForm.inputs = [];
+      this.refreshRelation();
+    },
+    relationshipForm: {
+      handler(val) {
+        if (val.inputs.length > 0) {
+          if ((val.inputs[0].relatedProduct.length > 0) && (val.inputs[0].relation.length > 0)) {
+            this.allowSave = true;
+          } else {
+            this.allowSave = false;
+          }
+          this.hideButtons = true;
+        } else {
+          this.allowSave = false;
+          this.hideButtons = false;
+        }
+      },
+      deep: true,
     },
   },
 };

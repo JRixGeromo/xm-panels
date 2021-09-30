@@ -80,7 +80,7 @@
     <el-col :span="18" :offset="3">
       <div class="show-character" v-for="(each, i) in characterData.inputs" :key="i">
         <span class="remove-char" @click="deleteCharacter(each.characterId, i)"><i class="el-icon-circle-close"></i></span>
-        <div style="width: 100%"  @click="updateRelationship(each.characterId)">
+        <div style="width: 100%"  @click="popoutRelationship(each.characterId)">
         {{ each.characterName }}
         </div>
       </div>
@@ -238,7 +238,7 @@ export default {
     return {
       show: 'licensor-details',
       confirm: '',
-      action: '',
+      // action: '',
       hideButtons: false,
       newCharacterDialog: false,
       relationshipDialog: false,
@@ -263,7 +263,7 @@ export default {
       },
       relationshipForm: {
         characterName: '',
-        relationship: null,
+        relationship: 'licensor',
         inputs: [],
       },
       characterOptions: [],
@@ -327,25 +327,29 @@ export default {
       this.newCharacterDialog = false;
       await this.CREATE_CHARACTER(this.characterForm);
       await this.GET_CHARACTER_LIST(this.licensorDetails.licenseId);
-      this.action = 'addedCharacter';
+      // this.action = 'addedCharacter';
     },
     async saveRelations() {
       this.relationshipDialog = false;
       await this.CREATE_RELATIONSHIP(this.relationshipForm);
     },
-    async updateRelationship(cid) {
+    async popoutRelationship(cid) {
       this.characterOptions = this.characterData.inputs.filter((x) => x.characterId !== cid);
       this.selectedCharacter = cid;
-      this.relationshipForm.inputs = [];
       this.relationshipDialog = !this.relationshipDialog;
-      await this.GET_RELATIONSHIP(cid);
+      const criteria = {
+        id: cid,
+        relation: 'character',
+      };
+      await this.GET_RELATIONSHIP(criteria);
+      this.refreshRelation();
     },
     deleteCharacter(selectedCharacter, i) {
       this.confirm = 'character';
       this.selectedIndex = i;
       this.selectedCharacter = selectedCharacter;
       this.confirmationDialog = true;
-      this.action = '';
+      // this.action = '';
     },
     deleteRelation(selectedRelation, i) {
       this.confirm = 'relation';
@@ -373,10 +377,29 @@ export default {
     },
     addForm() {
       this.relationshipForm.inputs.push({
-        characterRelationId: '',
+        characterRelationId: this.selectedCharacter,
         relatedCharacter: '',
         relation: '',
       });
+    },
+    refreshRelation() {
+      this.relationshipForm.characterId = this.selectedCharacter;
+      if (this.relationshipDetails.length > 0) {
+        for (let i = 0; i < this.relationshipDetails.length; i++) {
+          this.relationshipForm.inputs.push({
+            characterRelationId: this.relationshipDetails[i].characterRelationId,
+            relatedCharacter: this.relationshipDetails[i].relatedCharacter.characterId,
+            relation: this.relationshipDetails[i].relation,
+          });
+        }
+      } else {
+        this.relationshipForm.inputs.push({
+          characterRelationId: this.selectedCharacter,
+          relatedCharacter: '',
+          relation: '',
+        });
+      }
+      console.log(JSON.stringify(this.relationshipDetails));
     },
   },
   mounted() {
@@ -411,27 +434,11 @@ export default {
     },
     newCharacterId() {
       this.GET_CHARACTER_LIST(this.licensorDetails.licenseId);
-      this.selectedCharacter = this.newCharacterId;
-      this.updateRelationship(this.newCharacterId);
+      this.popoutRelationship(this.newCharacterId[0]);
     },
     relationshipDetails() {
-      this.relationshipForm.characterId = this.selectedCharacter;
-      if (this.relationshipDetails.length > 0) {
-        for (let i = 0; i < this.relationshipDetails.length; i++) {
-          this.relationshipForm.inputs.push({
-            characterRelationId: this.relationshipDetails[i].characterRelationId,
-            relatedCharacter: this.relationshipDetails[i].relatedCharacter.characterId,
-            relation: this.relationshipDetails[i].relation,
-          });
-        }
-      } else {
-        this.relationshipForm.inputs.push({
-          characterRelationId: '',
-          relatedCharacter: '',
-          relation: '',
-        });
-      }
-      console.log(JSON.stringify(this.relationshipForm.inputs));
+      this.relationshipForm.inputs = [];
+      this.refreshRelation();
     },
     relationshipForm: {
       handler(val) {
