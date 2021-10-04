@@ -27,15 +27,14 @@
   </el-container>
   <el-affix style="margin: 20px 0;">
     <el-menu
-      :default-active="-1"
+      :default-active="`0`"
       class="el-menu-category"
       mode="horizontal"
-      @select="handleSelect"
       text-color="#fff"
       active-text-color="#ffffff91"
     >
 
-      <el-menu-item index="-1" class="mf-size" @click="filterProduct('')">All Products</el-menu-item>
+      <el-menu-item index="0" class="mf-size" @click="filterProduct('')">All Products</el-menu-item>
       <el-menu-item
         v-for="license in licensorList.slice(0, 3)"
         v-bind:key="license.licenseId"
@@ -63,12 +62,11 @@
     </el-menu>
   </el-affix>
   <el-menu
-    :default-active="activeIndexSub"
+    :default-active="`0`"
     class="el-menu-category sub-menu-product"
     mode="horizontal"
-    @select="handleSelect"
     text-color="#fff"
-    active-text-color="#ffd04b">
+    active-text-color="#ffffff91">
     <el-menu-item index="0" class="mf-size" @click="products()">PRODUCTS</el-menu-item>
     <el-menu-item index="1" class="mf-size" @click="approvals()">APPROVALS</el-menu-item>
     <el-menu-item index="2" class="mf-size" @click="archives()">ARCHIVES</el-menu-item>
@@ -86,20 +84,21 @@
       >
     </el-pagination>
     </el-col>
-    <el-col :span="6" v-for="(each) in data" :key="each">
-      <div :style="{ padding: '5px' }" @click="$router.push({ path:`/product/${each.productId}/details`, query: { name: `${each.productName}` }})">
-      <el-card :body-style="{ padding: '0px' }">
-        <div class="portrait">
-          <img :src="each.productDisplayImage">
+    <el-col :xs="24" :md="6" v-for="(each) in data" :key="each">
+      <router-link :to="`/product/${each.productId}/details?name=${each.productName}`">
+        <div :style="{ padding: '5px' }">
+          <el-card :body-style="{ padding: '0px' }">
+            <div class="portrait">
+              <img :src="each.productDisplayImage">
+            </div>
+            <div style="padding: 10px 0; text-align: left;">
+              <div>{{ each.productName }}</div>
+              <div>{{ each.character.license.licenseName }}</div>
+              <div>{{ each.productSeries }}</div>
+            </div>
+          </el-card>
         </div>
-        <div style="padding: 14px;">
-          <span style="font-size:22px">{{ each.productName }}</span>
-          <div class="bottom" style="padding-top:10px; font-size:18px">
-            <span>{{ each.productName }}</span>
-          </div>
-        </div>
-      </el-card>
-      </div>
+      </router-link>
     </el-col>
   </el-row>
   <el-row v-else-if="show=='approvals'">
@@ -133,10 +132,10 @@
         </el-col>
         <el-col :span="8" class="wrapper">
           <div class="inner">
-          <button
-          class="custom-btn black-custom-btn"
-          @click="viewSubscription(each)"><span>VIEW SUBSCRIPTION</span>
-          </button>
+          <el-button
+            class="custom-btn black-custom-btn"
+            @click="viewSubscription(each)"><span>VIEW SUBMISSION</span>
+          </el-button>
           </div>
         </el-col>
       </el-container>
@@ -173,10 +172,10 @@
         </el-col>
         <el-col :span="8" class="wrapper">
           <div class="inner">
-          <button
-          class="custom-btn black-custom-btn"
-          @click="viewSubscription(each)"><span>VIEW SUBSCRIPTION</span>
-          </button>
+          <el-button
+            class="custom-btn black-custom-btn"
+            @click="viewSubscription(each)"><span>VIEW SUBMISSION</span>
+          </el-button>
           </div>
         </el-col>
       </el-container>
@@ -204,10 +203,11 @@
   </el-row>
   <el-row>
     <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
+      <label><span class="dialog-label">Uploaded Autograph</span></label>
       <img :src="productAutograph.productAutographUrl">
     </el-col>
     <el-col :span="8" :offset="1" style="padding: 23px">
-      <label><span  class="dialog-label">UPLOADED IMAGE/VIDEO PROOF</span>
+      <label><span  class="dialog-label">Uploaded Image/Video Proof</span>
       <span class="dialog-content">For verification purposes, photo or video proof of the artist signing the autograph is required.</span></label>
       <DesignContainer
         :designDetails="productAutograph"
@@ -215,11 +215,12 @@
     </el-col>
   </el-row>
   <el-row>
-    <el-col :span="15" :offset="4" style="text-align: center;">
+    <el-col :span="15" :offset="4" style="text-align: center; margin-top: 10px;">
       <TextInput
         v-model="productAutographForm.remark"
         formProps="remark"
         formLabel="REMARK"
+        :disabled="isEditable(productAutograph.productAutographStatus)"
       />
     </el-col>
   </el-row>
@@ -313,7 +314,6 @@ export default {
     async changeStatus(status) {
       this.productAutographForm.productAutographId = this.productAutograph.productAutographId;
       this.productAutographForm.productAutographStatus = status;
-      this.productAutographForm.remark = '';
       this.viewSubscriptionDialog = false;
       await this.UPDATE_AUTOGRAPH_STATUS(this.productAutographForm);
       this.GET_AUTOGRAPH_APPROVALS_LIST();
@@ -443,6 +443,7 @@ export default {
         },
       ],
       value: 'newest',
+      title: '',
     };
   },
   components: {
@@ -486,6 +487,10 @@ img {
 .portrait {
   height: 400px;
   width: 100%;
+}
+
+a {
+  text-decoration: unset;
 }
 // .landscape {
 //     height: 30px;

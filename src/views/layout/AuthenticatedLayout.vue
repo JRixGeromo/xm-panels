@@ -33,18 +33,15 @@ export default {
   },
   data() {
     return {
-      sidebarShow: true,
+      sidebarShow: false,
       isMobileView: false,
       windowWidth: 0,
     };
   },
   methods: {
     handleSidebarShow(show) {
-      if (show === 'click') {
-        this.sidebarShow = !this.sidebarShow;
-      } else {
-        this.sidebarShow = show;
-      }
+      console.log(show);
+      this.sidebarShow = show;
     },
     handleResize() {
       this.windowWidth = window.innerWidth;
@@ -97,7 +94,10 @@ export default {
 
 .body-scrollbar {
   width: 100%;
-  padding-left: 68px;
+
+  @media only screen and (min-width: 993px) {
+    padding-left: 68px;
+  }
 }
 
 .sidebar-aside,

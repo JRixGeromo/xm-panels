@@ -103,26 +103,23 @@ const actions = {
     if (relationshipDetails.inputs.length > 0) {
       if (relationshipDetails.relationship === 'product') {
         for (let i = 0; i < relationshipDetails.inputs.length; i++) {
-          // if (relationshipDetails.inputs[i].characterRelationId === '') {
           relationships.push({
             product: relationshipDetails.productId,
             relatedProduct: relationshipDetails.inputs[i].relatedProduct,
             relation: relationshipDetails.inputs[i].relation,
           });
-          // }
         }
       } else {
         for (let i = 0; i < relationshipDetails.inputs.length; i++) {
-          // if (relationshipDetails.inputs[i].characterRelationId === '') {
           relationships.push({
             character: relationshipDetails.characterId,
             relatedCharacter: relationshipDetails.inputs[i].relatedCharacter,
             relation: relationshipDetails.inputs[i].relation,
           });
-          // }
         }
       }
     }
+    alert(JSON.stringify(relationships));
     commit(CREATE_RELATIONSHIP_START);
     relationshipServices.createRelationship(relationships, relationshipDetails.relationship).then(
       () => {
@@ -131,6 +128,7 @@ const actions = {
           message: 'Relationship created successfully',
         });
         commit(CREATE_RELATIONSHIP_SUCCESS);
+        // router.push('/allproducts');
       },
       (error) => {
         ElMessage.error({
@@ -143,12 +141,12 @@ const actions = {
       fullpageLoader.close();
     });
   },
-  async [UPDATE_RELATIONSHIP]({ commit }, relationshipDetails) {
+  async [UPDATE_RELATIONSHIP]({ commit }, criteria) {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
     commit(UPDATE_RELATIONSHIP_START);
-    relationshipServices.deleteRelationship(relationshipDetails).then(
+    relationshipServices.deleteRelationship(criteria).then(
       () => {
         ElMessage.success({
           showClose: true,

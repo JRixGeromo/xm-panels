@@ -8,6 +8,7 @@
         @focus="isFocus = true"
         @blur="isFocus = false"
         @input="onChange"
+        :disabled="disabled"
       >
       </el-input>
       <label
@@ -29,6 +30,10 @@ export default {
     formLabel: {
       type: String,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['update:modelValue'],

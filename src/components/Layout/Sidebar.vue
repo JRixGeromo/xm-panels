@@ -1,17 +1,19 @@
 <template>
-  <el-scrollbar class="custom-scrollbar" @mouseover="handleSidebarShow(false)" @mouseleave="handleSidebarShow(true)">
-    <div class="wrap-sidebar" @click="redirectHome">
-      <!-- <div v-if="sidebarShow" class="logo-max"> -->
-      <div v-if="sidebarShow" class="logo-max">
-        <div>XM-Studios<br>Admin</div>
+  <el-scrollbar class="custom-scrollbar" @mouseover="handleSidebarShow(true)" @mouseleave="handleSidebarShow(false)">
+    <router-link to="/">
+      <div class="wrap-sidebar" @click="redirectHome">
+        <!-- <div v-if="sidebarShow" class="logo-max"> -->
+        <div v-if="sidebarShow" class="logo-max">
+          <div>XM-Studios<br>Admin</div>
+        </div>
+        <div v-else class="logo-min">
+        <!-- <div v-else class="logo-min"> -->
+          <div>XM</div>
+        </div>
       </div>
-      <div v-else class="logo-min">
-      <!-- <div v-else class="logo-min"> -->
-        <div>XM</div>
-      </div>
-    </div>
+    </router-link>
     <div class="wrap-sidebar">
-      <SidebarNavMenu :sidebarShow="sidebarShow" />
+      <SidebarNavMenu :sidebarShow="sidebarShow" :handleSidebarShow="handleSidebarShow" />
     </div>
   </el-scrollbar>
 </template>
@@ -26,11 +28,6 @@ export default {
   },
   components: {
     SidebarNavMenu,
-  },
-  methods: {
-    redirectHome() {
-      this.$router.push('/');
-    },
   },
 };
 </script>
@@ -71,5 +68,9 @@ export default {
   &.is-collapse {
     transform: rotate(180deg) !important;
   }
+}
+
+a {
+  text-decoration: unset;
 }
 </style>

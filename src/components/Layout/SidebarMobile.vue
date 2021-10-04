@@ -1,9 +1,9 @@
 <template>
   <el-drawer
-    title="Openpot"
     v-model="drawer"
     :with-header="false"
-    :before-close="handleSidebarShow"
+    :before-close="drawerBeforeClose"
+    modal-class="mobile-nav-drawer"
     direction="ltr"
     size="70%"
      >
@@ -16,7 +16,7 @@
       </div>
     </div> -->
     <div class="wrap-sidebar">
-      <SidebarNavMenu :sidebarShow="sidebarShow" />
+      <SidebarNavMenu :sidebarShow="sidebarShow" :handleSidebarShow="handleSidebarShow" />
     </div>
   </el-drawer>
 </template>
@@ -40,6 +40,11 @@ export default {
   watch: {
     sidebarShow(newSidebarShow) {
       this.drawer = newSidebarShow;
+    },
+  },
+  methods: {
+    drawerBeforeClose() {
+      this.handleSidebarShow(false);
     },
   },
 };

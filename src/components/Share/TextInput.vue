@@ -8,6 +8,7 @@
         @blur="isFocus = false"
         @input="onChange"
         :show-password="inputType === 'password'"
+        :disabled="disabled"
       >
       </el-input>
       <label
@@ -33,6 +34,10 @@ export default {
     formLabel: {
       type: String,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['update:modelValue'],

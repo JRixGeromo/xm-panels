@@ -30,7 +30,7 @@ import {
   SORTED_LICENSORS_BY_QTY,
 } from '@/store/modules/licensor/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 import router from '@/router';
 
 const state = {
@@ -73,6 +73,9 @@ const getters = {
 
 const actions = {
   [GET_LICENSOR_LIST]({ commit }) {
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
     commit(GET_LICENSOR_LIST_START);
     licensorServices.getLicensors().then(
       (data) => {
@@ -81,7 +84,9 @@ const actions = {
       () => {
         commit(GET_LICENSOR_LIST_FAILURE);
       },
-    );
+    ).finally(() => {
+      fullpageLoader.close();
+    });
   },
   [GET_LICENSOR]({ commit }, licensorId) {
     // const fullpageLoader = ElLoading.service({

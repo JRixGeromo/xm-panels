@@ -4,12 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="18">
           <label class="search" for="searchLicensor">Search Licensor</label>
-          <el-input
-            v-model="searchKeyword"
-            @input="searchOnChange"
-            suffix-icon="el-icon-search"
-          >
-          </el-input>
+          <el-input v-model="searchKeyword" @input="searchOnChange" suffix-icon="el-icon-search"></el-input>
         </el-col>
         <el-col :span="6">
           <label class="sort" for="sortLicensors">Sort By</label>
@@ -18,8 +13,8 @@
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value">
-            </el-option>
+              :value="item.value"
+            ></el-option>
           </el-select>
         </el-col>
       </el-row>
@@ -35,8 +30,7 @@
     :page-size="pagination.itemPerPage"
     @current-change="paginationCallback"
     :current-page="pagination.currentPage + 1"
-  >
-  </el-pagination>
+  ></el-pagination>
   <!-- <el-table :data="data" v-loading="gettingUserList" stripe :header-cell-style="{ background: '#373737' }">
     <el-table-column
       prop="userName"
@@ -87,27 +81,29 @@
           ></el-button>
       </template>
     </el-table-column>
-  </el-table> -->
+  </el-table>-->
   <!-- <el-table :data="data" v-loading="gettingUserList" stripe :header-cell-style="{ background: '#373737' }"> -->
   <el-row>
     <!-- <el-col :span="24" v-for="(o, index) in data" :key="o" :offset="index > 0 ? 2 : 0"> -->
-    <el-col :span="6" v-for="(each) in data" :key="each">
-    <!-- <el-col :span="8" :data="data" v-loading="gettingUserList"> -->
+    <el-col :xs="24" :md="6" v-for="(each) in data" :key="each">
+      <!-- <el-col :span="8" :data="data" v-loading="gettingUserList"> -->
       <!-- <div :style="{ padding: '5px' }" @click="$router.push(`/userprofile/${o.licenseId}`)"> -->
-      <div :style="{ padding: '5px' }" @click="$router.push(`/licensor/${each.licenseId}/details`)">
-      <el-card :body-style="{ padding: '0px' }">
-        <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
-        <div class="portrait">
-          <img :src="each.licenseDisplayImage">
+      <router-link :to="`/licensor/${each.licenseId}/details`">
+        <div :style="{ padding: '5px' }">
+          <el-card :body-style="{ padding: '0px' }">
+            <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
+            <div class="portrait">
+              <img :src="each.licenseDisplayImage" />
+            </div>
+            <div style="padding: 14px;">
+              <span style="font-size:22px">{{each.licenseName}}</span>
+              <!-- <div class="bottom" style="padding-top:10px; font-size:18px">
+              <span>By {{each.licenseName}}</span>
+              </div>-->
+            </div>
+          </el-card>
         </div>
-        <div style="padding: 14px;">
-          <span style="font-size:22px">{{each.licenseName}}</span>
-          <!-- <div class="bottom" style="padding-top:10px; font-size:18px">
-            <span>By {{each.licenseName}}</span>
-          </div> -->
-        </div>
-      </el-card>
-      </div>
+      </router-link>
     </el-col>
   </el-row>
 </template>
@@ -256,7 +252,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/styles/_variables.scss";
+@import '@/assets/styles/_variables.scss';
 
 .profile-pic-container {
   height: 50px;
@@ -284,5 +280,8 @@ img {
 .portrait {
   height: 400px;
   width: 100%;
+}
+a {
+  text-decoration: unset;
 }
 </style>

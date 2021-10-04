@@ -14,12 +14,10 @@
     </el-col>
     <el-col :span="21" :offset="3" style="margin-bottom:50px">
     <el-menu
-      :default-active="activeIndexSub"
       class="el-menu-category sub-menu-product"
       mode="horizontal"
-      @select="handleSelect"
       text-color="#fff"
-      active-text-color="#ffd04b">
+      active-text-color="#ffffff91">
       <el-menu-item index="0" class="mf-size" @click="showLicensors()">LICENSOR DETAILS</el-menu-item>
       <el-menu-item index="1" class="mf-size" @click="showCharacters()">CHARACTERS</el-menu-item>
     </el-menu>
@@ -162,8 +160,8 @@
     </el-col>
   </el-row>
   <el-row>
-  <el-col :span="23" :offset="1">
-    <div style="width: 100%; text-align: center">
+  <el-col :span="18" :offset="3">
+    <div style="width: 100%; text-align: center; margin-top:30px">
       <el-button type="default" @click="addForm"><i class="el-icon-plus"></i></el-button>
     </div>
   </el-col>
@@ -342,7 +340,6 @@ export default {
         relation: 'character',
       };
       await this.GET_RELATIONSHIP(criteria);
-      this.refreshRelation();
     },
     deleteCharacter(selectedCharacter, i) {
       this.confirm = 'character';
@@ -364,7 +361,12 @@ export default {
     async executeDelete() {
       this.confirmationDialog = false;
       if (this.confirm === 'relation') {
-        await this.UPDATE_RELATIONSHIP(this.selectedRelation);
+        const criteria = {
+          relation_uuid: this.selectedRelation.characterRelationId,
+          relation: 'licensor',
+        };
+        await this.UPDATE_RELATIONSHIP(criteria);
+        // await this.UPDATE_RELATIONSHIP(this.selectedRelation);
         this.relationshipForm.inputs.splice(this.selectedIndex, 1);
       } else {
         await this.UPDATE_CHARACTER(this.selectedCharacter);

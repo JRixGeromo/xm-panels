@@ -62,7 +62,13 @@ function createRelationship(relationshipDetails, relationship) {
 
 function deleteRelationship(relationshipDetails) {
   SetAuthHeader();
-  return RelationshipApiIni().delete(`/api/xm/product/v1/${relationshipDetails.characterRelationId}/characterrelation`)
+  let relation = 'characterrelation';
+  if (relationshipDetails.relation === 'product') {
+    relation = 'productrelation';
+  }
+  console.log('HERE');
+  console.log(relationshipDetails);
+  return RelationshipApiIni().delete(`/api/xm/product/v1/${relationshipDetails.relation_uuid}/${relation}`)
     .then((response) => {
       extendAuthCookiesTime();
       return response.data;

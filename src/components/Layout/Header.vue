@@ -1,7 +1,7 @@
 <template>
   <el-header class="header">
     <div class="header-name-wrapper">
-      <div @click="handleSidebarShow('click')" class="icon-wrapper">
+      <div @click="handleSidebarShow(true)" class="icon-wrapper">
         <span class="fa fa-bars"></span>
       </div>
       <!-- <h2 @click="toHome">XM</h2> -->
@@ -68,5 +68,6 @@ export default {
 .header-action-icon {
   font-size: 25px;
   cursor: pointer;
+  color: #FFFFFF;
 }
 </style>

@@ -119,7 +119,7 @@
             </el-option>
           </CreateNewSelectInput>
           <div style="width: 100%; text-align:right; margin-top: -20px">
-            <span style="text-decoration: underline" @click="relationships()">View product relatipnships</span>
+            <span style="text-decoration: underline" @click="relationships()">View product relationships</span>
           </div>
         </div>
         <div style="margin-top: 35px;">
@@ -197,16 +197,31 @@
     </el-row>
   </el-form>
   <el-form v-else>
-    <el-row justify="space-between">
-      <el-col :span="2">
-        <div style="width: 100%; text-align:center; margin-top: -20px">
-        <span style="text-decoration: underline" @click="products()">back</span>
-      </div>
-      </el-col>
-      <el-col :span="2">
-        <div style="width: 100%; text-align:center; margin-top: -20px">
-          <span style="text-decoration: underline" @click="popoutRelationship(this.$route.params.id)">edit</span>
-        </div>
+    <el-row>
+      <el-col :span="18" :offset="3">
+        <el-row justify="space-between">
+          <el-col :span="24" style="margin-top: 50px; margin-bottom: 50px">
+            <div style="width: 100%; text-align:left">
+              <span class="form-label"> {{ productDetails.productName }}: RELATIONSHIPS </span>
+            </div>
+          </el-col>
+          <el-col :span="2">
+            <div style="width: 100%; text-align:center; margin-top: -20px">
+              <el-button
+                class="custom-btn black-custom-btn padding-small"
+                @click="products()">BACK
+              </el-button>
+          </div>
+          </el-col>
+          <el-col :span="2">
+            <div style="width: 100%; text-align:center; margin-top: -20px">
+              <el-button
+                class="custom-btn black-custom-btn padding-small"
+                @click="popoutRelationship(productDetails.productId)">EDIT
+              </el-button>
+            </div>
+          </el-col>
+        </el-row>
       </el-col>
     </el-row>
 
@@ -248,8 +263,8 @@
       </el-col>
     </el-row>
     <el-row>
-    <el-col :span="23" :offset="1">
-      <div style="width: 100%; text-align: center">
+    <el-col :span="18" :offset="3">
+      <div style="width: 100%; text-align: center; margin-top:30px">
         <el-button type="default" @click="addForm"><i class="el-icon-plus"></i></el-button>
       </div>
     </el-col>
@@ -301,7 +316,7 @@ import { GET_LICENSOR_LIST } from '@/store/modules/licensor/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 import { GET_PRODUCT,
   UPDATE_PRODUCT,
-  GET_PRODUCT_LIST,
+  GET_RELATED_PRODUCT_LIST,
   GET_PRODUCT_SERIES_LIST } from '@/store/modules/product/actions-type';
 import MultipleImagesUpload from '@/components/Share/MultipleImagesUpload.vue';
 import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
@@ -384,7 +399,7 @@ export default {
         existingImages: [],
       },
       relationshipForm: {
-        productName: '',
+        productId: null,
         relationship: 'product',
         inputs: [],
       },
@@ -484,7 +499,7 @@ export default {
       'updatingProduct',
       'productSeriesList',
     ]),
-    ...mapState('product', ['productList']),
+    ...mapState('product', ['relatedProductList']),
     ...mapState('artist', ['artistList']),
     ...mapState('licensor', ['licensorList']),
     ...mapState('character', ['characterList']),
@@ -494,12 +509,11 @@ export default {
     this.GET_PRODUCT(this.$route.params.id);
     this.GET_ARTIST_LIST();
     this.GET_LICENSOR_LIST();
-    this.GET_PRODUCT_LIST();
     this.GET_PRODUCT_SERIES_LIST();
     this.focused.productSeries = true;
   },
   methods: {
-    ...mapActions('product', [GET_PRODUCT, UPDATE_PRODUCT, GET_PRODUCT_LIST, GET_PRODUCT_SERIES_LIST]),
+    ...mapActions('product', [GET_PRODUCT, UPDATE_PRODUCT, GET_RELATED_PRODUCT_LIST, GET_PRODUCT_SERIES_LIST]),
     ...mapActions('artist', [GET_ARTIST_LIST]),
     ...mapActions('licensor', [GET_LICENSOR_LIST]),
     ...mapActions('character', [GET_CHARACTER_LIST]),
@@ -515,15 +529,16 @@ export default {
       await this.CREATE_RELATIONSHIP(this.relationshipForm);
     },
     async popoutRelationship(pid) {
-      this.productOptions = this.productList.filter((x) => x.productId !== pid);
       this.selectedProduct = pid;
       this.relationshipDialog = !this.relationshipDialog;
       const criteria = {
         id: pid,
         relation: 'product',
+        licensor_uuid: this.productDetails.character.license.licenseId,
+        product_series: this.productDetails.productSeries,
       };
+      await this.GET_RELATED_PRODUCT_LIST(criteria);
       await this.GET_RELATIONSHIP(criteria);
-      this.refreshRelation();
     },
     deleteRelation(selectedRelation, i) {
       this.selectedIndex = i;
@@ -536,7 +551,11 @@ export default {
     },
     async executeDelete() {
       this.confirmationDialog = false;
-      await this.UPDATE_RELATIONSHIP(this.selectedRelation);
+      const criteria = {
+        relation_uuid: this.selectedRelation.productRelationId,
+        relation: 'product',
+      };
+      await this.UPDATE_RELATIONSHIP(criteria);
       this.relationshipForm.inputs.splice(this.selectedIndex, 1);
     },
     discard() {
@@ -551,7 +570,6 @@ export default {
       });
     },
     refreshRelation() {
-      console.log(this.relationshipDetails);
       this.relationshipForm.productId = this.selectedProduct;
       if (this.relationshipDetails.length > 0) {
         for (let i = 0; i < this.relationshipDetails.length; i++) {
@@ -622,8 +640,9 @@ export default {
     licensorList() {
       console.log(this.licensorList);
     },
-    // productList() {
-    // },
+    relatedProductList() {
+      this.productOptions = this.relatedProductList.filter((x) => x.productId !== this.selectedProduct);
+    },
     relationshipDetails() {
       this.relationshipForm.inputs = [];
       this.refreshRelation();

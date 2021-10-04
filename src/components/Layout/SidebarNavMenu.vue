@@ -8,10 +8,12 @@
   >
     <template v-for="item in navMenu" :key="item.name">
       <template v-if="!item.child">
-        <el-menu-item :index="item.route">
-          <i :class="item.icon"></i>
-          <template #title>{{ item.name }}</template>
-        </el-menu-item>
+          <router-link :to="item.route">
+            <el-menu-item :index="item.route" @click="closeNavbar">
+                <i :class="item.icon"></i>
+                <template #title>{{ item.name }}</template>
+            </el-menu-item>
+          </router-link>
       </template>
       <template v-else>
         <el-submenu :index="item.name">
@@ -24,6 +26,7 @@
               v-for="nav in item.subNav"
               :key="nav.name"
               :index="nav.route"
+              @click="closeNavbar"
             >
               <span>{{ nav.name }}</span>
             </el-menu-item>
@@ -57,6 +60,11 @@ export default {
     $route() {
       this.activeMenu = this.$router.currentRoute.value.fullPath;
       this.currentRoute = this.$router.currentRoute.value.fullPath;
+    },
+  },
+  methods: {
+    closeNavbar() {
+      this.handleSidebarShow(false);
     },
   },
 };

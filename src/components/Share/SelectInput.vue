@@ -4,6 +4,7 @@
       <el-select
         :model-value="modelValue"
         @change="onChange"
+        :disabled="disabled"
       >
         <slot></slot>
       </el-select>
@@ -32,6 +33,10 @@ export default {
     onChangeFunc: {
       type: Function,
       default: null,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['update:modelValue'],

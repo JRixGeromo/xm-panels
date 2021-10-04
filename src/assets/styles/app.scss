@@ -18,7 +18,7 @@ body {
   margin     : 0;
   font-weight: normal;
   font-size  : 18px;
-  font-family: 'Source Sans Pro', "Helvetica Neue";
+  font-family: "Helvetica Neue";
 }
 
 h1,
@@ -36,7 +36,7 @@ button,
 #app {
   -webkit-font-smoothing : antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color                  : #2c3e50;
+  color                  : #FFFFFF;
   display                : flex;
   flex-flow              : column;
   min-height             : 100vh;
@@ -44,7 +44,7 @@ button,
 
 .table-pagination {
   text-align: right;
-  margin: 10px 0;
+  margin    : 10px 0;
 }
 
 .button-wrapper {
@@ -52,11 +52,11 @@ button,
 }
 
 .image {
-  width        : auto;
-  height       : auto;
-  max-height   : 100%;
-  max-width    : 100%;
-  object-fit   : contain;
+  width     : auto;
+  height    : auto;
+  max-height: 100%;
+  max-width : 100%;
+  object-fit: contain;
 }
 
 .custom-dialog {
@@ -92,7 +92,7 @@ button,
     font-size   : 20px;
     cursor      : pointer;
     color       : #FF0000 !important;
-    background: $--color-primary;
+    background  : $--color-primary;
   }
 }
 
@@ -101,8 +101,8 @@ button,
   align-items    : center;
   justify-content: center;
   width          : 100%;
-  line-height: unset;
-  color: #FFFFFF !important;
+  line-height    : unset;
+  color          : #FFFFFF !important;
 }
 
 .font-bold {
@@ -132,4 +132,16 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.custom-form {
+  .el-input__suffix {
+    top: 10px !important;
+  }
+}
+
+.mobile-nav-drawer {
+  .el-drawer {
+    background-color: $--color-primary;
+  }
 }

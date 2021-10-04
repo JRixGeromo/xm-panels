@@ -15,6 +15,19 @@ function getProducts() {
     });
 }
 
+function getRelatedProducts(criteria) {
+  SetAuthHeader();
+  return ProductApiIni().get(`/api/xm/product/v1/${criteria.licensor_uuid}/${criteria.product_series}/relatedproduct`)
+    .then((response) => {
+      extendAuthCookiesTime();
+      return response.data;
+    })
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
 function getProduct(productId) {
   SetAuthHeader();
   return ProductApiIni().get(`/api/xm/product/v1/${productId}/product`)
@@ -203,6 +216,7 @@ const services = {
   getCharacter,
   getLicense,
   getProductSeries,
+  getRelatedProducts,
 };
 
 export default services;

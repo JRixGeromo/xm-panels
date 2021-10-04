@@ -16,6 +16,7 @@ import {
   SORT_PRODUCTS,
   FILTER_PRODUCT_IN_LIST,
   GET_PRODUCT_SERIES_LIST,
+  GET_RELATED_PRODUCT_LIST,
 } from '@/store/modules/product/actions-type';
 import {
   GET_PRODUCT_LIST_START,
@@ -57,6 +58,9 @@ import {
   CREATE_PRODUCT_SERIES_START,
   CREATE_PRODUCT_SERIES_SUCCESS,
   CREATE_PRODUCT_SERIES_FAILURE,
+  GET_RELATED_PRODUCT_LIST_START,
+  GET_RELATED_PRODUCT_LIST_SUCCESS,
+  GET_RELATED_PRODUCT_LIST_FAILURE,
 } from '@/store/modules/product/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
@@ -64,6 +68,7 @@ import router from '@/router';
 
 const state = {
   gettingProductList: false,
+  newProductId: null,
   productList: [],
   productDetails: [],
   productSeriesList: [],
@@ -79,6 +84,8 @@ const state = {
   updatingDesign: false,
   creatingSerialNumber: false,
   updatingSerialNumber: false,
+  relatedProductList: [],
+  gettingRelatedProductList: false,
 };
 
 const getters = {
@@ -204,13 +211,13 @@ const actions = {
     productDetailsArray.push(productDetailsSource);
     commit(CREATE_PRODUCT_START);
     productServices.createProduct(productDetailsArray).then(
-      () => {
+      (data) => {
         ElMessage.success({
           showClose: true,
           message: 'Product created successfully',
         });
-        commit(CREATE_PRODUCT_SUCCESS);
-        router.push('/allproducts');
+        commit(CREATE_PRODUCT_SUCCESS, data[0]);
+        // router.push('/allproducts');
       },
       (error) => {
         ElMessage.error({
@@ -568,6 +575,32 @@ const actions = {
     //   fullpageLoader.close();
     // });
   },
+  [GET_RELATED_PRODUCT_LIST]({ commit }, criteria) {
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
+    commit(GET_RELATED_PRODUCT_LIST_START);
+    productServices.getRelatedProducts(criteria).then(
+      (data) => {
+        /*
+        const sortedProducts = data.sort((a, b) => {
+          const atime = new Date(a.productCreatedDate).getTime();
+          const btime = new Date(b.productCreatedDate).getTime();
+          let val = 0;
+          val = btime - atime;
+          return val;
+        });
+        commit(GET_RELATED_PRODUCT_LIST_SUCCESS, sortedProducts);
+        */
+        commit(GET_RELATED_PRODUCT_LIST_SUCCESS, data);
+      },
+      () => {
+        commit(GET_RELATED_PRODUCT_LIST_FAILURE);
+      },
+    ).finally(() => {
+      fullpageLoader.close();
+    });
+  },
 
 };
 
@@ -599,6 +632,20 @@ const mutations = {
     state.oriProduct = [];
   },
 
+  ///
+  [GET_RELATED_PRODUCT_LIST_START](state) {
+    state.gettingRelatedProductList = true;
+  },
+  [GET_RELATED_PRODUCT_LIST_SUCCESS](state, data) {
+    state.gettingRelatedProductList = false;
+    state.relatedProductList = data;
+    state.oriRelatedProductList = data;
+  },
+  [GET_RELATED_PRODUCT_LIST_FAILURE](state) {
+    state.relatedProductList = [];
+    state.gettingRelatedProductList = false;
+    state.oriRelatedProductList = [];
+  },
   ///
   [GET_PRODUCT_SERIES_LIST_START](state) {
     state.gettingProductSeriesList = true;
@@ -694,8 +741,9 @@ const mutations = {
   [CREATE_PRODUCT_START](state) {
     state.creatingProduct = true;
   },
-  [CREATE_PRODUCT_SUCCESS](state) {
+  [CREATE_PRODUCT_SUCCESS](state, data) {
     state.creatingProduct = false;
+    state.newProductId = data;
   },
   [CREATE_PRODUCT_FAILURE](state) {
     state.creatingProduct = false;

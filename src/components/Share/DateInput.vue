@@ -8,6 +8,7 @@
         @focus="isFocus = true"
         @blur="isFocus = false"
         @change="onChange"
+        :disabled="disabled"
       >
       </el-date-picker>
       <label
@@ -38,6 +39,10 @@ export default {
     formLabel: {
       type: String,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

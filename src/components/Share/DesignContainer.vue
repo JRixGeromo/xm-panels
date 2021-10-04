@@ -6,7 +6,7 @@
       :src="designDetails.productAutographProofUrl"
       :alt="designDetails.productAutographProofUrl"
     />
-    <video class="image" autoplay loop controls v-else>
+    <video class="image" autoplay loop controls v-else muted>
       <source :src="designDetails.productAutographProofUrl" />
       Your browser does not support HTML video.
     </video>

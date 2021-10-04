@@ -4,6 +4,7 @@
       <el-select
         :model-value="modelValue"
         @change="onChange"
+        :disabled="disabled"
       >
         <slot></slot>
       </el-select>
@@ -49,6 +50,10 @@ export default {
     formLabel: {
       type: String,
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
     },
     onChangeFunc: {
       type: Function,

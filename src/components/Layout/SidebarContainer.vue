@@ -1,5 +1,5 @@
 <template>
-  <Sidebar :sidebarShow="!sidebarShow" :handleSidebarShow="handleSidebarShow" v-if="!isMobileView"/>
+  <Sidebar :sidebarShow="sidebarShow" :handleSidebarShow="handleSidebarShow" v-if="!isMobileView"/>
   <SidebarMobile
     :sidebarShow="sidebarShow"
     :handleSidebarShow="handleSidebarShow"
