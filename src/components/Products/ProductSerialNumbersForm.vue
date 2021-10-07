@@ -22,7 +22,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20" class="form-bg-color" style="padding-top: 30px;" v-if="fromBackend">
+    <el-row :gutter="20" class="form-bg-color" style="padding-top: 30px;" v-if="showRemote">
       <el-col :span="18" :offset="3">
           <el-pagination
           class="table-pagination"
@@ -36,66 +36,73 @@
       </el-col>
     </el-row>
     <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;" v-if="localData.length > 0">
-      <el-col :span="6" v-for="(each) in localData" :key="each">
-        <div :style="{ padding: '5px' }">
-        <el-card :body-style="{ padding: '0px' }">
-          <div style="padding: 30px; text-align: center">
-            <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
-            <div class="bottom font-text" style="padding-top:10px; font-size:18px">
-            </div>
-          </div>
-        </el-card>
-        </div>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;" v-if="showRemote">
-      <el-col :span="6" v-for="(each) in remoteData" :key="each">
-        <div :style="{ padding: '5px' }">
+      <el-col :span="18" :offset="3">
+        <el-row>
+          <!-- <el-col v-for="(each) in localData" :key="each" :xs="8" :sm="6" :md="4" :lg="3"> -->
+          <el-col :span="6" v-for="(each) in localData" :key="each" :xs="24" :sm="12" :md="10" :lg="8" :xl="6">
+          <div :style="{ padding: '5px' }">
           <el-card :body-style="{ padding: '0px' }">
-            <div class="checkbox">
-              <input type="checkbox"
-              :id="each.productSerialNumberId"
-              @change="mark(each.productSerialNumberId, $event)"
-              :checked="isActive(each.status)"
-              style="margin-left:5px">
-            </div>
-            <div style="padding: 30px; text-align: center" @click="go(each.serialNumber)">
-              <span style="font-size:22px" class="font-text">{{ each.serialNumber }}</span>
+            <div style="padding: 30px 0px 30px 0px; text-align: center">
+              <span style="font-size: 22px;" class="font-text">{{ each.serialNumber }}</span>
               <div class="bottom font-text" style="padding-top:10px; font-size:18px">
-                <span>EDITION {{ each.edition }}/ {{ each.total }}</span>
               </div>
             </div>
           </el-card>
-        </div>
+          </div>
+          </el-col>
+        </el-row>
       </el-col>
     </el-row>
-    <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;">
+    <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;" v-if="showRemote">
+      <el-col :span="18" :offset="3">
+        <el-row>
+          <el-col :span="6" v-for="(each) in remoteData" :key="each" :xs="24" :sm="12" :md="10" :lg="8" :xl="6">
+            <div :style="{ padding: '5px' }">
+              <el-card :body-style="{ padding: '0px' }">
+                <div class="checkbox">
+                  <input type="checkbox"
+                  :id="each.productSerialNumberId"
+                  @change="mark(each.productSerialNumberId, $event)"
+                  :checked="isActive(each.status)"
+                  style="margin-left:5px; width: auto;">
+                </div>
+                <div style="padding: 30px 0px 30px 0px; text-align: center" @click="go(each.serialNumber)">
+                  <span style="font-size: 22px" class="font-text">{{ each.serialNumber }}</span>
+                  <div class="bottom font-text" style="padding-top:10px; font-size:18px">
+                    <span>EDITION {{ each.edition }}/ {{ each.total }}</span>
+                  </div>
+                </div>
+              </el-card>
+            </div>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px; text-align:right">
       <el-col :span="18" :offset="3">
         <div style="margin: 20px 0px 20px 0px;">
-          <el-row justify="end">
-            <el-button
-            @click="changeFile"
-            class="custom-btn upload-btn"
-            v-if="showUploadBut && !serialNumberForm.forDeleteSN.length > 0"
-            >Upload Another</el-button>
-            <el-button
-              type="danger"
-               v-if="serialNumberForm.forDeleteSN.length > 0"
-              @click="onSubmit($refs.serialNumberForm)"
-              :loading="loading"
-            >
-              Deactivate
-            </el-button>
-            <el-button
-              type="success"
-              class="custom-btn submit-btn"
-               v-if="localData.length > 0"
-              @click="onSubmit($refs.serialNumberForm)"
-              :loading="loading"
-            >
-              Create
-            </el-button>
-          </el-row>
+          <el-button
+          @click="changeFile"
+          class="custom-btn upload-btn"
+          v-if="showUploadBut && !serialNumberForm.forDeleteSN.length > 0"
+          >Upload Another</el-button>
+          <el-button
+            type="danger"
+              v-if="serialNumberForm.forDeleteSN.length > 0"
+            @click="onSubmit($refs.serialNumberForm)"
+            :loading="loading"
+          >
+            Deactivate
+          </el-button>
+          <el-button
+            type="success"
+            class="custom-btn submit-btn"
+              v-if="localData.length > 0"
+            @click="onSubmit($refs.serialNumberForm)"
+            :loading="loading"
+          >
+            Create
+          </el-button>
         </div>
       </el-col>
     </el-row>
@@ -240,9 +247,9 @@ export default {
       const productDetails = this.getProductSerials({
         ...newPagination,
       });
-      this.data = [];
+      this.remoteData = [];
       this.paginationTimeout = setTimeout(() => {
-        this.data = productDetails.data;
+        this.remoteData = productDetails.data;
       }, 1);
       this.pagination = productDetails.pagination;
     },
@@ -368,6 +375,7 @@ export default {
   .checkbox {
     position:absolute !important;
     right: 10px !important;
+    top: 8px;
   }
   .el-card {
     position: relative !important;

@@ -89,6 +89,17 @@ export function ProductAutographApiIni() {
     })
   );
 }
+export function DesignPreviewApiIni() {
+  return (
+    axios.create({
+      baseURL: process.env.VUE_APP_LOADING_API_DOMAIN,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+  );
+}
 export function CheckAuthStatus(response) {
   if (response.status === 403) {
     removeAuthInfo();

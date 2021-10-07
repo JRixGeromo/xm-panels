@@ -10,6 +10,7 @@ import {
   UPDATE_PRODUCT,
   SEARCH_PRODUCT_IN_LIST,
   CREATE_DESIGN,
+  PREVIEW_DESIGN,
   GET_DESIGNS,
   CREATE_SERIAL_NUMBER,
   GET_SERIAL_NUMBERS,
@@ -61,6 +62,9 @@ import {
   GET_RELATED_PRODUCT_LIST_START,
   GET_RELATED_PRODUCT_LIST_SUCCESS,
   GET_RELATED_PRODUCT_LIST_FAILURE,
+  PREVIEW_DESIGN_START,
+  PREVIEW_DESIGN_SUCCESS,
+  PREVIEW_DESIGN_FAILURE,
 } from '@/store/modules/product/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
@@ -86,6 +90,9 @@ const state = {
   updatingSerialNumber: false,
   relatedProductList: [],
   gettingRelatedProductList: false,
+  defaultRelationship: false,
+  gettingPreviewDesign: false,
+  previewDesign: [],
 };
 
 const getters = {
@@ -294,8 +301,12 @@ const actions = {
           showClose: true,
           message: 'Product updated successfully',
         });
-        commit(UPDATE_PRODUCT_SUCCESS);
-        router.push(`/product/${productDetailsSource.productId}/details`);
+        let defaultRelationship = false;
+        if ((productDetails.licenseId !== productDetails.oriLicenseId) || (productDetails.licenseId !== productDetails.oriLicenseId)) {
+          defaultRelationship = true;
+        }
+        commit(UPDATE_PRODUCT_SUCCESS, defaultRelationship);
+        // router.push(`/product/${productDetailsSource.productId}/details`);
       },
       (error) => {
         ElMessage.error({
@@ -601,7 +612,22 @@ const actions = {
       fullpageLoader.close();
     });
   },
-
+  [PREVIEW_DESIGN]({ commit }, previewForm) {
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
+    commit(PREVIEW_DESIGN_START);
+    productServices.previewDesign(previewForm).then(
+      (data) => {
+        commit(PREVIEW_DESIGN_SUCCESS, data);
+      },
+      () => {
+        commit(PREVIEW_DESIGN_FAILURE);
+      },
+    ).finally(() => {
+      fullpageLoader.close();
+    });
+  },
 };
 
 const mutations = {
@@ -633,6 +659,17 @@ const mutations = {
   },
 
   ///
+  [PREVIEW_DESIGN_START](state) {
+    state.gettingPreviewDesign = true;
+  },
+  [PREVIEW_DESIGN_SUCCESS](state, data) {
+    state.gettingPreviewDesign = false;
+    state.previewDesign = data;
+  },
+  [PREVIEW_DESIGN_FAILURE](state) {
+    state.gettingPreviewDesign = false;
+  },
+  ///
   [GET_RELATED_PRODUCT_LIST_START](state) {
     state.gettingRelatedProductList = true;
   },
@@ -647,6 +684,7 @@ const mutations = {
     state.oriRelatedProductList = [];
   },
   ///
+
   [GET_PRODUCT_SERIES_LIST_START](state) {
     state.gettingProductSeriesList = true;
   },
@@ -751,8 +789,9 @@ const mutations = {
   [UPDATE_PRODUCT_START](state) {
     state.updatingProduct = true;
   },
-  [UPDATE_PRODUCT_SUCCESS](state) {
+  [UPDATE_PRODUCT_SUCCESS](state, data) {
     state.updatingProduct = false;
+    state.defaultRelationship = data;
   },
   [UPDATE_PRODUCT_FAILURE](state) {
     state.updatingProduct = false;

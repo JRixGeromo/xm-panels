@@ -166,6 +166,7 @@
             v-model="productForm.artistIds"
             formProps="artistIds"
             formLabel="Artists"
+            formLimit="6"
           >
             <el-option
               v-for="artist in artistList"
@@ -176,17 +177,8 @@
           </MultipleSelectInput>
         </div>
       </el-col>
-      <el-col :span="18" :offset="3">
+      <el-col :span="18" :offset="3" style="text-align:right">
         <div style="margin-top: 35px; width: 100%">
-          <el-row justify="end">
-            <!-- <el-button>Discard Changes</el-button>
-            <el-button
-              type="success"
-              @click="onSubmit($refs.productForm)"
-              :loading="loading"
-            >
-              Submit
-            </el-button> -->
             <el-button
               class="custom-btn discard-btn"
               @click="$router.push(`/allproducts`)">DISCARD</el-button>
@@ -201,7 +193,6 @@
             >
               SAVE AND PROCEED
             </el-button>
-          </el-row>
         </div>
       </el-col>
     </el-row>
@@ -212,19 +203,19 @@
         <el-row justify="space-between">
           <el-col :span="24" style="margin-top: 50px; margin-bottom: 50px">
             <div style="width: 100%; text-align:left">
-              <span class="form-label"> XXX: RELATIONSHIPS </span>
+              <span class="form-label"> {{ productForm.productName }}: RELATIONSHIPS </span>
             </div>
           </el-col>
-          <el-col :span="2">
-            <div style="width: 100%; text-align:center; margin-top: -20px">
+          <el-col :span="12">
+            <div style="width: 100%; text-align:left; margin-top: -20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
                 @click="products()">BACK
               </el-button>
           </div>
           </el-col>
-          <el-col :span="2">
-            <div style="width: 100%; text-align:center; margin-top: -20px">
+          <el-col :span="12">
+            <div style="width: 100%; text-align:right; margin-top: -20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
                 @click="popoutRelationship()">EDIT
@@ -281,7 +272,7 @@
     </el-row>
     </el-form-item>
     <el-form-item>
-      <el-row v-if="hideButtons">
+      <el-row>
         <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
           <el-button
             class="custom-btn discard-btn" @click="discard()">DISCARD</el-button>
@@ -335,7 +326,13 @@ import MultipleSelectInput from '@/components/Share/MultipleSelectInput.vue';
 import CountrySelectInput from '@/components/Share/CountrySelectInput.vue';
 import CreateNewSelectInput from '@/components/Share/CreateNewSelectInput.vue';
 import { GET_CHARACTER_LIST } from '@/store/modules/character/actions-type';
-import { GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP } from '@/store/modules/relationship/actions-type';
+import {
+  GET_RELATIONSHIP,
+  GET_RELATIONSHIP_LIST,
+  CREATE_RELATIONSHIP,
+  UPDATE_RELATIONSHIP,
+  DEFAULT_RELATIONSHIP,
+} from '@/store/modules/relationship/actions-type';
 import router from '@/router';
 
 export default {
@@ -501,7 +498,7 @@ export default {
     ...mapState('licensor', ['licensorList']),
     ...mapState('product', ['productSeriesList', 'relatedProductList', 'newProductId']),
     ...mapState('character', ['characterList']),
-    ...mapState('relation', ['relationshipDetails']),
+    ...mapState('relation', ['relationshipDetails', 'updatingDefault']),
   },
   mounted() {
     this.GET_ARTIST_LIST();
@@ -514,7 +511,7 @@ export default {
     ...mapActions('licensor', [GET_LICENSOR_LIST]),
     ...mapActions('product', [GET_PRODUCT_SERIES_LIST, GET_RELATED_PRODUCT_LIST]),
     ...mapActions('character', [GET_CHARACTER_LIST]),
-    ...mapActions('relation', [GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP]),
+    ...mapActions('relation', [GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP, DEFAULT_RELATIONSHIP]),
     getCharacters() {
       this.productForm.characterId = '';
       this.setRelationship();
@@ -553,7 +550,6 @@ export default {
       this.relationshipForm.inputs.splice(this.selectedIndex, 1);
     },
     async executeSave() {
-      alert(JSON.stringify(this.relationshipForm));
       await this.CREATE_RELATIONSHIP(this.relationshipForm);
       router.push('/allproducts');
     },
@@ -569,11 +565,13 @@ export default {
       });
     },
     refreshRelation() {
-      this.relationshipForm.inputs.push({
-        productRelationId: '',
-        relatedProduct: '',
-        relation: '',
-      });
+      if (!this.relationshipForm.inputs.length > 0) {
+        this.relationshipForm.inputs.push({
+          productRelationId: '',
+          relatedProduct: '',
+          relation: '',
+        });
+      }
     },
   },
   watch: {
@@ -582,7 +580,7 @@ export default {
         this.relationshipForm.productId = this.newProductId;
         this.executeSave();
       } else {
-        router.push('/allproducts');
+        this.DEFAULT_RELATIONSHIP(this.newProductId);
       }
     },
     productSeriesList() {
@@ -593,6 +591,7 @@ export default {
     },
     relatedProductList() {
       this.productOptions = this.relatedProductList;
+      this.refreshRelation();
     },
     relationshipDetails() {
       // this.relationshipForm.inputs = [];
@@ -600,8 +599,7 @@ export default {
     },
     productForm: {
       handler(val) {
-        val.inputs = [];
-        if ((val.productSeries.length > 0) && (val.licenseId.length > 0)) {
+        if ((val.productSeries.length > 0) && (val.licenseId.length > 0) && (val.productName.length > 0)) {
           this.preventClick = false;
         } else {
           this.preventClick = true;
@@ -617,10 +615,8 @@ export default {
           } else {
             this.allowSave = false;
           }
-          this.hideButtons = true;
         } else {
           this.allowSave = false;
-          this.hideButtons = false;
         }
       },
       deep: true,

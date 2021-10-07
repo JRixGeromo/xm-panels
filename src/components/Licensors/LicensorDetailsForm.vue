@@ -14,6 +14,7 @@
     </el-col>
     <el-col :span="21" :offset="3" style="margin-bottom:50px">
     <el-menu
+      default-active="0"
       class="el-menu-category sub-menu-product"
       mode="horizontal"
       text-color="#fff"

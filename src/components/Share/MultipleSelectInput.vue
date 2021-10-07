@@ -5,6 +5,7 @@
         :model-value="modelValue"
         @change="onChange"
         :disabled="disabled"
+        :multiple-limit="formLimit"
         multiple
       >
         <slot></slot>
@@ -23,6 +24,10 @@
 export default {
   props: {
     modelValue: Array,
+    formLimit: {
+      type: String,
+      required: true,
+    },
     formProps: {
       type: String,
       required: true,

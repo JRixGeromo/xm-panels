@@ -58,7 +58,7 @@
               :auto-upload="false"
               :accept="fileFormat"
             >
-              <img v-if="input.designImageUrl" :src="input.designImageUrl" class="image" />
+              <img v-if="input.designImageUrl.length > 0" :src="input.designImageUrl" class="image" />
               <i v-else class="el-icon-upload"></i>
             </el-upload>
             <i
@@ -76,38 +76,23 @@
           />
         </div>
       </el-col>
-      <el-col :span="18" :offset="3">
+      <el-col :span="18" :offset="3" style="text-align: center">
         <div v-show="input.show">
-          <el-row justify="center">
             <el-button  @click="deleteForm(i)" v-if="designForm.inputs.length > 1">Delete Page</el-button>
             <el-button type="default" @click="addForm">Add Page</el-button>
-          </el-row>
         </div>
       </el-col>
     </el-row>
     <el-row :gutter="20" class="form-bg-color">
-      <el-col :span="2" :offset="3">
+      <el-col :span="3" :offset="3" style="text-align: left">
         <div style="margin: 20px 0px 20px 0px;">
-          <el-row>
             <el-button
             class="custom-btn preview-btn"
-            >Preview</el-button>
-          </el-row>
+            @click="preview()">Preview</el-button>
         </div>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="15" style="text-align: right">
         <div style="margin: 20px 0px 20px 0px;">
-          <el-row justify="end">
-            <!-- <el-button>Discard Changes</el-button>
-            <el-button>Save and Exit</el-button>
-            <el-button
-              type="success"
-              @click="onSubmit($refs.designForm)"
-              :loading="loading"
-            >
-              Save and Proceed
-            </el-button> -->
-
             <el-button
               class="custom-btn discard-btn"
               @click="$router.push(`/allproducts`)">DISCARD</el-button>
@@ -122,7 +107,6 @@
             >
               SAVE AND PROCEED
             </el-button>
-          </el-row>
         </div>
       </el-col>
     </el-row>
@@ -132,7 +116,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { GET_ARTIST_LIST } from '@/store/modules/artist/actions-type';
-import { GET_DESIGNS, GET_PRODUCT } from '@/store/modules/product/actions-type';
+import { GET_DESIGNS, GET_PRODUCT, PREVIEW_DESIGN } from '@/store/modules/product/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 // import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 import TextArea from '@/components/Share/TextArea.vue';
@@ -166,6 +150,11 @@ export default {
       clicked: 0,
       existingArtistList: null,
       fileFormat: IMAGE_FORMAT.join(','),
+      previewForm: {
+        productId: null,
+        designs: [],
+        artists: [],
+      },
       designForm: {
         productId: this.$route.params.id,
         inputs: [],
@@ -197,15 +186,17 @@ export default {
 
   methods: {
     ...mapActions('artist', [GET_ARTIST_LIST]),
-    ...mapActions('product', [GET_DESIGNS, GET_PRODUCT]),
+    ...mapActions('product', [GET_DESIGNS, GET_PRODUCT, PREVIEW_DESIGN]),
     handleClick(i) {
       this.clicked = i;
     },
     handleDesignImg(file) {
+      console.log(file);
       this.designForm.inputs[this.clicked].designImageUrl = URL.createObjectURL(file.raw);
       this.designForm.inputs[this.clicked].designImageFile = file.raw;
     },
     clearDesignImg(i) {
+      console.log(i);
       this.designForm.inputs[i].designImageUrl = null;
       this.designForm.inputs[i].designImageFile = null;
     },
@@ -215,10 +206,28 @@ export default {
         designImageFile: '',
         designConcept: '',
         designArtistId: '',
+        designFileType: '',
         designId: null,
         show: false,
       });
       this.go(this.designForm.inputs.length - 1);
+    },
+    preview() {
+      this.previewForm.productId = this.$route.params.id;
+      this.previewForm.designs.push({
+        designConcept: this.designForm.inputs[this.current].designConcept,
+        designFilePath: this.designForm.inputs[this.current].designImageUrl,
+        designArtistId: this.designForm.inputs[this.current].designArtistId,
+        // designFileType: this.designForm.inputs[this.current].designFileType,
+        designFileType: 'image',
+      });
+      for (let i = 0; i < this.existingArtistList.length; i++) {
+        this.previewForm.artists.push({
+          artistName: this.existingArtistList[i].artistName,
+          artistDisplayPhotoFilePath: this.existingArtistList[i].artistDisplayPhotoFilePath,
+        });
+      }
+      this.PREVIEW_DESIGN(this.previewForm);
     },
     deleteForm(i) {
       this.designForm.forDelete.push({
@@ -239,23 +248,18 @@ export default {
         }
       }
     },
+    showDesign(url) {
+      window.open(url, '_blank');
+    },
   },
   computed: {
     ...mapState('artist', ['artistList']),
-    ...mapState('product', ['designDetails', 'productDetails']),
+    ...mapState('product', ['designDetails', 'productDetails', 'previewDetails', 'previewDesign']),
   },
   mounted() {
+    this.designForm.productId = this.$route.params.id;
     this.GET_PRODUCT(this.$route.params.id);
     this.GET_DESIGNS(this.$route.params.id);
-    this.designForm.productId = this.$route.params.id;
-    this.designForm.inputs.push({
-      designImageUrl: '',
-      designImageFile: '',
-      designConcept: '',
-      designArtistId: '',
-      designId: null,
-      show: true,
-    });
     console.log('RICO');
     console.log(this.$route.params);
   },
@@ -279,13 +283,21 @@ export default {
             designConcept: this.designDetails[i].designConcept,
             show: hideShow,
           });
+          console.log(this.designForm.inputs);
         }
+      } else {
+        this.addForm();
       }
       this.designForm.existing = this.designDetails;
       // console.log(this.designForm.existing);
       this.defaultValue = {
         ...this.designForm,
       };
+    },
+    previewDesign() {
+      if (this.previewDesign.length > 0) {
+        this.showDesign(this.previewDesign);
+      }
     },
     productDetails() {
       this.existingArtistList = this.productDetails.artistIds;

@@ -1,6 +1,6 @@
 // import { ApiIni, SetAuthHeader } from './api';
 import { extendAuthCookiesTime } from '@/helpers';
-import { ProductApiIni, SetAuthHeader, CheckAuthStatus } from './api';
+import { ProductApiIni, /* DesignPreviewApiIni, */ SetAuthHeader, CheckAuthStatus } from './api';
 
 function getProducts() {
   SetAuthHeader();
@@ -200,6 +200,25 @@ function getProductSeries() {
       throw error.response.data;
     });
 }
+function previewDesign(design) {
+  const body = {
+    ...design,
+  };
+  delete body.productId;
+  delete body.designs[0].show;
+  console.log(body);
+  SetAuthHeader();
+  // return DesignPreviewApiIni().post(`/api/xm/product/v1/productprovenancepreview/${design.productId}`, body)
+  return ProductApiIni().post(`/api/xm/product/v1/productprovenancepreview/${design.productId}`, body)
+    .then((response) => {
+      extendAuthCookiesTime();
+      return process.env.VUE_APP_LOADING_API_DOMAIN + response.data;
+    })
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
 const services = {
   getProducts,
   getProduct,
@@ -217,6 +236,7 @@ const services = {
   getLicense,
   getProductSeries,
   getRelatedProducts,
+  previewDesign,
 };
 
 export default services;

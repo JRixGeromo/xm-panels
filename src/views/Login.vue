@@ -17,12 +17,14 @@
             formProps="username"
             formLabel="Username"
           />
-          <TextInput
-            v-model="loginForm.secret"
-            inputType="password"
-            formProps="secret"
-            formLabel="Password"
-          />
+          <div style="margin-top: 35px;">
+            <TextInput
+              v-model="loginForm.secret"
+              inputType="password"
+              formProps="secret"
+              formLabel="Password"
+            />
+          </div>
           <el-form-item class="button-wrapper">
             <el-button
               class="custom-btn add-btn"

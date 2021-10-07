@@ -164,6 +164,7 @@
             v-model="productForm.artistIds"
             formProps="artistIds"
             formLabel="Artists"
+            formLimit="6"
           >
             <el-option
               v-for="artist in artistList"
@@ -174,9 +175,8 @@
           </MultipleSelectInput>
         </div>
       </el-col>
-      <el-col :span="18" :offset="3">
+      <el-col :span="18" :offset="3" style="text-align: right;">
         <div style="margin-top: 15px;">
-          <el-row justify="end">
             <el-button
             class="custom-btn discard-btn"
             @click="$router.push(`/allproducts`)">DISCARD</el-button>
@@ -191,7 +191,6 @@
             >
               SAVE AND PROCEED
             </el-button>
-          </el-row>
         </div>
       </el-col>
     </el-row>
@@ -202,19 +201,19 @@
         <el-row justify="space-between">
           <el-col :span="24" style="margin-top: 50px; margin-bottom: 50px">
             <div style="width: 100%; text-align:left">
-              <span class="form-label"> {{ productDetails.productName }}: RELATIONSHIPS </span>
+              <span class="form-label"> {{ productForm.productName }}: RELATIONSHIPS </span>
             </div>
           </el-col>
-          <el-col :span="2">
-            <div style="width: 100%; text-align:center; margin-top: -20px">
+          <el-col :span="12">
+            <div style="width: 100%; text-align:left; margin-top: -20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
                 @click="products()">BACK
               </el-button>
           </div>
           </el-col>
-          <el-col :span="2">
-            <div style="width: 100%; text-align:center; margin-top: -20px">
+          <el-col :span="12">
+            <div style="width: 100%; text-align:right; margin-top: -20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
                 @click="popoutRelationship(productDetails.productId)">EDIT
@@ -224,7 +223,6 @@
         </el-row>
       </el-col>
     </el-row>
-
     <el-dialog
       title="RELATIONSHIP"
       custom-class="custom-dialog"
@@ -329,7 +327,14 @@ import MultipleSelectInput from '@/components/Share/MultipleSelectInput.vue';
 import CountrySelectInput from '@/components/Share/CountrySelectInput.vue';
 import CreateNewSelectInput from '@/components/Share/CreateNewSelectInput.vue';
 import { GET_CHARACTER_LIST } from '@/store/modules/character/actions-type';
-import { GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP } from '@/store/modules/relationship/actions-type';
+import {
+  GET_RELATIONSHIP,
+  GET_RELATIONSHIP_LIST,
+  CREATE_RELATIONSHIP,
+  UPDATE_RELATIONSHIP,
+  DEFAULT_RELATIONSHIP,
+} from '@/store/modules/relationship/actions-type';
+import router from '@/router';
 
 export default {
   props: {
@@ -397,6 +402,8 @@ export default {
         productStatus: 'Active',
         forDeleteImages: [],
         existingImages: [],
+        oriLicenseId: '',
+        oriProductSeries: '',
       },
       relationshipForm: {
         productId: null,
@@ -499,11 +506,11 @@ export default {
       'updatingProduct',
       'productSeriesList',
     ]),
-    ...mapState('product', ['relatedProductList']),
+    ...mapState('product', ['relatedProductList', 'defaultRelationship']),
     ...mapState('artist', ['artistList']),
     ...mapState('licensor', ['licensorList']),
     ...mapState('character', ['characterList']),
-    ...mapState('relation', ['relationshipDetails']),
+    ...mapState('relation', ['relationshipDetails', 'updatingDefault']),
   },
   mounted() {
     this.GET_PRODUCT(this.$route.params.id);
@@ -517,7 +524,13 @@ export default {
     ...mapActions('artist', [GET_ARTIST_LIST]),
     ...mapActions('licensor', [GET_LICENSOR_LIST]),
     ...mapActions('character', [GET_CHARACTER_LIST]),
-    ...mapActions('relation', [GET_RELATIONSHIP, GET_RELATIONSHIP_LIST, CREATE_RELATIONSHIP, UPDATE_RELATIONSHIP]),
+    ...mapActions('relation', [
+      GET_RELATIONSHIP,
+      GET_RELATIONSHIP_LIST,
+      CREATE_RELATIONSHIP,
+      UPDATE_RELATIONSHIP,
+      DEFAULT_RELATIONSHIP,
+    ]),
     products() {
       this.show = 'products';
     },
@@ -557,6 +570,10 @@ export default {
       };
       await this.UPDATE_RELATIONSHIP(criteria);
       this.relationshipForm.inputs.splice(this.selectedIndex, 1);
+    },
+    async executeDefault(producId) {
+      await this.DEFAULT_RELATIONSHIP(producId);
+      router.push(`/product/${producId}/details`);
     },
     discard() {
       this.relationshipDialog = false;
@@ -624,6 +641,8 @@ export default {
         characterId: this.productDetails.character.characterId,
         licenseId: this.productDetails.character.license.licenseId,
         artistIds: this.productDetails.artistIds,
+        oriLicenseId: this.productDetails.character.license.licenseId,
+        oriProductSeries: this.productDetails.artistIds,
         productSeries: this.productDetails.productSeries,
         productStatus: 'Active',
         existingImages: this.productDetails.productImages,
@@ -646,6 +665,13 @@ export default {
     relationshipDetails() {
       this.relationshipForm.inputs = [];
       this.refreshRelation();
+    },
+    defaultRelationship() {
+      if (this.defaultRelationship) {
+        this.executeDefault(this.productDetails.productId);
+      } else {
+        router.push(`/product/${this.productDetails.productId}/details`);
+      }
     },
     relationshipForm: {
       handler(val) {

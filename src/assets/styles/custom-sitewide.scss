@@ -633,6 +633,78 @@ body {
 .el-date-editor .el-icon-circle-close {
     display: none;
 }
+
+//// Date Picker ////
+.custom-datepicker-popper {
+  border       : 1px solid #fff !important;
+  background   : #000 !important;
+  border-radius: unset !important;
+
+  .el-picker-panel {
+    background: #000 !important;
+
+    .el-picker-panel__icon-btn,
+    .el-date-picker__header-label {
+      color: #ffffff !important;
+
+      &:hover {
+        color: #ffffffd6 !important;
+      }
+    }
+
+    .el-picker-panel__content {
+      table {
+        color: #ffffff !important;
+        border-right: unset !important;
+        border-left: unset !important;
+        border-collapse: unset !important;
+        
+        th {
+          border-right: unset !important;
+          border-left: unset !important;
+          border-collapse: unset !important;
+        }
+        td {
+          border-right: unset !important;
+          border-left: unset !important;
+          border-collapse: unset !important;
+        }
+        th:first-child { border-left: unset !important }
+        // tr { border: none;  }
+
+        td.next-month,
+        td.prev-month {
+          color: #cccccc !important;
+        }
+
+        th,
+        td.today span,
+        td.available:hover {
+          color: #ffffffd6 !important;
+        }
+
+        td.current:not(.disabled) span {
+          color           : #000;
+          background-color: #fff;
+        }
+
+        td.disabled div {
+          background-color: #000000 !important;
+          color           : #464646 !important;
+        }
+      }
+    }
+  }
+
+  .el-popper__arrow {
+    &::before {
+      background         : #000 !important;
+      border             : 1px solid #fff;
+    }
+  }
+}
+//// Date Picker ////
+
 .img-label {
     font-size: 1em;
     color: white;

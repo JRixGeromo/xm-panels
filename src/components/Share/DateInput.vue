@@ -2,6 +2,7 @@
   <div style="width: 100%" class="label_bound">
     <el-form-item :prop="formProps">
       <el-date-picker
+        popper-class="custom-datepicker-popper"
         :type="inputType"
         v-model="date"
         :format="dateFormat"

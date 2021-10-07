@@ -71,7 +71,7 @@
     <el-menu-item index="1" class="mf-size" @click="approvals()">APPROVALS</el-menu-item>
     <el-menu-item index="2" class="mf-size" @click="archives()">ARCHIVES</el-menu-item>
   </el-menu>
-  <el-button class="custom-btn add-btn" @click="$router.push(`/create/product`)">Add New Product</el-button>
+  <el-button class="custom-btn add-btn" v-if="show === 'products'" @click="$router.push(`/create/product`)">Add New Product</el-button>
 <el-row v-if="show=='products'">
     <el-col :span="24" style="margin-bottom: 15px">
       <el-pagination

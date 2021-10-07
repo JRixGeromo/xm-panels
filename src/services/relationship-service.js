@@ -59,7 +59,15 @@ function createRelationship(relationshipDetails, relationship) {
       throw error.response.data;
     });
 }
-
+function defaultRelationship(productId) {
+  SetAuthHeader();
+  return RelationshipApiIni().post(`/api/xm/product/v1/${productId}/defaultrelation`)
+    .then((response) => response.data)
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
 function deleteRelationship(relationshipDetails) {
   SetAuthHeader();
   let relation = 'characterrelation';
@@ -99,6 +107,7 @@ const services = {
   deleteRelationship,
   searchRelationship,
   createRelationship,
+  defaultRelationship,
 };
 
 export default services;

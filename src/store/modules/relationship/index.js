@@ -8,6 +8,7 @@ import {
   GET_RELATIONSHIP,
   CREATE_RELATIONSHIP,
   UPDATE_RELATIONSHIP,
+  DEFAULT_RELATIONSHIP,
   SEARCH_RELATIONSHIP_IN_LIST,
 } from '@/store/modules/relationship/actions-type';
 import {
@@ -24,10 +25,13 @@ import {
   UPDATE_RELATIONSHIP_SUCCESS,
   UPDATE_RELATIONSHIP_FAILURE,
   SEARCHED_RELATIONSHIP,
+  DEFAULT_RELATIONSHIP_START,
+  DEFAULT_RELATIONSHIP_SUCCESS,
+  DEFAULT_RELATIONSHIP_FAILURE,
 } from '@/store/modules/relationship/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
-// import router from '@/router';
+import router from '@/router';
 
 const state = {
   gettingRelationshipList: false,
@@ -36,6 +40,7 @@ const state = {
   creatingRelationship: false,
   gettingRelationshipDetails: false,
   updatingRelationship: false,
+  updatingDefault: false,
 };
 
 // const initialState = {
@@ -119,7 +124,6 @@ const actions = {
         }
       }
     }
-    alert(JSON.stringify(relationships));
     commit(CREATE_RELATIONSHIP_START);
     relationshipServices.createRelationship(relationships, relationshipDetails.relationship).then(
       () => {
@@ -160,6 +164,31 @@ const actions = {
           message: error,
         });
         commit(UPDATE_RELATIONSHIP_FAILURE);
+      },
+    ).finally(() => {
+      fullpageLoader.close();
+    });
+  },
+  async [DEFAULT_RELATIONSHIP]({ commit }, productId) {
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
+    commit(DEFAULT_RELATIONSHIP_START);
+    relationshipServices.defaultRelationship(productId).then(
+      () => {
+        ElMessage.success({
+          showClose: true,
+          message: 'Default relationship added successfully',
+        });
+        commit(DEFAULT_RELATIONSHIP_SUCCESS);
+        router.push('/allproducts');
+      },
+      (error) => {
+        ElMessage.error({
+          showClose: true,
+          message: error,
+        });
+        commit(DEFAULT_RELATIONSHIP_FAILURE);
       },
     ).finally(() => {
       fullpageLoader.close();
@@ -218,6 +247,15 @@ const mutations = {
   },
   [UPDATE_RELATIONSHIP_FAILURE](state) {
     state.updatingPassword = false;
+  },
+  [DEFAULT_RELATIONSHIP_START](state) {
+    state.updatingDefault = true;
+  },
+  [DEFAULT_RELATIONSHIP_SUCCESS](state) {
+    state.updatingDefault = false;
+  },
+  [DEFAULT_RELATIONSHIP_FAILURE](state) {
+    state.updatingDefault = false;
   },
   [SEARCHED_RELATIONSHIP](state, data) {
     state.relationshipList = data;
