@@ -137,21 +137,21 @@
             />
           </CountrySelectInput>
         </div>
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 35px;">
           <Datepicker
             v-model="productForm.productManufactureDate"
             formProps="productManufactureDate"
             formLabel="Date of Manufacture"
           />
         </div>
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 35px;">
           <Datepicker
             v-model="productForm.productReleaseDate"
             formProps="productReleaseDate"
             formLabel="Release Date"
           />
         </div>
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 35px;">
           <TextInput
             v-model="productForm.productQuantity"
             inputType="number"

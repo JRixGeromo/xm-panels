@@ -412,6 +412,10 @@ body {
   background: linear-gradient(145deg, #333, #222);
 }
 
+.breadcrumb a.active ~ a {
+  border-top-color: #9a9a9a; 
+}
+
 /*adding the arrows for the breadcrumbs using rotated pseudo elements*/
 .breadcrumb a:after {
   // content: '';
@@ -483,7 +487,7 @@ body {
   border-left-style: none;
   border-right-style: none;
   border-bottom-style: none;
-  border-top-color: #9a9a9a;
+  border-top-color: #99884D;
 }
 
 .breadcrumb {
@@ -706,7 +710,7 @@ body {
 //// Date Picker ////
 
 .img-label {
-    font-size: 1em;
+    font-size: 14px;
     color: white;
     top: -20px;
     transition: all 0.225s ease;
@@ -956,6 +960,7 @@ textarea {
     background: $--color-primary !important;
     border: 1px solid #FFF !important;
     color: #FFF !important;
+    margin: 2px 0 0 6px !important;
 
     .el-icon-close {
       background-color: #FF0000 !important;

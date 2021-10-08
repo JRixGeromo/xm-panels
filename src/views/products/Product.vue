@@ -6,7 +6,7 @@
         All Products
       </el-breadcrumb-item>
       <el-breadcrumb-item v-if="this.$route.query.name">
-        {{this.$route.query.name}}
+        {{productName}}
       </el-breadcrumb-item>
       <el-breadcrumb-item v-else>
         Create
@@ -16,14 +16,14 @@
   <el-container>
     <el-main v-if="this.$route.params.id" :router="true" style="text-align: center; padding:2px">
       <div class="breadcrumb flat">
-        <a  @click="$router.push(`/product/${this.$route.params.id}/details`)"
-        :class="{ active:selectedMenu==='details' }">Product Detail</a>
+        <a  @click="$router.push(`/product/${this.$route.params.id}/details?name=${productName}`)"
+        :class="{ active:selectedMenu.includes('details') }">Product Detail</a>
         <a @click="$router.push(`/product/${this.$route.params.id}/sustainability`)"
-        :class="{ active:selectedMenu==='sustainability' }">Sustainability Report</a>
+        :class="{ active:selectedMenu.includes('sustainability') }">Sustainability Report</a>
         <a @click="$router.push({path:`/product/${this.$route.params.id}/designs`})"
-        :class="{ active:selectedMenu==='designs' }">Artist Details</a>
+        :class="{ active:selectedMenu.includes('designs') }">Artist Details</a>
         <a @click="$router.push(`/product/${this.$route.params.id}/serialnumbers`)"
-        :class="{ active:selectedMenu==='serialnumbers' }">Serial Numbers</a>
+        :class="{ active:selectedMenu.includes('serialnumbers') }">Serial Numbers</a>
       </div>
     </el-main>
     <el-main v-else :router="true" style="text-align: center; padding:2px">
@@ -59,14 +59,14 @@ export default {
   },
   data() {
     return {
-      // tempId: 1,
+      productName: this.$route.query.name,
       activeMenu: 'details',
       selectedMenu: 'details',
     };
   },
   mounted() {
     this.activeMenu = this.$router.currentRoute.value.fullPath;
-    console.log(this.$route);
+    this.selectedMenu = this.$router.currentRoute.value.fullPath.split('/').pop();
   },
   watch: {
     $route() {

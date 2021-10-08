@@ -121,6 +121,7 @@ import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants'
 // import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 import TextArea from '@/components/Share/TextArea.vue';
 import SelectInput from '@/components/Share/SelectInput.vue';
+import imageToBase64 from 'image-to-base64/browser';
 
 export default {
   props: {
@@ -144,6 +145,7 @@ export default {
   },
   data() {
     return {
+      base64: null,
       country: '',
       region: '',
       current: 0,
@@ -212,14 +214,32 @@ export default {
       });
       this.go(this.designForm.inputs.length - 1);
     },
-    preview() {
+    async preview() {
+      this.base64 = this.designForm.inputs[this.current].designImageUrl;
+      const that = this;
+      let fileType = this.designForm.inputs[this.current].designFileType;
+      if (!this.designForm.inputs[this.current].designId) {
+        fileType = this.designForm.inputs[this.current].designImageFile.type;
+        this.base64 = await imageToBase64(this.designForm.inputs[this.current].designImageUrl)
+          .then(
+            (response) => {
+              that.base64 = `data:${fileType};base64,${response}`;
+              return that.base64;
+            },
+          )
+          .catch(
+            (error) => {
+              console.log(error);
+            },
+          );
+      }
       this.previewForm.productId = this.$route.params.id;
       this.previewForm.designs.push({
+        designId: this.designForm.inputs[this.current].designId,
         designConcept: this.designForm.inputs[this.current].designConcept,
-        designFilePath: this.designForm.inputs[this.current].designImageUrl,
+        designFilePath: this.base64,
         designArtistId: this.designForm.inputs[this.current].designArtistId,
-        // designFileType: this.designForm.inputs[this.current].designFileType,
-        designFileType: 'image',
+        designFileType: fileType,
       });
       for (let i = 0; i < this.existingArtistList.length; i++) {
         this.previewForm.artists.push({

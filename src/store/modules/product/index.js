@@ -593,16 +593,6 @@ const actions = {
     commit(GET_RELATED_PRODUCT_LIST_START);
     productServices.getRelatedProducts(criteria).then(
       (data) => {
-        /*
-        const sortedProducts = data.sort((a, b) => {
-          const atime = new Date(a.productCreatedDate).getTime();
-          const btime = new Date(b.productCreatedDate).getTime();
-          let val = 0;
-          val = btime - atime;
-          return val;
-        });
-        commit(GET_RELATED_PRODUCT_LIST_SUCCESS, sortedProducts);
-        */
         commit(GET_RELATED_PRODUCT_LIST_SUCCESS, data);
       },
       () => {
