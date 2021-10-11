@@ -18,6 +18,8 @@ import {
   FILTER_PRODUCT_IN_LIST,
   GET_PRODUCT_SERIES_LIST,
   GET_RELATED_PRODUCT_LIST,
+  GET_SUSTAINABILITY_REPORT,
+  CREATE_SUSTAINABILITY_REPORT,
 } from '@/store/modules/product/actions-type';
 import {
   GET_PRODUCT_LIST_START,
@@ -65,6 +67,12 @@ import {
   PREVIEW_DESIGN_START,
   PREVIEW_DESIGN_SUCCESS,
   PREVIEW_DESIGN_FAILURE,
+  CREATE_SUSTAINABILITY_REPORT_START,
+  CREATE_SUSTAINABILITY_REPORT_SUCCESS,
+  CREATE_SUSTAINABILITY_REPORT_FAILURE,
+  GET_SUSTAINABILITY_REPORT_START,
+  GET_SUSTAINABILITY_REPORT_SUCCESS,
+  GET_SUSTAINABILITY_REPORT_FAILURE,
 } from '@/store/modules/product/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
@@ -93,6 +101,11 @@ const state = {
   defaultRelationship: false,
   gettingPreviewDesign: false,
   previewDesign: [],
+  gettingSustainabilityReportList: false,
+  sustainabilityReportDetails: [],
+  creatingSustainabilityReport: false,
+  gettingSustainabilityReportDetails: false,
+  updatingSustainabilityReport: false,
 };
 
 const getters = {
@@ -618,6 +631,69 @@ const actions = {
       fullpageLoader.close();
     });
   },
+  [GET_SUSTAINABILITY_REPORT]({ commit }, relationInfo) {
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
+    commit(GET_SUSTAINABILITY_REPORT_START);
+    productServices.getSustainabilityReport(relationInfo).then(
+      (data) => {
+        commit(GET_SUSTAINABILITY_REPORT_SUCCESS, data);
+      },
+      () => {
+        commit(GET_SUSTAINABILITY_REPORT_FAILURE);
+      },
+    ).finally(() => {
+      fullpageLoader.close();
+    });
+  },
+  async [CREATE_SUSTAINABILITY_REPORT]({ commit }, sustainabilityReportDetails) {
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
+
+    let reportImage = null;
+    await fileUploadServices.uploadFile(sustainabilityReportDetails.displayImageFile).then(
+      (uploadData) => {
+        reportImage = process.env.VUE_APP_FILE_DOMAIN + uploadData;
+      },
+    );
+    let reportFile = null;
+    await fileUploadServices.uploadFile(sustainabilityReportDetails.reportFile).then(
+      (uploadData) => {
+        reportFile = process.env.VUE_APP_FILE_DOMAIN + uploadData;
+      },
+    );
+
+    const sustainabilityReports = {
+      productId: sustainabilityReportDetails.productId,
+      sustainabilityReportDescription: sustainabilityReportDetails.summary,
+      // sustainabilityReportDetail: JSON.stringify(sustainabilityReportDetails.resourcesSaved),
+      sustainabilityReportDetail: sustainabilityReportDetails.resourcesSaved,
+      sustainabilityReportImg: reportImage,
+      sustainabilityReportFile: reportFile,
+    };
+    commit(CREATE_SUSTAINABILITY_REPORT_START);
+    productServices.createSustainabilityReport(sustainabilityReports).then(
+      () => {
+        ElMessage.success({
+          showClose: true,
+          message: 'SustainabilityReport created successfully',
+        });
+        commit(CREATE_SUSTAINABILITY_REPORT_SUCCESS);
+        // router.push('/allproducts');
+      },
+      (error) => {
+        ElMessage.error({
+          showClose: true,
+          message: error,
+        });
+        commit(CREATE_SUSTAINABILITY_REPORT_FAILURE);
+      },
+    ).finally(() => {
+      fullpageLoader.close();
+    });
+  },
 };
 
 const mutations = {
@@ -794,6 +870,28 @@ const mutations = {
   },
   [FILTERED_PRODUCT](state, data) {
     state.productList = data;
+  },
+  [GET_SUSTAINABILITY_REPORT_START](state) {
+    state.gettingSustainabilityReportDetails = true;
+  },
+  [GET_SUSTAINABILITY_REPORT_SUCCESS](state, data) {
+    state.gettingSustainabilityReportDetails = false;
+    state.sustainabilityReportDetails = data;
+    state.oriSustainabilityReport = data;
+  },
+  [GET_SUSTAINABILITY_REPORT_FAILURE](state) {
+    state.sustainabilityReportDetails = [];
+    state.gettingSustainabilityReportDetails = false;
+    state.oriSustainabilityReport = [];
+  },
+  [CREATE_SUSTAINABILITY_REPORT_START](state) {
+    state.creatingSustainabilityReport = true;
+  },
+  [CREATE_SUSTAINABILITY_REPORT_SUCCESS](state) {
+    state.creatingSustainabilityReport = false;
+  },
+  [CREATE_SUSTAINABILITY_REPORT_FAILURE](state) {
+    state.creatingSustainabilityReport = false;
   },
 };
 

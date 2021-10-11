@@ -1,42 +1,44 @@
 <template>
-  <ProductForm
+  <ProductSustainabilityReportForm
     :onSubmit="onSubmit"
     :resetForm="resetForm"
-    :loading="creatingProduct"
+    :loading="creatingSustainabilityReport"
   />
 </template>
 
 <script>
 import { useStore } from 'vuex';
 import { computed } from 'vue';
-import ProductForm from '@/components/Products/ProductForm.vue';
+import ProductSustainabilityReportForm from '@/components/Products/ProductSustainabilityReportForm.vue';
 // import { randomPassword } from '@/helpers';
-import { CREATE_PRODUCT } from '@/store/modules/product/actions-type';
-import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
+import { CREATE_SUSTAINABILITY_REPORT } from '@/store/modules/product/actions-type';
+// import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 
 export default {
-  name: 'ProductCreate',
+  name: 'SustainabilityReportCreate',
   setup() {
     const store = useStore();
     return {
-      creatingProduct: computed(() => store.state.product.creatingProduct),
-      createProduct: (productDetail) => store.dispatch(`product/${CREATE_PRODUCT}`, productDetail),
+      creatingSustainabilityReport: computed(() => store.state.product.creatingSustainabilityReport),
+      createSustainabilityReport: (sustainabilityReportDetail) => store.dispatch(`product/${CREATE_SUSTAINABILITY_REPORT}`,
+        sustainabilityReportDetail),
     };
   },
   methods: {
     onSubmit(form) {
       form.validate((valid) => {
+        console.log(form.model);
         if (valid) {
           // use default profile image if user click clear img
-          if (form.model.productImageFile === null && form.model.productImageUrl === null) {
-            form.model.productDisplayPhotoFilePath = DEFAULT_PROFILE_PICTURE;
-            form.model.productImageFile = null;
-          }
-          const productDetail = {
+          // if (form.model.designImageFile === null && form.model.designImageUrl === null) {
+          //   form.model.designFilePath = DEFAULT_PROFILE_PICTURE;
+          //   form.model.designImageFile = null;
+          // }
+          const sustainabilityReportDetail = {
             ...form.model,
             applicationDomain: process.env.VUE_APP_APPLICATION_DOMAIN,
           };
-          this.createProduct(productDetail);
+          this.createSustainabilityReport(sustainabilityReportDetail);
         }
       });
     },
@@ -45,7 +47,7 @@ export default {
     },
   },
   components: {
-    ProductForm,
+    ProductSustainabilityReportForm,
   },
 };
 </script>

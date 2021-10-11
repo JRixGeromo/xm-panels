@@ -219,6 +219,34 @@ function previewDesign(design) {
       throw error.response.data;
     });
 }
+function createSustainabilityReport(sustainabilityReportDetails) {
+  const body = {
+    ...sustainabilityReportDetails,
+  };
+  delete body.productId;
+  console.log(body);
+  SetAuthHeader();
+  return ProductApiIni().post(`/api/xm/product/v1/${sustainabilityReportDetails.productId}/sustainabilityreport`, body)
+    .then((response) => response.data)
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
+function getSustainabilityReport(productId) {
+  SetAuthHeader();
+  return ProductApiIni().get(`/api/xm/product/v1/${productId}/sustainabilityreport`)
+    .then((response) => {
+      extendAuthCookiesTime();
+      return response.data;
+    })
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
+
 const services = {
   getProducts,
   getProduct,
@@ -237,6 +265,8 @@ const services = {
   getProductSeries,
   getRelatedProducts,
   previewDesign,
+  getSustainabilityReport,
+  createSustainabilityReport,
 };
 
 export default services;
