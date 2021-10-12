@@ -102,7 +102,7 @@ const state = {
   gettingPreviewDesign: false,
   previewDesign: [],
   gettingSustainabilityReportList: false,
-  sustainabilityReportDetails: [],
+  sustainabilityReportInfo: [],
   creatingSustainabilityReport: false,
   gettingSustainabilityReportDetails: false,
   updatingSustainabilityReport: false,
@@ -631,12 +631,12 @@ const actions = {
       fullpageLoader.close();
     });
   },
-  [GET_SUSTAINABILITY_REPORT]({ commit }, relationInfo) {
+  [GET_SUSTAINABILITY_REPORT]({ commit }, productId) {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
     commit(GET_SUSTAINABILITY_REPORT_START);
-    productServices.getSustainabilityReport(relationInfo).then(
+    productServices.getSustainabilityReport(productId).then(
       (data) => {
         commit(GET_SUSTAINABILITY_REPORT_SUCCESS, data);
       },
@@ -647,29 +647,29 @@ const actions = {
       fullpageLoader.close();
     });
   },
-  async [CREATE_SUSTAINABILITY_REPORT]({ commit }, sustainabilityReportDetails) {
+  async [CREATE_SUSTAINABILITY_REPORT]({ commit }, sustainabilityReportInfo) {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
 
     let reportImage = null;
-    await fileUploadServices.uploadFile(sustainabilityReportDetails.displayImageFile).then(
+    await fileUploadServices.uploadFile(sustainabilityReportInfo.displayImageFile).then(
       (uploadData) => {
         reportImage = process.env.VUE_APP_FILE_DOMAIN + uploadData;
       },
     );
     let reportFile = null;
-    await fileUploadServices.uploadFile(sustainabilityReportDetails.reportFile).then(
+    await fileUploadServices.uploadFile(sustainabilityReportInfo.reportFile).then(
       (uploadData) => {
         reportFile = process.env.VUE_APP_FILE_DOMAIN + uploadData;
       },
     );
 
     const sustainabilityReports = {
-      productId: sustainabilityReportDetails.productId,
-      sustainabilityReportDescription: sustainabilityReportDetails.summary,
-      // sustainabilityReportDetail: JSON.stringify(sustainabilityReportDetails.resourcesSaved),
-      sustainabilityReportDetail: sustainabilityReportDetails.resourcesSaved,
+      productId: sustainabilityReportInfo.productId,
+      sustainabilityReportDescription: sustainabilityReportInfo.summary,
+      sustainabilityReportDetail: JSON.stringify(sustainabilityReportInfo.resourcesSaved),
+      // sustainabilityReportDetail: sustainabilityReportInfo.resourcesSaved,
       sustainabilityReportImg: reportImage,
       sustainabilityReportFile: reportFile,
     };
@@ -876,11 +876,11 @@ const mutations = {
   },
   [GET_SUSTAINABILITY_REPORT_SUCCESS](state, data) {
     state.gettingSustainabilityReportDetails = false;
-    state.sustainabilityReportDetails = data;
+    state.sustainabilityReportInfo = data;
     state.oriSustainabilityReport = data;
   },
   [GET_SUSTAINABILITY_REPORT_FAILURE](state) {
-    state.sustainabilityReportDetails = [];
+    state.sustainabilityReportInfo = [];
     state.gettingSustainabilityReportDetails = false;
     state.oriSustainabilityReport = [];
   },

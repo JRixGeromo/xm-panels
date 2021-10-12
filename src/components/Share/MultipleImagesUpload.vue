@@ -41,6 +41,7 @@
         :accept="fileFormat"
         :show-file-list="false"
         multiple
+        :disabled="formIsDisabled"
       >
         <div>
           <i class="el-icon-upload"></i>
@@ -85,6 +86,9 @@ export default {
     isEdit: {
       type: Boolean,
       default: false,
+    },
+    formIsDisabled: {
+      type: Boolean,
     },
   },
   emits: ['update:imgUrls', 'update:imgFiles', 'update:existingImgUrls', 'update:fileCheck'],

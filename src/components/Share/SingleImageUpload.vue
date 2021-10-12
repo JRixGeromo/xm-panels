@@ -9,6 +9,7 @@
         :on-change="handleImg"
         :auto-upload="false"
         :accept="fileFormat"
+        :disabled="formIsDisabled"
         drag
       >
         <img v-if="imgUrl" :src="imgUrl" class="image" />
@@ -41,6 +42,9 @@ export default {
     formProps: {
       type: String,
       required: true,
+    },
+    formIsDisabled: {
+      type: Boolean,
     },
   },
   emits: ['update:imgUrl', 'update:imgFile'],

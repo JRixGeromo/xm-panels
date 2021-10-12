@@ -1,5 +1,6 @@
 <template>
   <el-form v-if="show=='products'"
+    id="inputs"
     class="custom-form"
     label-position="top"
     label-width="100px"
@@ -15,6 +16,7 @@
       <el-col :span="9" :offset="3">
         <div class="grid-content bg-purple">
           <SingleImageUpload
+            :formIsDisabled="isDisabled"
             v-model:imgUrl="productForm.productImageUrl"
             v-model:imgFile="productForm.productImageFile"
             formProps="productImageUrl"
@@ -25,6 +27,7 @@
       <el-col :span="9">
         <div class="grid-content bg-purple">
           <SingleImageUpload
+            :formIsDisabled="isDisabled"
             v-model:imgUrl="productForm.productCoverImageUrl"
             v-model:imgFile="productForm.productCoverImageFile"
             formProps="productCoverImageUrl"
@@ -37,6 +40,7 @@
       <el-col :span="9" :offset="3">
         <div>
           <TextInput
+            class="input"
             v-model="productForm.productName"
             formProps="productName"
             formLabel="Product Name"
@@ -44,6 +48,7 @@
         </div>
         <div style="margin-top: 35px;">
           <TextArea
+            class="input"
             v-model="productForm.productDescription"
             formProps="productDescription"
             formLabel="Product Descriptions"
@@ -51,12 +56,14 @@
         </div>
         <div style="margin-top: 35px;">
           <TextArea
+            class="input"
             v-model="productForm.productBackground"
             formProps="productBackground"
             formLabel="Background of Character"
           />
         </div>
         <MultipleImagesUpload
+          :formIsDisabled="isDisabled"
           v-model:imgUrls="productForm.productImagesUrl"
           v-model:imgFiles="productForm.productImagesFile"
           v-model:existingImgUrls="productForm.existingImages"
@@ -70,6 +77,8 @@
       <el-col :span="9">
         <div style="width: 100%">
           <SelectInput
+            class="input"
+            :disabled="isDisabled"
             v-model="productForm.licenseId"
             formProps="licenseId"
             formLabel="License"
@@ -86,6 +95,8 @@
         </div>
         <div style="margin-top: 35px;">
           <SelectInput
+            class="input"
+            :disabled="isDisabled"
             v-model="productForm.characterId"
             formProps="characterId"
             formLabel="Character"
@@ -101,6 +112,8 @@
         </div>
         <div style="margin-top: 35px;">
           <CreateNewSelectInput
+            class="input"
+            :disabled="isDisabled"
             v-model="productForm.productSeries"
             formProps="productSeries"
             formLabel="Series"
@@ -124,6 +137,8 @@
         </div>
         <div style="margin-top: 35px;">
           <CountrySelectInput
+            class="input"
+            :disabled="isDisabled"
             v-model="productForm.productManufactureCountry"
             formProps="productManufactureCountry"
             formLabel="Country of Manufacture"
@@ -139,6 +154,7 @@
         </div>
         <div style="margin-top: 35px;">
           <Datepicker
+            class="input"
             v-model="productForm.productManufactureDate"
             formProps="productManufactureDate"
             formLabel="Date of Manufacture"
@@ -146,6 +162,7 @@
         </div>
         <div style="margin-top: 35px;">
           <Datepicker
+            class="input"
             v-model="productForm.productReleaseDate"
             formProps="productReleaseDate"
             formLabel="Release Date"
@@ -153,6 +170,7 @@
         </div>
         <div style="margin-top: 35px;">
           <TextInput
+            class="input"
             v-model="productForm.productQuantity"
             inputType="number"
             formProps="productQuantity"
@@ -161,6 +179,8 @@
         </div>
         <div style="margin-top: 35px;">
           <MultipleSelectInput
+            class="input"
+            :disabled="isDisabled"
             v-model="productForm.artistIds"
             formProps="artistIds"
             formLabel="Artists"
@@ -182,12 +202,13 @@
             @click="$router.push(`/allproducts`)">DISCARD</el-button>
             <el-button
             class="custom-btn save-exit-btn"
-            @click="onSubmit($refs.productForm)">SAVE AND EXIT</el-button>
+            @click="onSubmit($refs.productForm)" :disabled="isDisabled">SAVE AND EXIT</el-button>
             <el-button
               class="custom-btn submit-btn"
               type="success"
               @click="onSubmit($refs.productForm)"
               :loading="loading"
+              :disabled="isDisabled"
             >
               SAVE AND PROCEED
             </el-button>
@@ -364,6 +385,7 @@ export default {
   },
   data() {
     return {
+      isDisabled: false,
       relationshipDialog: false,
       confirmationDialog: false,
       selectedRelation: null,
@@ -620,6 +642,17 @@ export default {
       this.productForm.characterId = '';
       this.GET_CHARACTER_LIST(this.productForm.licenseId);
     },
+    disallowEdit() {
+      const inputElems = document.getElementById('inputs').getElementsByClassName('el-input__inner');
+      for (let i = 0; i < inputElems.length; i++) {
+        inputElems[i].disabled = true;
+      }
+      const textAreaElems = document.getElementById('inputs').getElementsByClassName('el-textarea__inner');
+      for (let i = 0; i < textAreaElems.length; i++) {
+        textAreaElems[i].disabled = true;
+      }
+      this.isDisabled = true;
+    },
   },
   watch: {
     productDetails() {
@@ -655,6 +688,9 @@ export default {
         this.productForm.productImagesFileCheck = 'found';
       }
       this.GET_CHARACTER_LIST(this.productForm.licenseId);
+      if (this.productDetails.productSerialNumbers.length > 0) {
+        this.disallowEdit();
+      }
     },
     licensorList() {
       console.log(this.licensorList);

@@ -45,8 +45,9 @@
               :auto-upload="false"
               :accept="pdfFormat"
             >
-              <img v-if="sustainabilityReportForm.reportFile"
-              :src="sustainabilityReportForm.reportFile" class="image" />
+              <!-- <img v-if="sustainabilityReportForm.reportFile"
+              :src="sustainabilityReportForm.reportFile" class="image" /> -->
+              <i v-if="sustainabilityReportForm.reportFile" class="el-icon-document-checked" style="font-size:60px"></i>
               <i v-else class="el-icon-upload"></i>
             </el-upload>
             <i
@@ -182,6 +183,7 @@ export default {
       pdfFormat: '.pdf',
       sustainabilityReportForm: {
         productId: this.$route.params.id,
+        sustainabilityReportId: null,
         displayImageUrl: null,
         displayImageFile: null,
         reportFileUrl: null,
@@ -244,7 +246,7 @@ export default {
     },
     deleteResourcesSaved(i) {
       this.selectedIndex = i;
-      this.resourcesSaved.splice(i, 1);
+      this.sustainabilityReportForm.resourcesSaved.splice(i, 1);
     },
     saveResourcesSaved() {
       this.relationshipDialog = false;
@@ -256,45 +258,42 @@ export default {
     },
   },
   computed: {
-    ...mapState('product', ['sustainabilityReportDetails']),
+    ...mapState('product', ['sustainabilityReportInfo']),
   },
   mounted() {
     this.sustainabilityReportForm.productId = this.$route.params.id;
     this.GET_SUSTAINABILITY_REPORT(this.$route.params.id);
-    this.addResourcesSavedForm();
+    // this.addResourcesSavedForm();
   },
   watch: {
-    sustainabilityReportDetails() {
-    //   this.sustainabilityReportForm.productId = this.$route.params.id;
-    //   let hideShow = false;
-    //   if (this.sustainabilityReportDetails.length > 0) {
-    //     this.sustainabilityReportForm.inputs = [];
-    //     for (let i = 0; i < this.sustainabilityReportDetails.length; i++) {
-    //       if (i === 0) {
-    //         hideShow = true;
-    //       } else {
-    //         hideShow = false;
-    //       }
-    //       this.sustainabilityReportForm.push({
-    //         sustainabilityReportId: this.sustainabilityReportDetails[i].sustainabilityReportId,
-    //         sustainabilityReportArtistId: this.sustainabilityReportDetails[i].sustainabilityReportArtistId,
-    //         displayImageUrl: this.sustainabilityReportDetails[i].sustainabilityReportFilePath,
-    //         sustainabilityReportFileType: this.sustainabilityReportDetails[i].sustainabilityReportFileType,
-    //         sustainabilityReportConcept: this.sustainabilityReportDetails[i].sustainabilityReportConcept,
-    //         show: hideShow,
-    //       });
-    //       console.log(this.sustainabilityReportForm.inputs);
-    //     }
-    //   } else {
-    //     this.addForm();
-    //   }
-    //   this.sustainabilityReportForm.existing = this.sustainabilityReportDetails;
-    //   this.defaultValue = {
-    //     ...this.sustainabilityReportForm,
-    //   };
+    sustainabilityReportInfo() {
+      if (this.sustainabilityReportInfo.sustainabilityReportId) {
+        this.sustainabilityReportForm.productId = this.$route.params.id;
+        this.sustainabilityReportForm.sustainabilityReportId = this.sustainabilityReportInfo.sustainabilityReportId;
+        this.sustainabilityReportForm.displayImageUrl = this.sustainabilityReportInfo.sustainabilityReportImg;
+        this.sustainabilityReportForm.reportFileUrl = this.sustainabilityReportInfo.sustainabilityReportFile;
+        this.sustainabilityReportForm.summary = this.sustainabilityReportInfo.sustainabilityReportDescription;
+        this.sustainabilityReportForm.resourcesSaved = [];
+        const resourcesSaved = JSON.parse(this.sustainabilityReportInfo.sustainabilityReportDetail);
+        console.log(resourcesSaved);
+        for (let i = 0; i < resourcesSaved.length; i++) {
+          this.sustainabilityReportForm.resourcesSaved.push({
+            totalSave: resourcesSaved[i].totalSave,
+            resourceAndSaveMethod: resourcesSaved[i].resourceAndSaveMethod,
+          });
+        }
+        console.log(this.sustainabilityReportInfo);
+      } else {
+        this.addResourcesSavedForm();
+      }
+      // this.sustainabilityReportForm.existing = this.sustainabilityReportDetails;
+      // this.defaultValue = {
+      // ...this.sustainabilityReportForm,
+      // };
     },
   },
 };
+
 </script>
 <style lang="scss" scoped>
   .current {
