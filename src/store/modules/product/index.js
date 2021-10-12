@@ -73,6 +73,9 @@ import {
   GET_SUSTAINABILITY_REPORT_START,
   GET_SUSTAINABILITY_REPORT_SUCCESS,
   GET_SUSTAINABILITY_REPORT_FAILURE,
+  UPDATE_SUSTAINABILITY_REPORT_START,
+  UPDATE_SUSTAINABILITY_REPORT_SUCCESS,
+  UPDATE_SUSTAINABILITY_REPORT_FAILURE,
 } from '@/store/modules/product/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
@@ -651,48 +654,93 @@ const actions = {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
-
-    let reportImage = null;
-    await fileUploadServices.uploadFile(sustainabilityReportInfo.displayImageFile).then(
-      (uploadData) => {
-        reportImage = process.env.VUE_APP_FILE_DOMAIN + uploadData;
-      },
-    );
-    let reportFile = null;
-    await fileUploadServices.uploadFile(sustainabilityReportInfo.reportFile).then(
-      (uploadData) => {
-        reportFile = process.env.VUE_APP_FILE_DOMAIN + uploadData;
-      },
-    );
-
-    const sustainabilityReports = {
-      productId: sustainabilityReportInfo.productId,
-      sustainabilityReportDescription: sustainabilityReportInfo.summary,
-      sustainabilityReportDetail: JSON.stringify(sustainabilityReportInfo.resourcesSaved),
-      // sustainabilityReportDetail: sustainabilityReportInfo.resourcesSaved,
-      sustainabilityReportImg: reportImage,
-      sustainabilityReportFile: reportFile,
-    };
-    commit(CREATE_SUSTAINABILITY_REPORT_START);
-    productServices.createSustainabilityReport(sustainabilityReports).then(
-      () => {
-        ElMessage.success({
-          showClose: true,
-          message: 'SustainabilityReport created successfully',
-        });
-        commit(CREATE_SUSTAINABILITY_REPORT_SUCCESS);
-        // router.push('/allproducts');
-      },
-      (error) => {
-        ElMessage.error({
-          showClose: true,
-          message: error,
-        });
-        commit(CREATE_SUSTAINABILITY_REPORT_FAILURE);
-      },
-    ).finally(() => {
-      fullpageLoader.close();
-    });
+    /* Update */
+    if (sustainabilityReportInfo.sustainabilityReportId) {
+      let reportImage = sustainabilityReportInfo.displayImageUrl;
+      if (sustainabilityReportInfo.displayImageFile) {
+        await fileUploadServices.uploadFile(sustainabilityReportInfo.displayImageFile).then(
+          (uploadData) => {
+            reportImage = process.env.VUE_APP_FILE_DOMAIN + uploadData;
+          },
+        );
+      }
+      let reportFile = sustainabilityReportInfo.reportFileUrl;
+      if (sustainabilityReportInfo.reportFile) {
+        await fileUploadServices.uploadFile(sustainabilityReportInfo.reportFile).then(
+          (uploadData) => {
+            reportFile = process.env.VUE_APP_FILE_DOMAIN + uploadData;
+          },
+        );
+      }
+      const sustainabilityReports = {
+        productId: sustainabilityReportInfo.productId,
+        sustainabilityReportDescription: sustainabilityReportInfo.summary,
+        sustainabilityReportDetail: JSON.stringify(sustainabilityReportInfo.resourcesSaved),
+        sustainabilityReportImg: reportImage,
+        sustainabilityReportFile: reportFile,
+      };
+      commit(UPDATE_SUSTAINABILITY_REPORT_START);
+      productServices.updateSustainabilityReport(sustainabilityReports).then(
+        () => {
+          ElMessage.success({
+            showClose: true,
+            message: 'SustainabilityReport updated successfully',
+          });
+          commit(UPDATE_SUSTAINABILITY_REPORT_SUCCESS);
+          // router.push('/allproducts');
+        },
+        (error) => {
+          ElMessage.error({
+            showClose: true,
+            message: error,
+          });
+          commit(UPDATE_SUSTAINABILITY_REPORT_FAILURE);
+        },
+      ).finally(() => {
+        fullpageLoader.close();
+      });
+    } else { /* Create */
+      let reportImage = null;
+      await fileUploadServices.uploadFile(sustainabilityReportInfo.displayImageFile).then(
+        (uploadData) => {
+          reportImage = process.env.VUE_APP_FILE_DOMAIN + uploadData;
+        },
+      );
+      let reportFile = null;
+      await fileUploadServices.uploadFile(sustainabilityReportInfo.reportFile).then(
+        (uploadData) => {
+          reportFile = process.env.VUE_APP_FILE_DOMAIN + uploadData;
+        },
+      );
+      const sustainabilityReports = {
+        productId: sustainabilityReportInfo.productId,
+        sustainabilityReportDescription: sustainabilityReportInfo.summary,
+        sustainabilityReportDetail: JSON.stringify(sustainabilityReportInfo.resourcesSaved),
+        // sustainabilityReportDetail: sustainabilityReportInfo.resourcesSaved,
+        sustainabilityReportImg: reportImage,
+        sustainabilityReportFile: reportFile,
+      };
+      commit(CREATE_SUSTAINABILITY_REPORT_START);
+      productServices.createSustainabilityReport(sustainabilityReports).then(
+        () => {
+          ElMessage.success({
+            showClose: true,
+            message: 'SustainabilityReport created successfully',
+          });
+          commit(CREATE_SUSTAINABILITY_REPORT_SUCCESS);
+          // router.push('/allproducts');
+        },
+        (error) => {
+          ElMessage.error({
+            showClose: true,
+            message: error,
+          });
+          commit(CREATE_SUSTAINABILITY_REPORT_FAILURE);
+        },
+      ).finally(() => {
+        fullpageLoader.close();
+      });
+    }
   },
 };
 
@@ -892,6 +940,15 @@ const mutations = {
   },
   [CREATE_SUSTAINABILITY_REPORT_FAILURE](state) {
     state.creatingSustainabilityReport = false;
+  },
+  [UPDATE_SUSTAINABILITY_REPORT_START](state) {
+    state.updatingSustainabilityReport = true;
+  },
+  [UPDATE_SUSTAINABILITY_REPORT_SUCCESS](state) {
+    state.updatingSustainabilityReport = false;
+  },
+  [UPDATE_SUSTAINABILITY_REPORT_FAILURE](state) {
+    state.updatingSustainabilityReport = false;
   },
 };
 

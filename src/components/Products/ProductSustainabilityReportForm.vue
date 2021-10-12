@@ -47,11 +47,11 @@
             >
               <!-- <img v-if="sustainabilityReportForm.reportFile"
               :src="sustainabilityReportForm.reportFile" class="image" /> -->
-              <i v-if="sustainabilityReportForm.reportFile" class="el-icon-document-checked" style="font-size:60px"></i>
+              <i v-if="sustainabilityReportForm.reportFileUrl" class="el-icon-document-checked" style="font-size:60px"></i>
               <i v-else class="el-icon-upload"></i>
             </el-upload>
             <i
-              v-if="sustainabilityReportForm.reportFile"
+              v-if="sustainabilityReportForm.reportFileUrl"
               class="el-icon-delete clear-img-icon"
               @click="clearSustainabilityReportFile"
             ></i>

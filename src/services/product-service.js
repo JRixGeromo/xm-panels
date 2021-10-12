@@ -233,7 +233,20 @@ function createSustainabilityReport(sustainabilityReportDetails) {
       throw error.response.data;
     });
 }
-
+function updateSustainabilityReport(sustainabilityReportDetails) {
+  const body = {
+    ...sustainabilityReportDetails,
+  };
+  delete body.productId;
+  console.log(body);
+  SetAuthHeader();
+  return ProductApiIni().put(`/api/xm/product/v1/${sustainabilityReportDetails.productId}/sustainabilityreport`, body)
+    .then((response) => response.data)
+    .catch((error) => {
+      CheckAuthStatus(error.response);
+      throw error.response.data;
+    });
+}
 function getSustainabilityReport(productId) {
   SetAuthHeader();
   return ProductApiIni().get(`/api/xm/product/v1/${productId}/sustainabilityreport`)
@@ -267,6 +280,7 @@ const services = {
   previewDesign,
   getSustainabilityReport,
   createSustainabilityReport,
+  updateSustainabilityReport,
 };
 
 export default services;
