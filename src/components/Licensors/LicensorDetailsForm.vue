@@ -402,7 +402,6 @@ export default {
           relation: '',
         });
       }
-      console.log(JSON.stringify(this.relationshipDetails));
     },
   },
   mounted() {

@@ -170,7 +170,6 @@ export default {
       const artistList = this.getArtistList({
         ...newPagination,
       });
-      console.log('2');
       this.data = [];
       this.paginationTimeout = setTimeout(() => {
         this.data = artistList.data;

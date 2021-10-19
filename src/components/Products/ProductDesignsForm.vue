@@ -68,7 +68,7 @@
             ></i>
           </div>
         </div>
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 35px;">
           <TextArea
             v-model="input.designConcept"
             formProps="designConcept"
@@ -116,12 +116,14 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { GET_ARTIST_LIST } from '@/store/modules/artist/actions-type';
-import { GET_DESIGNS, GET_PRODUCT, PREVIEW_DESIGN } from '@/store/modules/product/actions-type';
+import { GET_PRODUCT, PREVIEW_DESIGN } from '@/store/modules/product/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 // import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 import TextArea from '@/components/Share/TextArea.vue';
 import SelectInput from '@/components/Share/SelectInput.vue';
 import imageToBase64 from 'image-to-base64/browser';
+import router from '@/router';
+import { ElMessage } from 'element-plus';
 
 export default {
   props: {
@@ -188,17 +190,15 @@ export default {
 
   methods: {
     ...mapActions('artist', [GET_ARTIST_LIST]),
-    ...mapActions('product', [GET_DESIGNS, GET_PRODUCT, PREVIEW_DESIGN]),
+    ...mapActions('product', [GET_PRODUCT, PREVIEW_DESIGN]),
     handleClick(i) {
       this.clicked = i;
     },
     handleDesignImg(file) {
-      console.log(file);
       this.designForm.inputs[this.clicked].designImageUrl = URL.createObjectURL(file.raw);
       this.designForm.inputs[this.clicked].designImageFile = file.raw;
     },
     clearDesignImg(i) {
-      console.log(i);
       this.designForm.inputs[i].designImageUrl = null;
       this.designForm.inputs[i].designImageFile = null;
     },
@@ -226,11 +226,6 @@ export default {
               that.base64 = `data:${fileType};base64,${response}`;
               return that.base64;
             },
-          )
-          .catch(
-            (error) => {
-              console.log(error);
-            },
           );
       }
       this.previewForm.productId = this.$route.params.id;
@@ -253,7 +248,6 @@ export default {
       this.designForm.forDelete.push({
         designId: (this.designForm.inputs[i].designId ? this.designForm.inputs[i].designId : null),
       });
-      console.log(this.designForm.forDelete);
       this.designForm.inputs.splice(i, 1);
       this.designForm.inputs[0].show = true;
       this.current = 0;
@@ -271,6 +265,15 @@ export default {
     showDesign(url) {
       window.open(url, '_blank');
     },
+    checkDesignOk() {
+      if (!this.productDetails.sustainabilityReport) {
+        ElMessage.error({
+          showClose: true,
+          message: 'Please enter sustainability report first',
+        });
+        router.push(`/product/${this.productDetails.productId}/sustainability?name=${this.$route.query.name}`);
+      }
+    },
   },
   computed: {
     ...mapState('artist', ['artistList']),
@@ -279,40 +282,35 @@ export default {
   mounted() {
     this.designForm.productId = this.$route.params.id;
     this.GET_PRODUCT(this.$route.params.id);
-    this.GET_DESIGNS(this.$route.params.id);
-    console.log('RICO');
-    console.log(this.$route.params);
   },
   watch: {
     designDetails() {
-      this.designForm.productId = this.$route.params.id;
-      let hideShow = false;
-      if (this.designDetails.length > 0) {
-        this.designForm.inputs = [];
-        for (let i = 0; i < this.designDetails.length; i++) {
-          if (i === 0) {
-            hideShow = true;
-          } else {
-            hideShow = false;
-          }
-          this.designForm.inputs.push({
-            designId: this.designDetails[i].designId,
-            designArtistId: this.designDetails[i].designArtistId,
-            designImageUrl: this.designDetails[i].designFilePath,
-            designFileType: this.designDetails[i].designFileType,
-            designConcept: this.designDetails[i].designConcept,
-            show: hideShow,
-          });
-          console.log(this.designForm.inputs);
-        }
-      } else {
-        this.addForm();
-      }
-      this.designForm.existing = this.designDetails;
-      // console.log(this.designForm.existing);
-      this.defaultValue = {
-        ...this.designForm,
-      };
+      // this.designForm.productId = this.$route.params.id;
+      // let hideShow = false;
+      // if (this.designDetails.length > 0) {
+      //   this.designForm.inputs = [];
+      //   for (let i = 0; i < this.designDetails.length; i++) {
+      //     if (i === 0) {
+      //       hideShow = true;
+      //     } else {
+      //       hideShow = false;
+      //     }
+      //     this.designForm.inputs.push({
+      //       designId: this.designDetails[i].designId,
+      //       designArtistId: this.designDetails[i].designArtistId,
+      //       designImageUrl: this.designDetails[i].designFilePath,
+      //       designFileType: this.designDetails[i].designFileType,
+      //       designConcept: this.designDetails[i].designConcept,
+      //       show: hideShow,
+      //     });
+      //   }
+      // } else {
+      //   this.addForm();
+      // }
+      // this.designForm.existing = this.designDetails;
+      // this.defaultValue = {
+      //   ...this.designForm,
+      // };
     },
     previewDesign() {
       if (this.previewDesign.length > 0) {
@@ -320,9 +318,36 @@ export default {
       }
     },
     productDetails() {
+      this.checkDesignOk();
       this.existingArtistList = this.productDetails.artistIds;
-      console.log(this.existingArtistList);
       this.GET_ARTIST_LIST();
+
+      this.designForm.productId = this.$route.params.id;
+      let hideShow = false;
+      if (this.productDetails.designs.length > 0) {
+        this.designForm.inputs = [];
+        for (let i = 0; i < this.productDetails.designs.length; i++) {
+          if (i === 0) {
+            hideShow = true;
+          } else {
+            hideShow = false;
+          }
+          this.designForm.inputs.push({
+            designId: this.productDetails.designs[i].designId,
+            designArtistId: this.productDetails.designs[i].designArtistId,
+            designImageUrl: this.productDetails.designs[i].designFilePath,
+            designFileType: this.productDetails.designs[i].designFileType,
+            designConcept: this.productDetails.designs[i].designConcept,
+            show: hideShow,
+          });
+        }
+      } else {
+        this.addForm();
+      }
+      this.designForm.existing = this.productDetails.designs;
+      this.defaultValue = {
+        ...this.designForm,
+      };
     },
     artistList() {
       this.existingArtistList = this.artistList.filter((f) => this.existingArtistList.includes(f.artistId));

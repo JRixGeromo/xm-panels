@@ -46,7 +46,6 @@ function getRelationshipProfile(artistUserId) {
 }
 
 function createRelationship(relationshipDetails, relationship) {
-  console.log(relationshipDetails);
   SetAuthHeader();
   let relation = 'characterrelation';
   if (relationship === 'product') {
@@ -74,8 +73,6 @@ function deleteRelationship(relationshipDetails) {
   if (relationshipDetails.relation === 'product') {
     relation = 'productrelation';
   }
-  console.log('HERE');
-  console.log(relationshipDetails);
   return RelationshipApiIni().delete(`/api/xm/product/v1/${relationshipDetails.relation_uuid}/${relation}`)
     .then((response) => {
       extendAuthCookiesTime();

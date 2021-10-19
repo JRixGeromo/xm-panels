@@ -116,7 +116,7 @@
               + Create New
             </el-option>
           </CreateNewSelectInput>
-          <div style="width: 100%; text-align:right; margin-top: -20px">
+          <div style="width: 100%; text-align:right; margin-top: -20px; cursor: pointer;">
             <el-button class="link-btn"
               :disabled="preventClick"
               @click="relationships()">
@@ -584,10 +584,8 @@ export default {
       }
     },
     productSeriesList() {
-      console.log(this.productSeriesList);
     },
     licensorList() {
-      console.log(this.licensorList);
     },
     relatedProductList() {
       this.productOptions = this.relatedProductList;

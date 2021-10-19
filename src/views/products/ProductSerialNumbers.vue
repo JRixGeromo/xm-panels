@@ -25,7 +25,6 @@ export default {
   methods: {
     onSubmit(form) {
       form.validate((valid) => {
-        console.log(form.model);
         if (valid) {
           // use default profile image if user click clear img
           const serialNumberDetail = {

@@ -313,8 +313,8 @@ tr { border: none; }
   float: left;
   text-align: right;
   position: relative;
-  border-radius: 5px !important;
-  overflow: hidden;
+  /* border-radius: 5px !important; */
+  overflow: visible;
 }
 .image-files-big {
   max-width:60%;
@@ -335,8 +335,9 @@ tr { border: none; }
 .el-icon-delete {
   position: absolute;
   z-index: 1000;
-  top: 5px;
-  right: 5px;
+  top: -10px;
+  right: -10px;
+  color: #FF0000;
 }
 .el-icon-delete:hover {
   color: red;
@@ -1037,4 +1038,15 @@ textarea {
 
 .el-loading-spinner .path {
   stroke: $--color-primary;
+}
+
+.noselect {
+  cursor: pointer;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
 }

@@ -240,7 +240,7 @@ export default {
           label: 'Oldest',
         },
       ],
-      value: '',
+      value: 'newest',
     };
   },
   components: {

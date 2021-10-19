@@ -79,7 +79,24 @@ const actions = {
     commit(GET_ARTIST_LIST_START);
     artistServices.getArtistList().then(
       (data) => {
-        commit(GET_ARTIST_LIST_SUCCESS, data);
+        /*
+        const sortedProducts = data.sort((a, b) => {
+          const atime = new Date(a.productCreatedDate).getTime();
+          const btime = new Date(b.productCreatedDate).getTime();
+          let val = 0;
+          val = btime - atime;
+          return val;
+        });
+        commit(GET_PRODUCT_LIST_SUCCESS, sortedProducts);
+        */
+        const sortedArtists = data.sort((a, b) => {
+          const atime = new Date(a.artistCreatedDate).getTime();
+          const btime = new Date(b.artistCreatedDate).getTime();
+          let val = 0;
+          val = btime - atime;
+          return val;
+        });
+        commit(GET_ARTIST_LIST_SUCCESS, sortedArtists);
       },
       () => {
         commit(GET_ARTIST_LIST_FAILURE);

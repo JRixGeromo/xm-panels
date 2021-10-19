@@ -192,6 +192,11 @@ const routes = [
     beforeEnter: [authenticatedRoute],
     component: () => import(/* webpackChunkName: "access" */ '../views/admin/ProvenanceAdd.vue'),
   },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: () => import(/* webpackChunkName: "login" */ '../views/Logout.vue'),
+  },
 ];
 
 const router = createRouter({

@@ -11,9 +11,8 @@
     <el-row :gutter="20" class="form-bg-color">
       <el-col :span="18" :offset="3">
         <div class="grid-content bg-purple">
-          <span class="img-label">Upload Sustainability Report Image</span>
           <div class="upload-container">
-            <el-upload
+            <!-- <el-upload
               drag
               action=""
               list-type="picture-card"
@@ -30,12 +29,19 @@
               v-if="sustainabilityReportForm.displayImageUrl"
               class="el-icon-delete clear-img-icon"
               @click="clearSustainabilityReportImg()"
-            ></i>
+            ></i> -->
+            <SingleImageUpload
+              v-model:imgUrl="sustainabilityReportForm.displayImageUrl"
+              v-model:imgFile="sustainabilityReportForm.displayImageFile"
+              formProps="displayImageUrl"
+              formLabel="Upload Sustainability Report Image"
+            />
           </div>
         </div>
         <div class="grid-content bg-purple">
           <span class="img-label">Upload Sustainability Report</span>
           <div class="upload-container">
+            <el-form-item prop="reportFileUrl">
             <el-upload
               drag
               action=""
@@ -55,6 +61,7 @@
               class="el-icon-delete clear-img-icon"
               @click="clearSustainabilityReportFile"
             ></i>
+            </el-form-item>
           </div>
         </div>
 
@@ -78,32 +85,34 @@
         </el-row>
         <el-form-item>
         <el-row  v-for="(input, i) in sustainabilityReportForm.resourcesSaved" :key="i" >
-        <el-col :span="11" style="text-align: center;">
-            <TextInput
-            v-model="input.totalSave"
-            formProps="totalSave"
-            formLabel="Total Amount Saved"
-            />
-        </el-col>
-        <el-col :span="11" :offset="1" style="text-align: center;">
-            <TextInput
-            v-model="input.resourceAndSaveMethod"
-            formProps="resourceAndSaveMethod"
-            formLabel="Resources and How it is Saved"
-            />
-        </el-col>
-        <el-col :span="1" style="text-align: center;">
-            <div style="width: 100%; text-align: center; margin-top: 27px">
-            <i class="el-icon-circle-close" style="color:#ff0000; font-size: 35px;" @click="deleteResourcesSaved(i)"></i>
-            </div>
-        </el-col>
+          <el-col :span="11" style="text-align: center;">
+              <TextInput
+              v-model="input.totalSave"
+              formProps="totalSave"
+              formLabel="Total Amount Saved"
+              />
+          </el-col>
+          <el-col :span="11" :offset="1" style="text-align: center;">
+              <TextInput
+              v-model="input.resourceAndSaveMethod"
+              formProps="resourceAndSaveMethod"
+              formLabel="Resources and How it is Saved"
+              />
+          </el-col>
+          <el-col :span="1" style="text-align: center;">
+              <div style="width: 100%; text-align: center; margin-top: 27px">
+              <i class="el-icon-circle-close" style="color:#ff0000; font-size: 35px;" @click="deleteResourcesSaved(i)"></i>
+              </div>
+          </el-col>
         </el-row>
         <el-row>
         <el-col :span="18" :offset="3">
         <div style="width: 100%; text-align: center; margin-top:30px">
-            <el-button type="default" class="custom-btn preview-btn" @click="addResourcesSavedForm">
+            <el-button type="default" class="custom-btn preview-btn"
+              @click="addResourcesSavedForm"
+              :disabled="!allowed">
                 <!-- <i class="el-icon-plus"></i> -->
-                Add Resources
+              Add Resources
             </el-button>
         </div>
         </el-col>
@@ -128,12 +137,14 @@
               @click="$router.push(`/allproducts`)">DISCARD</el-button>
             <el-button
               class="custom-btn save-exit-btn"
-              @click="onSubmit($refs.sustainabilityReportForm)">SAVE AND EXIT</el-button>
+              @click="onSubmit($refs.sustainabilityReportForm)"
+              :disabled="!allowed">SAVE AND EXIT</el-button>
             <el-button
               class="custom-btn submit-btn"
               type="success"
               @click="onSubmit($refs.sustainabilityReportForm)"
               :loading="loading"
+              :disabled="!allowed"
             >
               SAVE AND PROCEED
             </el-button>
@@ -150,6 +161,7 @@ import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants'
 // import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 import TextArea from '@/components/Share/TextArea.vue';
 import TextInput from '@/components/Share/TextInput.vue';
+import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 
 export default {
   props: {
@@ -167,12 +179,13 @@ export default {
     },
   },
   components: {
-    // SingleImageUpload,
+    SingleImageUpload,
     TextInput,
     TextArea,
   },
   data() {
     return {
+      allowed: true,
       base64: null,
       country: '',
       region: '',
@@ -191,34 +204,45 @@ export default {
         summary: null,
         resourcesSaved: [],
       },
-      // resourcesSaved: [],
-      // rules: {
-      //   sustainabilityReportConcept: [
-      //     {
-      //       required: true,
-      //       message: 'Please enter sustainabilityReport concept',
-      //     },
-      //   ],
-      //   displayImageUrl: [
-      //     {
-      //       required: true,
-      //       message: 'Please enter sustainabilityReport image',
-      //     },
-      //   ],
-      //   sustainabilityReportCreateBy: [
-      //     {
-      //       required: true,
-      //       message: 'Please select artist',
-      //     },
-      //   ],
-      // },
+      resourcesSavedIndex: null,
+      rules: {
+        displayImageUrl: [
+          {
+            required: true,
+            message: 'Please enter image file',
+          },
+        ],
+        reportFileUrl: [
+          {
+            required: true,
+            message: 'Please enter report file',
+          },
+        ],
+        summary: [
+          {
+            required: true,
+            message: 'Please enter summary',
+          },
+        ],
+        // totalSave: [
+        //   {
+        //     required: true,
+        //     message: 'Please enter total save',
+        //   },
+        // ],
+        // resourceAndSaveMethod: [
+        //   {
+        //     required: true,
+        //     message: 'Please enter resource and save method',
+        //   },
+        // ],
+      },
     };
   },
 
   methods: {
     ...mapActions('product', [GET_SUSTAINABILITY_REPORT]),
     handleSustainabilityReportImg(file) {
-      console.log(file);
       this.sustainabilityReportForm.displayImageUrl = URL.createObjectURL(file.raw);
       this.sustainabilityReportForm.displayImageFile = file.raw;
     },
@@ -227,7 +251,6 @@ export default {
       this.sustainabilityReportForm.displayImageFile = null;
     },
     handleSustainabilityReportFile(file) {
-      console.log(file);
       this.sustainabilityReportForm.reportFileUrl = URL.createObjectURL(file.raw);
       this.sustainabilityReportForm.reportFile = file.raw;
     },
@@ -240,6 +263,7 @@ export default {
         totalSave: null,
         resourceAndSaveMethod: null,
       });
+      this.resourcesSavedIndex = this.sustainabilityReportForm.resourcesSaved.length;
     },
     showSustainabilityReport(url) {
       window.open(url, '_blank');
@@ -275,14 +299,14 @@ export default {
         this.sustainabilityReportForm.summary = this.sustainabilityReportInfo.sustainabilityReportDescription;
         this.sustainabilityReportForm.resourcesSaved = [];
         const resourcesSaved = JSON.parse(this.sustainabilityReportInfo.sustainabilityReportDetail);
-        console.log(resourcesSaved);
         for (let i = 0; i < resourcesSaved.length; i++) {
-          this.sustainabilityReportForm.resourcesSaved.push({
-            totalSave: resourcesSaved[i].totalSave,
-            resourceAndSaveMethod: resourcesSaved[i].resourceAndSaveMethod,
-          });
+          if (resourcesSaved[i].totalSave && resourcesSaved[i].resourceAndSaveMethod) {
+            this.sustainabilityReportForm.resourcesSaved.push({
+              totalSave: resourcesSaved[i].totalSave,
+              resourceAndSaveMethod: resourcesSaved[i].resourceAndSaveMethod,
+            });
+          }
         }
-        console.log(this.sustainabilityReportInfo);
       } else {
         this.addResourcesSavedForm();
       }
@@ -290,6 +314,21 @@ export default {
       // this.defaultValue = {
       // ...this.sustainabilityReportForm,
       // };
+    },
+    sustainabilityReportForm: {
+      handler(val) {
+        const i = val.resourcesSaved.length;
+        if (val.resourcesSaved.length > 0) {
+          if ((val.resourcesSaved[i - 1].totalSave) && (val.resourcesSaved[i - 1].resourceAndSaveMethod)) {
+            this.allowed = true;
+          } else {
+            this.allowed = false;
+          }
+        } else {
+          this.allowed = true;
+        }
+      },
+      deep: true,
     },
   },
 };

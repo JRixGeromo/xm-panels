@@ -169,8 +169,6 @@ function updateDesign(designDetails) {
 
 function createSerialNumber(serialNumberDetails, productId) {
   SetAuthHeader();
-  console.log(serialNumberDetails);
-  console.log(productId);
   return ProductApiIni().post(`/api/xm/product/v1/${productId}/productserialnumber`, serialNumberDetails)
     .then((response) => response.data)
     .catch((error) => {
@@ -188,9 +186,9 @@ function deactivateSerialNumber(serialNumberDetails) {
       throw error.response.data;
     });
 }
-function getProductSeries() {
+function getProductSeries(licenseId) {
   SetAuthHeader();
-  return ProductApiIni().get('/api/xm/product/v1/productseries')
+  return ProductApiIni().get(`/api/xm/product/v1/productseries?licenseId=${licenseId}`)
     .then((response) => {
       extendAuthCookiesTime();
       return response.data;
@@ -206,9 +204,7 @@ function previewDesign(design) {
   };
   delete body.productId;
   delete body.designs[0].show;
-  console.log(body);
   SetAuthHeader();
-  // return DesignPreviewApiIni().post(`/api/xm/product/v1/productprovenancepreview/${design.productId}`, body)
   return ProductApiIni().post(`/api/xm/product/v1/productprovenancepreview/${design.productId}`, body)
     .then((response) => {
       extendAuthCookiesTime();
@@ -224,7 +220,6 @@ function createSustainabilityReport(sustainabilityReportDetails) {
     ...sustainabilityReportDetails,
   };
   delete body.productId;
-  console.log(body);
   SetAuthHeader();
   return ProductApiIni().post(`/api/xm/product/v1/${sustainabilityReportDetails.productId}/sustainabilityreport`, body)
     .then((response) => response.data)
@@ -238,7 +233,6 @@ function updateSustainabilityReport(sustainabilityReportDetails) {
     ...sustainabilityReportDetails,
   };
   delete body.productId;
-  console.log(body);
   SetAuthHeader();
   return ProductApiIni().put(`/api/xm/product/v1/${sustainabilityReportDetails.productId}/sustainabilityreport`, body)
     .then((response) => response.data)

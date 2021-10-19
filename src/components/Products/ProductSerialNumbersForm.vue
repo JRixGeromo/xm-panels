@@ -16,13 +16,26 @@
             }">
           <span class="img-label">Upload Serial Numbers</span>
           <div style="margin-top: 10px; text-align:center" class="dropbox">
-            <input type="file" @change="onFileChange" :auto-upload="false" accept=".csv,.xls,.xlsx" class="input-file">
+            <input style="left: 0px; top: 0px;" type="file" @change="onFileChange" :auto-upload="false" accept=".csv,.xls,.xlsx" class="input-file">
             <i class="el-icon-upload" style="padding-top:60px; font-size:67px"></i>
           </div>
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="20" class="form-bg-color" style="padding-top: 30px;" v-if="showRemote">
+    <el-row :gutter="20" class="form-bg-color" style="padding-top: 30px; font-size: 18px;" v-if="showRemote">
+     <el-col :span="8" :offset="7">
+        <div class="bar-wrapper" style="border: 1px solid #fff;">
+          <span style="position: absolute; left: 42%; mix-blend-mode: difference; padding-top: 5px; ">{{ uploadedSerials }}</span>
+          <div class="bg" :style="{width: w}">
+            <div class="el"></div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="2">
+        <span style="display: inline-block; min-width: 100px; padding-top: 8px;">{{ maxUploads }}</span>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20" class="form-bg-color" v-if="showRemote">
       <el-col :span="18" :offset="3">
           <el-pagination
           class="table-pagination"
@@ -39,7 +52,7 @@
       <el-col :span="18" :offset="3">
         <el-row>
           <!-- <el-col v-for="(each) in localData" :key="each" :xs="8" :sm="6" :md="4" :lg="3"> -->
-          <el-col :span="6" v-for="(each) in localData" :key="each" :xs="24" :sm="12" :md="10" :lg="8" :xl="6">
+          <el-col :span="6" v-for="(each) in localData" :key="each" :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
           <div :style="{ padding: '5px' }">
           <el-card :body-style="{ padding: '0px' }">
             <div style="padding: 30px 0px 30px 0px; text-align: center">
@@ -56,7 +69,7 @@
     <el-row :gutter="20" class="form-bg-color" style="padding: 30px 0px 30px 0px;" v-if="showRemote">
       <el-col :span="18" :offset="3">
         <el-row>
-          <el-col :span="6" v-for="(each) in remoteData" :key="each" :xs="24" :sm="12" :md="10" :lg="8" :xl="6">
+          <el-col :span="6" v-for="(each) in remoteData" :key="each" :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
             <div :style="{ padding: '5px' }">
               <el-card :body-style="{ padding: '0px' }">
                 <div class="checkbox">
@@ -67,8 +80,8 @@
                   style="margin-left:5px; width: auto;">
                 </div>
                 <div style="padding: 30px 0px 30px 0px; text-align: center" @click="go(each.serialNumber)">
-                  <span style="font-size: 22px" class="font-text">{{ each.serialNumber }}</span>
-                  <div class="bottom font-text" style="padding-top:10px; font-size:18px">
+                  <span style="font-size: 22px" class="font-text noselect">{{ each.serialNumber }}</span>
+                  <div class="bottom font-text noselect" style="padding-top:10px; font-size:18px">
                     <span>EDITION {{ each.edition }}/ {{ each.total }}</span>
                   </div>
                 </div>
@@ -112,6 +125,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GET_PRODUCT } from '@/store/modules/product/actions-type';
 import readXlsxFile from 'read-excel-file';
+import router from '@/router';
 import { ElMessage } from 'element-plus';
 
 const defaultPagination = {
@@ -139,6 +153,9 @@ export default {
   },
   data() {
     return {
+      w: '0%',
+      uploadedSerials: 'SN Uploaded 0',
+      maxUploads: '',
       files: '',
       active: false,
       xlsxTemp: [],
@@ -206,7 +223,6 @@ export default {
             this.showUpload = false;
             this.showUploadBut = true;
           }
-          console.log(this.localData);
         });
       } else {
         this.error('Cannot read file !');
@@ -235,8 +251,6 @@ export default {
           this.showUpload = false;
           this.showUploadBut = true;
         }
-        // this.fromBackend = false;
-        console.log(this.localData);
       }
     },
     paginationCallback(page) {
@@ -274,11 +288,24 @@ export default {
       } else {
         this.serialNumberForm.forDeleteSN.push(sn);
       }
-      console.log(this.serialNumberForm.forDeleteSN);
     },
     go(sn) {
       if (sn.length > 0) {
-        window.open(`https://xm-landing.bsg-dev.tk/productprovenance?id=${sn}`, '_blank');
+        window.open(`${process.env.VUE_APP_LOADING_API_DOMAIN}/productprovenance?id=${sn}`, '_blank');
+      }
+    },
+    checkSerialOk() {
+      if (!this.productDetails.sustainabilityReport || !this.productDetails.designs.length > 0) {
+        ElMessage.error({
+          showClose: true,
+          message: 'Please enter sustainability report and design first',
+        });
+        if (!this.productDetails.sustainabilityReport) {
+          router.push(`/product/${this.productDetails.productId}/sustainability?name=${this.$route.query.name}`);
+        }
+        if (!this.productDetails.designs.length > 0) {
+          router.push(`/product/${this.productDetails.productId}/designs?name=${this.$route.query.name}`);
+        }
       }
     },
     ...mapActions('product', [GET_PRODUCT]),
@@ -297,6 +324,7 @@ export default {
   },
   watch: {
     productDetails() {
+      this.checkSerialOk();
       if (this.searchKeyword) {
         this.pagination = {
           ...this.pagination,
@@ -312,11 +340,15 @@ export default {
         this.showRemote = true;
         this.showUpload = false;
         this.showUploadBut = true;
+        this.w = (this.remoteData.length / this.productDetails.productQuantity) * 100;
+        this.w = `${this.w}%`;
+        this.uploadedSerials = `SN Uploaded: ${this.remoteData.length}`;
       } else {
         this.showRemote = false;
         this.showUpload = true;
         this.showUploadBut = false;
       }
+      this.maxUploads = `Max Qty: ${this.productDetails.productQuantity}`;
       this.showSaveBut = false;
     },
   },
@@ -379,5 +411,30 @@ export default {
   }
   .el-card {
     position: relative !important;
+  }
+</style>
+
+<style lang="scss" scoped>
+  /* progress bar */
+  $color: #fff;
+  $serial: "SN Uploaded: 0";
+  .bg {
+    background-color: $color;
+  }
+  .el{
+    color: $color;
+    width: 100%;
+    height: 20px;
+    text-align: center;
+    padding: 5px;
+    &:after {
+      // content: $serial;
+      padding: 2px;
+      display: block;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      color: #fff;
+    }
   }
 </style>

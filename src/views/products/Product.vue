@@ -6,7 +6,7 @@
         All Products
       </el-breadcrumb-item>
       <el-breadcrumb-item v-if="this.$route.query.name">
-        {{productName}}
+        {{this.$route.query.name}}
       </el-breadcrumb-item>
       <el-breadcrumb-item v-else>
         Create
@@ -16,13 +16,13 @@
   <el-container>
     <el-main v-if="this.$route.params.id" :router="true" style="text-align: center; padding:2px">
       <div class="breadcrumb flat">
-        <a  @click="$router.push(`/product/${this.$route.params.id}/details?name=${productName}`)"
+        <a  @click="$router.push(`/product/${this.$route.params.id}/details?name=${this.$route.query.name}`)"
         :class="{ active:selectedMenu.includes('details') }">Product Detail</a>
-        <a @click="$router.push(`/product/${this.$route.params.id}/sustainability`)"
+        <a @click="$router.push(`/product/${this.$route.params.id}/sustainability?name=${this.$route.query.name}`)"
         :class="{ active:selectedMenu.includes('sustainability') }">Sustainability Report</a>
-        <a @click="$router.push({path:`/product/${this.$route.params.id}/designs`})"
+        <a @click="$router.push(`/product/${this.$route.params.id}/designs?name=${this.$route.query.name}`)"
         :class="{ active:selectedMenu.includes('designs') }">Artist Details</a>
-        <a @click="$router.push(`/product/${this.$route.params.id}/serialnumbers`)"
+        <a @click="$router.push(`/product/${this.$route.params.id}/serialnumbers?name=${this.$route.query.name}`)"
         :class="{ active:selectedMenu.includes('serialnumbers') }">Serial Numbers</a>
       </div>
     </el-main>
@@ -54,45 +54,60 @@
 </template>
 
 <script>
+// import { useRouter } from 'vue-router';
+// import { ElMessage } from 'element-plus';
+// import { GET_PRODUCT } from '@/store/modules/product/actions-type';
+// import { mapActions, mapState } from 'vuex';
+
 export default {
-  computed: {
-  },
   data() {
     return {
-      productName: this.$route.query.name,
       activeMenu: 'details',
       selectedMenu: 'details',
+      product: null,
     };
   },
   mounted() {
     this.activeMenu = this.$router.currentRoute.value.fullPath;
     this.selectedMenu = this.$router.currentRoute.value.fullPath.split('/').pop();
+    // this.GET_PRODUCT(this.$route.params.id);
+  },
+  computed: {
+    // ...mapState('product', ['productDetails']),
   },
   watch: {
     $route() {
       this.activeMenu = this.$router.currentRoute.value.fullPath;
       this.selectedMenu = window.location.pathname.split('/').pop();
     },
+    // productDetails() {
+    //   this.product = this.productDetails;
+    // },
+  },
+  methods: {
+    /*
+    ...mapActions('product', [GET_PRODUCT]),
+    checkDesignOk() {
+      if (this.product.sustainabilityReport) {
+        this.$router.push(`/product/${this.$route.params.id}/designs?name=${this.product.productName}`);
+      } else {
+        ElMessage.error({
+          showClose: true,
+          message: 'Please enter sustainability report first',
+        });
+      }
+    },
+    checkSerialOk() {
+      if (this.product.sustainabilityReport && this.product.designs.length > 0) {
+        this.$router.push(`/product/${this.$route.params.id}/serialnumbers?name=${this.product.productName}`);
+      } else {
+        ElMessage.error({
+          showClose: true,
+          message: 'Please enter sustainability report and design first',
+        });
+      }
+    },
+    */
   },
 };
-// [
-//   {
-//     "productName": "Test1",
-//     "productDescription": "Test1",
-//     "productQuantity": 2,
-//     "productManufactureCountry": "Phil",
-//     "productReleaseDate": "2021-08-25T05:55:08.072Z",
-//     "productManufactureDate": "2021-08-25T05:55:08.072Z",
-//     "productDisplayImage": "Test only",
-//     "productBackgroundImage": "Test only",
-//     "productStatus": "Active",
-//     "licenseId": "25e622ae-abed-4a80-0eb9-08d9643e9f4d",
-//     "productImages": [
-//       "Test only"
-//     ],
-//     "artistIds": [
-//       "d52995d0-3b19-4fce-b564-08d962ce6f42"
-//     ]
-//   }
-// ]
 </script>

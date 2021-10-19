@@ -113,7 +113,6 @@ const state = {
 
 const getters = {
   getProducts: (state) => (parmas) => {
-    console.log(state);
     const paginationDetails = {
       itemPerPage: parmas.itemPerPage,
       totalRecord: state.productList.length,
@@ -229,7 +228,6 @@ const actions = {
       productDisplayImage: productPicUrl,
       productBackgroundImage: productCoverPicUrl,
     };
-    console.log(productDetailsSource);
     const productDetailsArray = [];
     productDetailsArray.push(productDetailsSource);
     commit(CREATE_PRODUCT_START);
@@ -344,7 +342,6 @@ const actions = {
   },
   [FILTER_PRODUCT_IN_LIST]({ commit, state }, licenseId) {
     const productList = [...state.oriProductList];
-    console.log(productList);
     const filteredList = licenseId ?
       productList.filter((x) => x.character.license.licenseId.toLowerCase().includes(licenseId.toLowerCase())) :
       productList;
@@ -426,9 +423,6 @@ const actions = {
     }
     // end of: upload
 
-    console.log(updateDesigns);
-    console.log(newDesigns);
-
     if (newDesigns.length > 0) {
       commit(CREATE_DESIGN_START);
       await productServices.createDesign(newDesigns).then(
@@ -500,12 +494,12 @@ const actions = {
     //   fullpageLoader.close();
     // });
   },
-  [GET_PRODUCT_SERIES_LIST]({ commit }) {
+  [GET_PRODUCT_SERIES_LIST]({ commit }, licenseId) {
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
     commit(GET_PRODUCT_SERIES_LIST_START);
-    productServices.getProductSeries().then(
+    productServices.getProductSeries(licenseId).then(
       (data) => {
         // const sortedProducts = data.sort((a, b) => {
         //   const atime = new Date(a.productCreatedDate).getTime();
@@ -525,7 +519,6 @@ const actions = {
   },
   async [CREATE_SERIAL_NUMBER]({ commit }, serialNumberDetails) {
     // serialNumberDetails.serialNumbers.shift();
-    // console.log(serialNumberDetails);
     const fullpageLoader = ElLoading.service({
       fullscreen: true,
     });
@@ -541,7 +534,6 @@ const actions = {
         productSerialNumberIds: sn,
       };
 
-      console.log(productSerialNumberIds);
       await productServices.deactivateSerialNumber(productSerialNumberIds).then(
         () => {
           ElMessage.success({
@@ -712,10 +704,15 @@ const actions = {
           reportFile = process.env.VUE_APP_FILE_DOMAIN + uploadData;
         },
       );
+
+      // array.filter(value => Object.keys(value).length !== 0);
+      const reportInfo = sustainabilityReportInfo.resourcesSaved
+        .filter((value) => (Object.keys(value.totalSave).length !== 0 && Object.keys(value.resourceAndSaveMethod).length !== 0));
+
       const sustainabilityReports = {
         productId: sustainabilityReportInfo.productId,
         sustainabilityReportDescription: sustainabilityReportInfo.summary,
-        sustainabilityReportDetail: JSON.stringify(sustainabilityReportInfo.resourcesSaved),
+        sustainabilityReportDetail: JSON.stringify(reportInfo),
         // sustainabilityReportDetail: sustainabilityReportInfo.resourcesSaved,
         sustainabilityReportImg: reportImage,
         sustainabilityReportFile: reportFile,

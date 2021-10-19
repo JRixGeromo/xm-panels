@@ -162,6 +162,12 @@ const NAV_MENU = [
       },
     ],
   },
+  {
+    name: 'Logout',
+    route: '/logout',
+    icon: 'el-icon-s-tools',
+    child: false,
+  },
 ];
 
 export {

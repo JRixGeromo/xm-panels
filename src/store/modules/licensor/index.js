@@ -79,7 +79,14 @@ const actions = {
     commit(GET_LICENSOR_LIST_START);
     licensorServices.getLicensors().then(
       (data) => {
-        commit(GET_LICENSOR_LIST_SUCCESS, data);
+        const sortedLicensors = data.sort((a, b) => {
+          const atime = new Date(a.licenseCreatedDate).getTime();
+          const btime = new Date(b.licenseCreatedDate).getTime();
+          let val = 0;
+          val = btime - atime;
+          return val;
+        });
+        commit(GET_LICENSOR_LIST_SUCCESS, sortedLicensors);
       },
       () => {
         commit(GET_LICENSOR_LIST_FAILURE);
@@ -106,7 +113,6 @@ const actions = {
     // });
   },
   async [CREATE_LICENSOR]({ commit }, licenseDetails) {
-    console.log(licenseDetails);
     // upload
     let licensePicUrl = licenseDetails.oriLicenseDisplayImage;
 
@@ -124,7 +130,6 @@ const actions = {
       // licenseDisplayBannerFilePath: isCoverPicSuccess ? coverPicUrl : null,
     };
 
-    console.log(licenseDetailsSource);
     const licenseDetailsArray = [];
     licenseDetailsArray.push(licenseDetailsSource);
     commit(CREATE_LICENSOR_START);
@@ -165,9 +170,6 @@ const actions = {
       // licenseDisplayBannerFilePath: isCoverPicSuccess ? coverPicUrl : null,
     };
 
-    // console.log(licenseDetailsSource);
-    // const licenseDetailsArray = [];
-    // licenseDetailsArray.push(licenseDetailsSource);
     commit(UPDATE_LICENSOR_START);
     licensorServices.updateLicensor(licenseDetailsSource).then(
       () => {

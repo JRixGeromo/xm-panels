@@ -131,7 +131,7 @@
               + Create New
             </el-option>
           </CreateNewSelectInput>
-          <div style="width: 100%; text-align:right; margin-top: -20px">
+          <div style="width: 100%; text-align:right; margin-top: -20px; cursor: pointer;">
             <span style="text-decoration: underline" @click="relationships()">View product relationships</span>
           </div>
         </div>
@@ -356,6 +356,7 @@ import {
   DEFAULT_RELATIONSHIP,
 } from '@/store/modules/relationship/actions-type';
 import router from '@/router';
+// import { ElMessage } from 'element-plus';
 
 export default {
   props: {
@@ -538,7 +539,7 @@ export default {
     this.GET_PRODUCT(this.$route.params.id);
     this.GET_ARTIST_LIST();
     this.GET_LICENSOR_LIST();
-    this.GET_PRODUCT_SERIES_LIST();
+    // this.GET_PRODUCT_SERIES_LIST();
     this.focused.productSeries = true;
   },
   methods: {
@@ -625,7 +626,6 @@ export default {
           relation: '',
         });
       }
-      console.log(JSON.stringify(this.relationshipDetails));
     },
     getCountry(country) {
       let c = 'US';
@@ -688,12 +688,12 @@ export default {
         this.productForm.productImagesFileCheck = 'found';
       }
       this.GET_CHARACTER_LIST(this.productForm.licenseId);
+      this.GET_PRODUCT_SERIES_LIST(this.productForm.licenseId);
       if (this.productDetails.productSerialNumbers.length > 0) {
         this.disallowEdit();
       }
     },
     licensorList() {
-      console.log(this.licensorList);
     },
     relatedProductList() {
       this.productOptions = this.relatedProductList.filter((x) => x.productId !== this.selectedProduct);

@@ -40,7 +40,6 @@ export default {
   },
   methods: {
     handleSidebarShow(show) {
-      console.log(show);
       this.sidebarShow = show;
     },
     handleResize() {

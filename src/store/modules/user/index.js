@@ -80,7 +80,6 @@ const actions = {
   },
   async [CREATE_USER]({ commit }, artistDetails) {
     commit(CREATE_USER_START);
-    console.log(artistDetails);
     userServices.createUser(artistDetails).then(
       async (data) => {
         const roleDetails = {
@@ -128,7 +127,6 @@ const actions = {
             artistDisplayPhotoFilePath: artistPicUrl,
             artistDisplayBannerFilePath: coverPicUrl,
           };
-          // console.log(JSON.stringify(profileDetails));
           const artistInfosArray = [];
           artistInfosArray.push(artistInfo);
           artistService.createArtist(artistInfosArray).then(
@@ -190,12 +188,9 @@ const actions = {
   },
   async [UPDATE_USER]({ commit }, artistDetails) {
     commit(UPDATE_USER_START);
-    console.log(artistDetails);
     userServices.updateUser(artistDetails).then(
       async (data) => {
         // upload
-        console.log(JSON.stringify(artistDetails));
-
         let artistPicUrl = artistDetails.oriArtistImageUrl;
 
         if (artistDetails.artistImageFile) {
@@ -224,7 +219,6 @@ const actions = {
           artistDisplayPhotoFilePath: artistPicUrl,
           artistDisplayBannerFilePath: coverPicUrl,
         };
-        // console.log(JSON.stringify(artistInfo));
         artistService.updateArtist(artistInfo).then(
           () => {
             ElMessage.success({

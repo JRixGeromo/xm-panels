@@ -171,7 +171,6 @@ export default {
         ...this.pagination,
       });
       this.data = userList.data;
-      console.log(this.data);
       this.pagination = userList.pagination;
     },
   },

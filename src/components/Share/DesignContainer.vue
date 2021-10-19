@@ -25,7 +25,6 @@ export default {
   },
   computed: {
     isImgageArtwork() {
-      console.log(this.designDetails);
       return IMAGE_FORMAT.some((x) => x === this.designDetails.productAutographProofType);
     },
   },

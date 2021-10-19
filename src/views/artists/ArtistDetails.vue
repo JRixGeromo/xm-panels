@@ -26,7 +26,6 @@ export default {
     onSubmit(form) {
       form.validate((valid) => {
         if (valid) {
-          console.log(form.model);
           const userDetail = {
             ...form.model,
             username: form.model.artistEmailAddress,

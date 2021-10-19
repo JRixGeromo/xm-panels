@@ -297,7 +297,6 @@ export default {
         ...this.pagination,
       });
       this.data = productList.data;
-      // console.log(this.data);
       this.pagination = productList.pagination;
     },
     autographArchivesList() {
@@ -338,7 +337,6 @@ export default {
     getArtist(each) {
       let artist = [];
       artist = this.artistInfo.filter((x) => x.artistId === each.autographArtistId);
-      console.log(each);
       return artist[0].artistName;
     },
     viewSubscription(data) {
@@ -390,7 +388,6 @@ export default {
     },
     approvals() {
       this.show = 'approvals';
-      console.log(this.autographArchivesList);
     },
     archives() {
       this.show = 'archives';
