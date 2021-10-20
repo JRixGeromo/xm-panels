@@ -45,19 +45,19 @@ const NAV_MENU = [
   {
     name: 'Home',
     route: '/',
-    icon: 'el-icon-s-platform',
+    icon: 'xm-el-icon-s-home',
     child: false,
   },
   /* {
     name: 'Art Listing',
     route: '/artworklisting',
-    icon: 'el-icon-picture',
+    icon: 'xm-el-icon-picture',
     child: false,
   },
   {
     name: 'Page',
     child: true,
-    icon: 'el-icon-document',
+    icon: 'xm-el-icon-licensor',
     subNav: [
       {
         name: 'Page List',
@@ -71,7 +71,7 @@ const NAV_MENU = [
   },
   {
     name: 'Configuration',
-    icon: 'el-icon-s-tools',
+    icon: 'xm-el-icon-s-settings',
     child: true,
     subNav: [
       {
@@ -99,43 +99,43 @@ const NAV_MENU = [
   {
     name: 'Manage Products',
     route: '/allproducts',
-    icon: 'el-icon-suitcase',
+    icon: 'xm-el-icon-product',
     child: false,
   },
   {
     name: 'Manage NFTs',
     route: '/managenfts',
-    icon: 'el-icon-postcard',
+    icon: 'xm-el-icon-nft',
     child: false,
   },
   {
     name: 'Manage Customers',
     route: '/allcustomers',
-    icon: 'el-icon-s-custom',
+    icon: 'xm-el-icon-s-customer',
     child: false,
   },
   {
     name: 'Manage Artists',
     route: '/allartists',
-    icon: 'el-icon-s-open',
+    icon: 'xm-el-icon-s-artist',
     child: false,
   },
   {
     name: 'Manage Licensors',
     route: '/alllicensors',
-    icon: 'el-icon-document',
+    icon: 'xm-el-icon-licensor',
     child: false,
   },
   {
     name: 'Settings',
     route: '/settings',
-    icon: 'el-icon-s-tools',
+    icon: 'xm-el-icon-s-settings',
     child: false,
   },
   {
     name: 'User',
     child: true,
-    icon: 'el-icon-s-custom',
+    icon: 'xm-el-icon-s-customer',
     subNav: [
       {
         name: 'User List',
@@ -150,7 +150,7 @@ const NAV_MENU = [
   {
     name: 'Role',
     child: true,
-    icon: 'el-icon-document',
+    icon: 'xm-el-icon-licensor',
     subNav: [
       {
         name: 'Role List',
@@ -165,7 +165,7 @@ const NAV_MENU = [
   {
     name: 'Logout',
     route: '/logout',
-    icon: 'el-icon-s-tools',
+    icon: 'xm-el-icon-s-logout',
     child: false,
   },
 ];

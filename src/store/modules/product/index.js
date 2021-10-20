@@ -101,7 +101,7 @@ const state = {
   updatingSerialNumber: false,
   relatedProductList: [],
   gettingRelatedProductList: false,
-  defaultRelationship: false,
+  updateResult: null,
   gettingPreviewDesign: false,
   previewDesign: [],
   gettingSustainabilityReportList: false,
@@ -315,11 +315,16 @@ const actions = {
           showClose: true,
           message: 'Product updated successfully',
         });
-        let defaultRelationship = false;
+        let def = false;
         if ((productDetails.licenseId !== productDetails.oriLicenseId) || (productDetails.licenseId !== productDetails.oriLicenseId)) {
-          defaultRelationship = true;
+          def = true;
         }
-        commit(UPDATE_PRODUCT_SUCCESS, defaultRelationship);
+        const result = [];
+        result.push({
+          defaultRelationship: def,
+          next: productDetails.next,
+        });
+        commit(UPDATE_PRODUCT_SUCCESS, result);
         // router.push(`/product/${productDetailsSource.productId}/details`);
       },
       (error) => {
@@ -902,7 +907,7 @@ const mutations = {
   },
   [UPDATE_PRODUCT_SUCCESS](state, data) {
     state.updatingProduct = false;
-    state.defaultRelationship = data;
+    state.updateResult = data;
   },
   [UPDATE_PRODUCT_FAILURE](state) {
     state.updatingProduct = false;

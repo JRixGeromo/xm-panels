@@ -2,6 +2,7 @@
   <ProductDetailsForm
     :onSubmit="onSubmit"
     :resetForm="resetForm"
+    :next="next"
     :loading="updatingProduct"
   />
 </template>
@@ -25,7 +26,7 @@ export default {
     };
   },
   methods: {
-    onSubmit(form) {
+    onSubmit(form, next) {
       form.validate((valid) => {
         if (valid) {
           // use default profile image if user click clear img
@@ -41,6 +42,7 @@ export default {
             productReleaseDate: dayjs(form.model.productReleaseDate).format('YYYY-MM-DDT00:00:00'),
             applicationDomain: process.env.VUE_APP_APPLICATION_DOMAIN,
             productImages,
+            next,
           };
           this.updateProduct(productDetail);
         }

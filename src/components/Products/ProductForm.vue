@@ -6,7 +6,7 @@
     :model="productForm"
     :rules="rules"
     ref="productForm"
-    @keyup.enter="onSubmit($refs.productForm)"
+    @keyup.enter="onSubmit($refs.productForm, 'proceed')"
   >
     <el-row :gutter="20" class="form-bg-color">
       <el-col :span="21" :offset="3" class="form-text-title-pad">
@@ -184,11 +184,11 @@
               @click="$router.push(`/allproducts`)">DISCARD</el-button>
             <el-button
               class="custom-btn save-exit-btn"
-              @click="onSubmit($refs.productForm)">SAVE AND EXIT</el-button>
+              @click="onSubmit($refs.productForm, 'exit')">SAVE AND EXIT</el-button>
             <el-button
               class="custom-btn submit-btn"
               type="success"
-              @click="onSubmit($refs.productForm)"
+              @click="onSubmit($refs.productForm, 'proceed')"
               :loading="loading"
             >
               SAVE AND PROCEED
@@ -223,10 +223,63 @@
             </div>
           </el-col>
         </el-row>
+        <el-row justify="space-between">
+          <el-col :span="24" style="margin-top: 50px; margin-bottom: 50px">
+            <el-form-item>
+            <el-row  v-for="(input, i) in relationshipForm.inputs" :key="i" >
+              <el-col :span="10" :offset="1" style="text-align: center;">
+                <SelectInput
+                  v-model="input.relatedProduct"
+                  formProps="productName"
+                  formLabel="Product"
+                >
+                  <el-option
+                    v-for="product in productOptions"
+                    :key="product.productId"
+                    :label="product.productName"
+                    :value="product.productId"
+                  >
+                  </el-option>
+                </SelectInput>
+              </el-col>
+              <el-col :span="10" :offset="1" style="text-align: center;">
+                <TextInput
+                  v-model="input.relation"
+                  formProps="relationship"
+                  formLabel="RELATIONSHP"
+                />
+              </el-col>
+              <el-col :span="1" :offset="1" style="text-align: center;">
+                <div style="width: 100%; text-align: center; margin-top: 27px">
+                  <i class="el-icon-circle-close" style="color:#ff0000; font-size: 35px;" @click="deleteRelation(i)"></i>
+                </div>
+              </el-col>
+            </el-row>
+            <el-row>
+            <el-col :span="18" :offset="3">
+              <div style="width: 100%; text-align: center; margin-top:30px">
+                <el-button type="default" @click="addForm"><i class="el-icon-plus"></i></el-button>
+              </div>
+            </el-col>
+            </el-row>
+            </el-form-item>
+            <el-form-item>
+              <el-row>
+                <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
+                  <el-button
+                    class="custom-btn discard-btn" @click="discard()">DISCARD</el-button>
+                </el-col>
+                <el-col :span="8" :offset="1" style="padding: 23px">
+                  <el-button  class="custom-btn submit-btn"
+                    @click="saveRelations()" :disabled="!allowSave">SAVE</el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-col>
     </el-row>
-
-    <el-dialog
+    <!-- <el-dialog
       title="RELATIONSHIP"
       custom-class="custom-dialog"
       v-model="relationshipDialog"
@@ -282,8 +335,8 @@
             @click="saveRelations()" :disabled="!allowSave">SAVE</el-button>
         </el-col>
       </el-row>
-      </el-form-item>
-    </el-dialog>
+    </el-form-item>
+    </el-dialog> -->
     <el-dialog
       title="DELETE?"
       custom-class="custom-dialog"
@@ -348,6 +401,9 @@ export default {
     loading: {
       type: Boolean,
       required: true,
+    },
+    next: {
+      type: String,
     },
   },
   components: {
@@ -503,7 +559,7 @@ export default {
   mounted() {
     this.GET_ARTIST_LIST();
     this.GET_LICENSOR_LIST();
-    this.GET_PRODUCT_SERIES_LIST();
+    // this.GET_PRODUCT_SERIES_LIST();
     this.focused.productSeries = true;
   },
   methods: {
@@ -516,6 +572,7 @@ export default {
       this.productForm.characterId = '';
       this.setRelationship();
       this.GET_CHARACTER_LIST(this.productForm.licenseId);
+      this.GET_PRODUCT_SERIES_LIST(this.productForm.licenseId);
     },
     products() {
       this.show = 'products';
@@ -551,7 +608,6 @@ export default {
     },
     async executeSave() {
       await this.CREATE_RELATIONSHIP(this.relationshipForm);
-      router.push('/allproducts');
     },
     discard() {
       this.relationshipDialog = false;
@@ -581,6 +637,11 @@ export default {
         this.executeSave();
       } else {
         this.DEFAULT_RELATIONSHIP(this.newProductId);
+      }
+      if (this.next === 'exit') {
+        router.push('/allproducts');
+      } else {
+        router.push(`/product/${this.newProductId}/sustainability?name=${this.productForm.productName}`);
       }
     },
     productSeriesList() {

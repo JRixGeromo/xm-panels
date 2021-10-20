@@ -31,7 +31,7 @@ import {
 } from '@/store/modules/relationship/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage, ElLoading } from 'element-plus';
-import router from '@/router';
+// import router from '@/router';
 
 const state = {
   gettingRelationshipList: false,
@@ -181,7 +181,7 @@ const actions = {
           message: 'Default relationship added successfully',
         });
         commit(DEFAULT_RELATIONSHIP_SUCCESS);
-        router.push('/allproducts');
+        // router.push('/allproducts');
       },
       (error) => {
         ElMessage.error({

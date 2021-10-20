@@ -32,24 +32,6 @@
       </div>
     </el-main>
   </el-container>
-  <!-- <el-menu v-if="this.$route.params.id"
-    :default-active="activeMenu"
-    class="breadcrumb flat"
-    mode="horizontal"
-    :router="true">
-    <el-menu-item :index="productDetails"><a>Product Details</a></el-menu-item>
-    <el-menu-item :index="artistDetails"><a>Artist Details</a></el-menu-item>
-    <el-menu-item :index="serialNumbers"><a>Serial Numbers</a></el-menu-item>
-  </el-menu>
-  <el-menu v-else
-    :default-active="activeMenu"
-    class="breadcrumb flat"
-    mode="horizontal"
-    :router="true">
-    <el-menu-item :index="createProduct"><a>Product Details</a></el-menu-item>
-    <el-menu-item :index="productartistdetails"><a>Artist Details</a></el-menu-item>
-    <el-menu-item :index="productserialnumbers"><a>Serial Numbers</a></el-menu-item>
-  </el-menu> -->
   <router-view></router-view>
 </template>
 

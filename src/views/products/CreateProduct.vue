@@ -2,6 +2,7 @@
   <ProductForm
     :onSubmit="onSubmit"
     :resetForm="resetForm"
+    :next="next"
     :loading="creatingProduct"
   />
 </template>
@@ -25,7 +26,8 @@ export default {
     };
   },
   methods: {
-    onSubmit(form) {
+    onSubmit(form, next) {
+      this.next = next;
       form.validate((valid) => {
         if (valid) {
           // use default profile image if user click clear img

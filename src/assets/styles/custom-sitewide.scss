@@ -204,6 +204,7 @@ tr { border: none; }
 }
 
 /* custom icon */
+/*
 .el-icon-s-platform { content: url('assets/icons/Home.svg');  filter: brightness(0%) invert(1)}
 .el-icon-s-platform:before { content: url('assets/icons/Home.svg');}
 
@@ -225,11 +226,6 @@ tr { border: none; }
 .el-icon-s-tools { content: url('assets/icons/Settings.svg');  filter: brightness(0%) invert(1)}
 .el-icon-s-tools:before { content: url('assets/icons/Settings.svg');}
 
-// .el-icon-search { 
-//   content: url('assets/icons/Search.svg');  
-//   filter: brightness(50%) invert(3);
-//   width: 60px;
-// }
 .el-icon-edit { 
   content: url('assets/icons/Edit.svg');  
   filter: brightness(50%) invert(3);
@@ -252,6 +248,100 @@ tr { border: none; }
   }
 
   .el-icon-postcard {
+    filter: brightness(1) invert(0);
+  }
+}
+
+.el-submenu {
+  .el-submenu__title:hover {
+    i {
+      filter: unset;
+    }
+  }
+}
+*/
+
+/* custom icon */
+.xm-el-icon-s-home { 
+  width: 60px;
+  content: url('assets/icons/Home.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-s-home:before { content: url('assets/icons/Home.svg');}
+
+.xm-el-icon-product { 
+  width: 60px;
+  content: url('assets/icons/Product.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-product:before { content: url('assets/icons/Product.svg');}
+
+.xm-el-icon-nft { 
+  width: 60px;
+  content: url('assets/icons/NFT.svg');  
+  filter: invert(1)
+}
+.xm-el-icon-nft:before { content: url('assets/icons/NFT.svg');}
+
+.xm-el-icon-s-customer { 
+  width: 60px;
+  content: url('assets/icons/Customer.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-s-customer:before { content: url('assets/icons/Customer.svg');}
+
+.xm-el-icon-s-artist { 
+  width: 60px;
+  content: url('assets/icons/Artist.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-s-artist:before { content: url('assets/icons/Artist.svg');}
+
+.xm-el-icon-licensor { 
+  width: 60px;
+  content: url('assets/icons/Licensor.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-licensor:before { content: url('assets/icons/Licensor.svg');}
+
+.xm-el-icon-s-settings { 
+  width: 60px;
+  content: url('assets/icons/Settings.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-s-settings:before { content: url('assets/icons/Settings.svg');}
+
+
+.xm-el-icon-s-logout { 
+  width: 60px;
+  content: url('assets/icons/Logout.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-s-logout:before { content: url('assets/icons/Logout.svg');}
+
+
+.xm-el-icon-edit { 
+  content: url('assets/icons/Edit.svg');  
+  filter: brightness(50%) invert(3);
+  width: 68px;
+  margin: -10px;
+}
+.edit-icon {
+  padding: 2px 5px;
+}
+
+.el-menu-item:hover,
+.el-menu-item.is-active {
+  .xm-el-icon-s-home,
+  .xm-el-icon-product,
+  .xm-el-icon-s-artist,
+  .xm-el-icon-s-settings,
+  .xm-el-icon-s-customer,
+  .xm-el-icon-licensor {
+    filter: brightness(0%);
+  }
+  .xm-el-icon-s.logout,
+  .xm-el-icon-nft {
     filter: brightness(1) invert(0);
   }
 }
