@@ -31,26 +31,30 @@
     border-bottom: 1px solid #ffffff;
   }
 }
+.el-table th {
+  background-color: #000 !important;
+}
 .el-table {
-  border-radius: 10px;
+  // border-radius: 10px;
   background-color: $--color-primary;
   font-size: 18px ;
+  color: #fff !important;
 }
 .el-table thead {
-  color: #eeeeee;
+  color: #fff;
   text-transform: uppercase;
 }
 table, th {
-  border-right: 1px solid rgb(170, 170, 170);
-  border-left: 1px solid rgb(170, 170, 170);
+  // border-right: 1px solid rgb(170, 170, 170);
+  // border-left: 1px solid rgb(170, 170, 170);
   border-collapse: collapse;
 }
 table, td {
-  border-right: 1px solid rgb(230, 230, 230);
-  border-left: 1px solid rgb(230, 230, 230);
+  // border-right: 1px solid rgb(230, 230, 230);
+  // border-left: 1px solid rgb(230, 230, 230);
   border-collapse: collapse;
 }
-th:first-child /* , td:first-child */ { border-left: 1px solid rgb(55, 55, 55); }
+// th:first-child /* , td:first-child */ { border-left: 1px solid rgb(55, 55, 55); }
 tr { border: none; }
 .el-button--warning {
     background-color: #5586AA!important;
@@ -60,6 +64,30 @@ tr { border: none; }
   font-weight: normal;
 }
 
+.el-table tr {
+  background-color: #000;
+}
+.el-table--striped .el-table__body tr.el-table__row--striped td {
+  background: #141414;
+}
+.el-table--enable-row-hover .el-table__body tr:hover>td {
+  background-color: #111111 !important;
+}
+.el-table td, .el-table th.is-leaf {
+  border-bottom: 0px solid #000;
+}
+
+.el-table th {
+  border-bottom: 1px solid #ccc !important;
+}
+
+.el-table__expanded-cell {
+  background-color: #000 !important;
+}
+
+.permission-header {
+  word-break: break-word;
+}
 /* search bar*/
 .search {
   display: block;
@@ -143,14 +171,23 @@ tr { border: none; }
   font-size: 16px !important;
   padding-left: 0 !important;
 }
-.el-submenu {
+.custom-submenu {
   padding-left: 0 !important;
   text-align: left;
-  // border-bottom: 1px solid #cccccc;
+  width: 100% !important;
 }
+
+.el-submenu:hover,
+.el-submenu:focus 
+.el-submenu.is-active {
+  background-color: #fff !important;
+  padding: 0px !important;
+}
+
 .el-submenu__title {
   color: white !important;
   padding-left: 0 !important;
+  background-color: #000000;
 }
 .el-menu--collapse .el-submenu__title{
   padding-left: 20px !important;
@@ -160,8 +197,9 @@ tr { border: none; }
 }
 .el-submenu__title:hover,
 .el-submenu__title:focus {
-  background: white !important;
-  color: $--color-primary  !important;
+  // background-color: #fff !important;
+  color: #000  !important;
+  background-color: #ffffff !important;
 }
 .el-menu-item:hover,
 .el-menu-item:focus,
@@ -183,8 +221,9 @@ tr { border: none; }
   color: $--color-primary !important;
   min-width: unset;
 }
-.el-submenu__title {
+.custom-submenu-title  {
   font-size: 16px !important;
+  // left: -18px
 }
 .black-text {
   color: $--color-primary !important;
@@ -265,23 +304,23 @@ tr { border: none; }
 .xm-el-icon-s-home { 
   width: 60px;
   content: url('assets/icons/Home.svg');  
-  filter: brightness(0%) invert(1)
+  filter: brightness(0%) invert(1);
 }
 .xm-el-icon-s-home:before { content: url('assets/icons/Home.svg');}
 
-.xm-el-icon-product { 
+.xm-el-icon-s-product { 
   width: 60px;
   content: url('assets/icons/Product.svg');  
   filter: brightness(0%) invert(1)
 }
-.xm-el-icon-product:before { content: url('assets/icons/Product.svg');}
+.xm-el-icon-s-product:before { content: url('assets/icons/Product.svg');}
 
-.xm-el-icon-nft { 
+.xm-el-icon-s-nft { 
   width: 60px;
   content: url('assets/icons/NFT.svg');  
   filter: invert(1)
 }
-.xm-el-icon-nft:before { content: url('assets/icons/NFT.svg');}
+.xm-el-icon-s-nft:before { content: url('assets/icons/NFT.svg');}
 
 .xm-el-icon-s-customer { 
   width: 60px;
@@ -297,12 +336,12 @@ tr { border: none; }
 }
 .xm-el-icon-s-artist:before { content: url('assets/icons/Artist.svg');}
 
-.xm-el-icon-licensor { 
+.xm-el-icon-s-licensor { 
   width: 60px;
   content: url('assets/icons/Licensor.svg');  
   filter: brightness(0%) invert(1)
 }
-.xm-el-icon-licensor:before { content: url('assets/icons/Licensor.svg');}
+.xm-el-icon-s-licensor:before { content: url('assets/icons/Licensor.svg');}
 
 .xm-el-icon-s-settings { 
   width: 60px;
@@ -317,15 +356,24 @@ tr { border: none; }
   content: url('assets/icons/Logout.svg');  
   filter: brightness(0%) invert(1)
 }
+
+.xm-el-icon-s-user { 
+  width: 60px;
+  content: url('assets/icons/User.svg');  
+  filter: brightness(0%) invert(1)
+}
+.xm-el-icon-s-user:before { content: url('assets/icons/User.svg');}
+
 .xm-el-icon-s-logout:before { content: url('assets/icons/Logout.svg');}
 
 
-.xm-el-icon-edit { 
+.xm-el-icon-s-edit { 
   content: url('assets/icons/Edit.svg');  
   filter: brightness(50%) invert(3);
   width: 68px;
   margin: -10px;
 }
+
 .edit-icon {
   padding: 2px 5px;
 }
@@ -333,16 +381,33 @@ tr { border: none; }
 .el-menu-item:hover,
 .el-menu-item.is-active {
   .xm-el-icon-s-home,
-  .xm-el-icon-product,
+  .xm-el-icon-s-product,
   .xm-el-icon-s-artist,
   .xm-el-icon-s-settings,
   .xm-el-icon-s-customer,
-  .xm-el-icon-licensor {
+  .xm-el-icon-s-user,
+  .xm-el-icon-s-logout,
+  .xm-el-icon-s-licensor {
     filter: brightness(0%);
   }
-  .xm-el-icon-s.logout,
-  .xm-el-icon-nft {
+  .xm-el-icon-s-nft {
     filter: brightness(1) invert(0);
+  }
+}
+
+.el-menu-item {
+  .xm-el-icon-s-home,
+  .xm-el-icon-s-product,
+  .xm-el-icon-s-artist,
+  .xm-el-icon-s-settings,
+  .xm-el-icon-s-customer,
+  .xm-el-icon-s-user,
+  .xm-el-icon-s-licensor {
+    margin-left: -16px !important;
+  }
+  .xm-el-icon-s-logout,
+  .xm-el-icon-s-nft {
+    margin-left: -16px !important;
   }
 }
 
@@ -352,6 +417,37 @@ tr { border: none; }
       filter: unset;
     }
   }
+}
+
+.el-menu-item {
+  padding-left: 20px !important;
+}
+.el-menu {
+  .el-submenu {
+    .el-submenu__title {
+      padding-left: 5px !important;
+      font-size: 16px !important;
+    }
+  }
+}
+
+.xm-el-icon-pen { 
+  width: 30px;
+  content: url('assets/icons/Pen.svg');  
+  filter: brightness(0%) invert(1);
+  // filter: brightness(1) invert(0);
+}
+
+.xm-el-icon-delete { 
+  width: 30px;
+  content: url('assets/icons/Delete.svg');  
+  filter: brightness(0%) invert(1);
+  // filter: brightness(1) invert(0);
+}
+
+.edit-icon-custom {
+  padding: 2px 5px;
+  background-color: #000 !important;
 }
 
 /* Form */
@@ -406,6 +502,15 @@ tr { border: none; }
   /* border-radius: 5px !important; */
   overflow: visible;
 }
+.image-files-display {
+  width: 100px; 
+  height: 100px; 
+  margin:5px;
+  float: left;
+  text-align: right;
+  overflow: visible;
+  object-fit: cover;
+}
 .image-files-big {
   max-width:60%;
   // min-width:200px;
@@ -424,13 +529,12 @@ tr { border: none; }
 }
 .el-icon-delete {
   position: absolute;
-  z-index: 1000;
+  z-index: 1;
   top: -10px;
   right: -10px;
   color: #FF0000;
 }
 .el-icon-delete:hover {
-  color: red;
   cursor: pointer;
 }
 .el-form--label-top .el-form-item__label {
@@ -979,6 +1083,7 @@ textarea {
 .highlight-text {
   font-family: 'gotham';
   color: #fff;
+  font-size: 16px;
 }
 
 .normal-text {
@@ -987,15 +1092,15 @@ textarea {
 
 .listing-top {
   position: absolute;
-  top: 20px;
-  margin-left: 20px;
-  width: 100%;
+  top: 0;
+  // margin-left: 20px;
+  // width: 100%;
 }
 .listing-bottom {
   position: absolute;
-  bottom: 20px;
-  margin-left: 20px;
-  width: 100%;
+  bottom: 0;
+  // margin-left: 20px;
+  // width: 100%;
 }
 
 .el-dialog {
@@ -1108,26 +1213,38 @@ textarea {
 }
 
 .show-character {
-    height: 28px;
+    // height: 28px;
     width: 140px;
     border: 1px solid #FFFFFF;
     margin: 10px;
-    padding: 10px 7px 5px 7px;
-    float: left;
+    // padding: 10px 7px 5px 7px;
+    // float: left;
     text-align: center;
     position: relative;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .remove-char {
-    margin-top: -20px;
+    // margin-top: -20px;
+    top: -10px;
     position: absolute; 
     right: -10px;
     background: $--color-primary;
     color: #FF0000;
 }
 
-.el-loading-spinner .path {
-  stroke: $--color-primary;
+.add-character {
+  margin: 10px;
+  margin-top: 0;
+}
+
+.el-loading-mask {
+  z-index: 4000 !important;
+  .el-loading-spinner .path {
+    stroke: $--color-primary;
+  }
 }
 
 .noselect {
@@ -1139,4 +1256,7 @@ textarea {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
+}
+.el-button {
+  height: 40px;
 }

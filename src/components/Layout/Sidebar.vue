@@ -1,5 +1,7 @@
 <template>
   <el-scrollbar class="custom-scrollbar" @mouseover="handleSidebarShow(true)" @mouseleave="handleSidebarShow(false)">
+    <!-- <el-scrollbar class="custom-scrollbar" @mouseover="handleSidebarShow(true)"> -->
+    <!-- <el-scrollbar class="custom-scrollbar"> -->
     <router-link to="/">
       <div class="wrap-sidebar" @click="redirectHome">
         <!-- <div v-if="sidebarShow" class="logo-max"> -->

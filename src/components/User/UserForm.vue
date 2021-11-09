@@ -9,47 +9,81 @@
     @keyup.enter="onSubmit($refs.userForm)"
   >
     <el-row :gutter="20">
-      <el-col :span="12" :xs="24">
-        <el-form-item label="First Name" prop="firstName">
-          <el-input v-model="userForm.firstName"></el-input>
-        </el-form-item>
+      <el-col :span="24" class="form-text-title-pad">
+        <label class="form-label">CREATE USER</label>
       </el-col>
       <el-col :span="12" :xs="24">
-        <el-form-item label="Last Name" prop="lastName">
-          <el-input v-model="userForm.lastName"></el-input>
-        </el-form-item>
+        <TextInput
+            v-model="userForm.firstName"
+            formProps="firstName"
+            formLabel="First Name"
+          />
+      </el-col>
+      <el-col :span="12" :xs="24">
+        <TextInput
+            v-model="userForm.lastName"
+            formProps="lastName"
+            formLabel="Last Name"
+          />
       </el-col>
     </el-row>
-    <el-form-item label="Email" prop="emailAddress">
-      <el-input v-model="userForm.emailAddress"></el-input>
-    </el-form-item>
-
-    <el-form-item label="Password" prop="password">
-      <el-input type="password" v-model="userForm.password"></el-input>
-    </el-form-item>
-
-    <el-form-item label="Password" prop="confirm_password">
-      <el-input type="password" v-model="userForm.confirm_password"></el-input>
-    </el-form-item>
-    <el-form-item label="Role" prop="role">
-      <el-select v-model="userForm.role" placeholder="Select">
-        <el-option
-          v-for="role in roleList"
-          :key="role.roleId"
-          :label="role.roleName"
-          :value="role.roleId"
-        >
-        </el-option>
-      </el-select>
-    </el-form-item>
+    <el-row :gutter="20">
+      <el-col :span="12" :xs="24">
+         <!-- <el-form-item label="Password" prop="password">
+          <el-input type="password" v-model="userForm.password"></el-input>
+        </el-form-item> -->
+        <TextInput
+            v-model="userForm.password"
+            formProps="password"
+            formLabel="Password"
+            inputType="password"
+          />
+      </el-col>
+      <el-col :span="12" :xs="24">
+        <!-- <el-form-item label="Password" prop="confirm_password">
+          <el-input type="password" v-model="userForm.confirm_password"></el-input>
+        </el-form-item> -->
+        <TextInput
+            v-model="userForm.confirm_password"
+            formProps="confirm_password"
+            formLabel="Confirm Password"
+            inputType="password"
+          />
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="12" :xs="24">
+        <TextInput
+            v-model="userForm.emailAddress"
+            formProps="emailAddress"
+            formLabel="Email"
+          />
+      </el-col>
+      <el-col :span="12" :xs="24">
+        <SelectInput
+            v-model="userForm.role"
+            formProps="role"
+            formLabel="Role"
+          >
+            <el-option
+              v-for="role in roleList"
+              :key="role.roleId"
+              :label="role.roleName"
+              :value="role.roleId"
+            >
+            </el-option>
+          </SelectInput>
+      </el-col>
+    </el-row>
     <el-form-item class="button-wrapper">
-      <el-button @click="resetForm($refs.userForm)">Reset</el-button>
+      <el-button class="custom-btn preview-btn" @click="resetForm($refs.userForm)">DISCARD</el-button>
       <el-button
-        type="primary"
+        class="custom-btn submit-btn"
+        type="success"
         @click="onSubmit($refs.userForm)"
         :loading="loading"
       >
-        Submit
+        CREATE
       </el-button>
     </el-form-item>
   </el-form>
@@ -58,6 +92,8 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import { GET_ROLE_LIST } from '@/store/modules/access/actions-type';
+import TextInput from '@/components/Share/TextInput.vue';
+import SelectInput from '@/components/Share/SelectInput.vue';
 
 export default {
   props: {
@@ -74,7 +110,20 @@ export default {
       required: true,
     },
   },
+  components: {
+    TextInput,
+    SelectInput,
+  },
   data() {
+    const validateConfirm = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please input the confirm password'));
+      } else if (value !== this.userForm.password) {
+        callback(new Error("Two inputs don't match!"));
+      } else {
+        callback();
+      }
+    };
     return {
       userForm: {
         firstName: '',
@@ -82,6 +131,7 @@ export default {
         emailAddress: '',
         role: '',
         password: '',
+        confirm_password: '',
         create: 'user',
       },
       rules: {
@@ -95,6 +145,19 @@ export default {
           {
             required: true,
             message: 'Please enter last name',
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: 'Please enter password',
+          },
+        ],
+        confirm_password: [
+          {
+            required: true,
+            message: 'Please confirm password',
+            validator: validateConfirm,
           },
         ],
         emailAddress: [

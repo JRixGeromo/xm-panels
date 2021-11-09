@@ -16,7 +16,7 @@
           </router-link>
       </template>
       <template v-else>
-        <el-submenu :index="item.name">
+        <el-submenu :index="item.name" class="custom-submenu custom-submenu-title">
           <template #title>
             <i :class="item.icon"></i>
             <span>{{ item.name }}</span>

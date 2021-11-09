@@ -5,7 +5,7 @@
     :before-close="drawerBeforeClose"
     modal-class="mobile-nav-drawer"
     direction="ltr"
-    size="70%"
+    size="100%"
      >
     <!-- <div class="wrap-sidebar">
       <div v-if="sidebarShow" @click="handleSidebarShow" class="logo-max">

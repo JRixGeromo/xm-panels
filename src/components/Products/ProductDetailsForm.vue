@@ -112,7 +112,6 @@
         </div>
         <div style="margin-top: 35px;">
           <CreateNewSelectInput
-            class="input"
             :disabled="isDisabled"
             v-model="productForm.productSeries"
             formProps="productSeries"
@@ -132,7 +131,13 @@
             </el-option>
           </CreateNewSelectInput>
           <div style="width: 100%; text-align:right; margin-top: -20px; cursor: pointer;">
-            <span style="text-decoration: underline" @click="relationships()">View product relationships</span>
+            <el-button class="link-btn"
+              @click="relationships(productDetails.productId)"
+            >
+              <span style="text-decoration: underline">
+                View character relationships
+              </span>
+            </el-button>
           </div>
         </div>
         <div style="margin-top: 35px;">
@@ -146,9 +151,10 @@
             <country-select
               v-model="productForm.productManufactureCountry"
               :country="country"
-              :topCountry="getCountry(productForm.productManufactureCountry)"
+              :topCountry="getCountry(selectedCountry)"
               :autocomplete="true"
               :removePlaceholder="true"
+              :usei18n="false"
             />
           </CountrySelectInput>
         </div>
@@ -184,7 +190,7 @@
             v-model="productForm.artistIds"
             formProps="artistIds"
             formLabel="Artists"
-            formLimit="6"
+            :formLimit="6"
           >
             <el-option
               v-for="artist in artistList"
@@ -225,22 +231,22 @@
               <span class="form-label"> {{ productForm.productName }}: RELATIONSHIPS </span>
             </div>
           </el-col>
-          <el-col :span="12">
-            <div style="width: 100%; text-align:left; margin-top: -20px">
+          <el-col :span="24">
+            <div style="width: 100%; text-align:left; margin-top: -20px; margin-bottom: 20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
                 @click="products()">BACK
               </el-button>
           </div>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <div style="width: 100%; text-align:right; margin-top: -20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
                 @click="popoutRelationship(productDetails.productId)">EDIT
               </el-button>
             </div>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row justify="space-between">
           <el-col :span="24">
@@ -277,7 +283,7 @@
               <el-row>
               <el-col :span="18" :offset="3">
                 <div style="width: 100%; text-align: center; margin-top:30px">
-                  <el-button type="default" @click="addForm"><i class="el-icon-plus"></i></el-button>
+                  <el-button type="default" @click="addForm" :disabled="!allowed"><i class="el-icon-plus"></i></el-button>
                 </div>
               </el-col>
               </el-row>
@@ -286,7 +292,7 @@
               <el-row v-if="hideButtons">
                 <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
                   <el-button
-                    class="custom-btn discard-btn" @click="discard()">DISCARD</el-button>
+                    class="custom-btn discard-btn" @click="products()">DISCARD</el-button>
                 </el-col>
                 <el-col :span="8" :offset="1" style="padding: 23px">
                   <el-button  class="custom-btn submit-btn"
@@ -409,6 +415,7 @@ import {
   UPDATE_RELATIONSHIP,
   DEFAULT_RELATIONSHIP,
 } from '@/store/modules/relationship/actions-type';
+import { SET_LINKS } from '@/store/modules/linkstoggle/actions-type';
 import router from '@/router';
 // import { ElMessage } from 'element-plus';
 
@@ -440,6 +447,13 @@ export default {
   },
   data() {
     return {
+      allowed: true,
+      toggle: {
+        susLink: true,
+        artLink: true,
+        serLink: true,
+        productName: '',
+      },
       isDisabled: false,
       relationshipDialog: false,
       confirmationDialog: false,
@@ -457,6 +471,7 @@ export default {
       focused: [],
       fileFormat: IMAGE_FORMAT.join(','),
       defaultValue: null,
+      selectedCountry: '',
       productForm: {
         productCoverImageUrl: null,
         productCoverImageFile: null,
@@ -577,6 +592,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('linkstoggle', ['linksToggled']),
     ...mapState('product', [
       'productDetails',
       'updateProductSuccess',
@@ -591,12 +607,13 @@ export default {
   },
   mounted() {
     this.GET_PRODUCT(this.$route.params.id);
-    this.GET_ARTIST_LIST();
-    this.GET_LICENSOR_LIST();
+    this.GET_ARTIST_LIST(false);
+    this.GET_LICENSOR_LIST(false);
     // this.GET_PRODUCT_SERIES_LIST();
     this.focused.productSeries = true;
   },
   methods: {
+    ...mapActions('linkstoggle', [SET_LINKS]),
     ...mapActions('product', [GET_PRODUCT, UPDATE_PRODUCT, GET_RELATED_PRODUCT_LIST, GET_PRODUCT_SERIES_LIST]),
     ...mapActions('artist', [GET_ARTIST_LIST]),
     ...mapActions('licensor', [GET_LICENSOR_LIST]),
@@ -611,8 +628,9 @@ export default {
     products() {
       this.show = 'products';
     },
-    relationships() {
+    relationships(productId) {
       this.show = 'relationships';
+      this.popoutRelationship(productId);
     },
     async saveRelations() {
       this.relationshipDialog = false;
@@ -658,7 +676,7 @@ export default {
     },
     addForm() {
       this.relationshipForm.inputs.push({
-        productRelationId: this.selectedProduct,
+        productRelationId: null,
         relatedProduct: '',
         relation: '',
       });
@@ -675,7 +693,7 @@ export default {
         }
       } else {
         this.relationshipForm.inputs.push({
-          productRelationId: this.selectedProduct,
+          productRelationId: null,
           relatedProduct: '',
           relation: '',
         });
@@ -708,9 +726,30 @@ export default {
       }
       this.isDisabled = true;
     },
+    effectLinks() {
+      if (this.productDetails.productName) {
+        this.toggle.susLink = true;
+      } else {
+        this.toggle.susLink = false;
+      }
+      if (this.productDetails.sustainabilityReport) {
+        this.toggle.artLink = true;
+      } else {
+        this.toggle.artLink = false;
+      }
+      if (this.productDetails.sustainabilityReport && this.productDetails.designs.length > 0) {
+        this.toggle.serLink = true;
+      } else {
+        this.toggle.serLink = false;
+      }
+      this.toggle.productName = this.productDetails.productName;
+      this.SET_LINKS(this.toggle);
+    },
   },
   watch: {
     productDetails() {
+      this.effectLinks();
+      this.selectedCountry = this.productDetails.productManufactureCountry;
       this.productForm = {
         productId: this.productDetails.productId,
         productCoverImageUrl: this.productDetails.productBackgroundImage,
@@ -764,11 +803,12 @@ export default {
       if (this.updateResult[0].next === 'exit') {
         router.push('/allproducts');
       } else {
-        router.push(`/product/${this.productDetails.productId}/sustainability?name=${this.productForm.productName}`);
+        router.push(`/product/${this.productDetails.productId}/sustainability`);
       }
     },
     relationshipForm: {
       handler(val) {
+        const i = val.inputs.length;
         if (val.inputs.length > 0) {
           if ((val.inputs[0].relatedProduct.length > 0) && (val.inputs[0].relation.length > 0)) {
             this.allowSave = true;
@@ -776,9 +816,15 @@ export default {
             this.allowSave = false;
           }
           this.hideButtons = true;
+          if ((val.inputs[i - 1].relatedProduct.length > 0) && (val.inputs[i - 1].relation.length > 0)) {
+            this.allowed = true;
+          } else {
+            this.allowed = false;
+          }
         } else {
           this.allowSave = false;
           this.hideButtons = false;
+          this.allowed = true;
         }
       },
       deep: true,

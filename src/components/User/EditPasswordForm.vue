@@ -13,24 +13,47 @@
     ref="userForm"
     @keyup.enter="onSubmit($refs.userForm)"
   >
-    <!-- <el-form-item label="Current Password" prop="password">
-      <el-input type="password" v-model="userForm.current_password"></el-input>
-    </el-form-item> -->
-    <el-form-item label="Password" prop="password">
+    <!-- <el-form-item label="Password" prop="password">
       <el-input type="password" v-model="userForm.password"></el-input>
     </el-form-item>
 
     <el-form-item label="Confirm Password" prop="confirm_password">
       <el-input type="password" v-model="userForm.confirm_password"></el-input>
-    </el-form-item>
+    </el-form-item> -->
+
+    <el-row :gutter="20">
+      <el-col :span="12" :xs="24">
+         <!-- <el-form-item label="Password" prop="password">
+          <el-input type="password" v-model="userForm.password"></el-input>
+        </el-form-item> -->
+        <TextInput
+            v-model="userForm.password"
+            formProps="password"
+            formLabel="Password"
+            inputType="password"
+          />
+      </el-col>
+      <el-col :span="12" :xs="24">
+        <!-- <el-form-item label="Password" prop="confirm_password">
+          <el-input type="password" v-model="userForm.confirm_password"></el-input>
+        </el-form-item> -->
+        <TextInput
+            v-model="userForm.confirm_password"
+            formProps="confirm_password"
+            formLabel="Confirm Password"
+            inputType="password"
+          />
+      </el-col>
+    </el-row>
 
     <el-form-item class="button-wrapper">
       <el-button
-        type="primary"
+        class="custom-btn submit-btn"
+        type="success"
         @click="onSubmit($refs.userForm)"
         :loading="loading"
       >
-        Submit
+        UPDATE
       </el-button>
     </el-form-item>
   </el-form>
@@ -40,6 +63,7 @@
 // import { mapActions, mapState } from 'vuex';
 // import { GET_ROLE_LIST } from '@/store/modules/access/actions-type';
 // import accessService from '@/services/access-service';
+import TextInput from '@/components/Share/TextInput.vue';
 
 export default {
   props: {
@@ -56,10 +80,22 @@ export default {
       required: true,
     },
   },
+  components: {
+    TextInput,
+  },
   data() {
+    const validateConfirm = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please input the confirm password'));
+      } else if (value !== this.userForm.password) {
+        callback(new Error("Two inputs don't match!"));
+      } else {
+        callback();
+      }
+    };
     return {
       userForm: {
-        // current_password: '',
+        current_password: '',
         password: '',
         userId: '',
         role: '',
@@ -82,6 +118,7 @@ export default {
           {
             required: true,
             message: 'Please confirm password',
+            validator: validateConfirm,
           },
         ],
       },

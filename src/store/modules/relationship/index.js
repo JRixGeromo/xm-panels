@@ -109,6 +109,7 @@ const actions = {
       if (relationshipDetails.relationship === 'product') {
         for (let i = 0; i < relationshipDetails.inputs.length; i++) {
           relationships.push({
+            productRelationId: relationshipDetails.inputs[i].productRelationId,
             product: relationshipDetails.productId,
             relatedProduct: relationshipDetails.inputs[i].relatedProduct,
             relation: relationshipDetails.inputs[i].relation,
@@ -117,6 +118,7 @@ const actions = {
       } else {
         for (let i = 0; i < relationshipDetails.inputs.length; i++) {
           relationships.push({
+            characterRelationId: relationshipDetails.inputs[i].characterRelationId,
             character: relationshipDetails.characterId,
             relatedCharacter: relationshipDetails.inputs[i].relatedCharacter,
             relation: relationshipDetails.inputs[i].relation,
@@ -124,6 +126,7 @@ const actions = {
         }
       }
     }
+    console.log(relationships);
     commit(CREATE_RELATIONSHIP_START);
     relationshipServices.createRelationship(relationships, relationshipDetails.relationship).then(
       () => {

@@ -1,11 +1,11 @@
 <template>
-  <el-breadcrumb separator="/">
+  <!-- <el-breadcrumb separator="/">
     <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
     <el-breadcrumb-item>
       Role Listing
     </el-breadcrumb-item>
-  </el-breadcrumb>
-  <el-table :data="data">
+  </el-breadcrumb> -->
+  <el-table :data="data" stripe :header-cell-style="{ background: '#000', 'font-family': 'gotham' }">
     <el-table-column type="expand">
       <template #default="props">
         <div v-if="props.row.permissions.length > 0">
@@ -22,7 +22,7 @@
                   {{ `${permission.permissionName} - ${permission.type}` }}
                 </div>
                 <ul>
-                  <li v-for="access in permission.accessVerbs" :key="access">
+                  <li v-for="access in permission.accessVerbs" :key="access" style="margin-left: 20px">
                     {{ access }}
                   </li>
                 </ul>
@@ -38,10 +38,10 @@
         {{ slotProps.row.roleName ?? '-' }}
       </template>
     </el-table-column>
-    <el-table-column align="right" width="150px">
+    <el-table-column width="200px">
       <template #default="scope">
-        <el-button size="mini" @click="handleEditDialog(scope.row)"
-          >Edit</el-button
+        <el-button size="mini" icon="xm-el-icon-pen" class="edit-icon-custom" @click="handleEditDialog(scope.row)"
+          ></el-button
         >
         <el-popconfirm
           confirmButtonText="OK"
@@ -53,10 +53,9 @@
         >
           <template #reference>
             <el-button
-              size="mini"
-              type="danger"
+              size="mini" icon="xm-el-icon-delete" class="edit-icon-custom"
               :loading="deletingRole && scope.row.roleId === deletingRoleId"
-              >Delete</el-button
+              ></el-button
             >
           </template>
         </el-popconfirm>

@@ -1,36 +1,22 @@
 <template>
-  <!-- <el-breadcrumb separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-    <el-breadcrumb-item>
-      User Listing
-    </el-breadcrumb-item>
-  </el-breadcrumb> -->
-  <el-menu
-    :default-active="activeIndex2"
-    class="el-menu-demo"
-    mode="horizontal"
-    background-color="#2a2a2a"
-    text-color="#fff"
-    active-text-color="#ffd04b">
-    <el-menu-item index="1" class="mf-size">All Users</el-menu-item>
-  </el-menu>
   <el-container class="bg-portion el-container-search">
     <div class="search">
     <label class="search" for="searchUsers">Search users</label>
     <el-input
-      placeholder="Type something to start searching..."
       v-model="searchKeyword"
       @input="searchOnChange"
-      class="search-padding"
+      suffix-icon="el-icon-search"
       >
-      <template #prefix>
+      <!-- <template #prefix>
         <i class="el-input__icon el-icon-search search-margin"></i>
-      </template>
+      </template> -->
     </el-input>
     </div>
   </el-container>
   <el-container>
-    <el-button class="custom-btn add-btn">Add User</el-button>
+    <router-link :to="`/createuser`">
+        <el-button class="custom-btn add-btn">Create User</el-button>
+      </router-link>
   </el-container>
   <el-pagination
     class="table-pagination"
@@ -41,7 +27,7 @@
     :current-page="pagination.currentPage + 1"
   >
   </el-pagination>
-  <el-table :data="data" v-loading="gettingUserList" stripe :header-cell-style="{ background: '#373737' }">
+  <el-table :data="data" v-loading="gettingUserList" stripe :header-cell-style="{ background: '#000', 'font-family': 'gotham' }">
     <el-table-column
       prop="userName"
       label="Display Name"
@@ -81,13 +67,13 @@
     </el-table-column>
     <el-table-column label="Edit Role" align="center">
       <template #default="scope">
-        <el-button size="mini" icon="el-icon-edit" class="edit-icon" @click="handleEditPasswordDialog(scope.row)"
+        <el-button size="mini" icon="xm-el-icon-pen" class="edit-icon-custom" @click="handleEditRoleDialog(scope.row)"
           ></el-button>
       </template>
     </el-table-column>
     <el-table-column label="Edit Password" align="center">
       <template #default="scope">
-        <el-button size="mini" icon="el-icon-edit" class="edit-icon" @click="handleEditRoleDialog(scope.row)"
+        <el-button size="mini" icon="xm-el-icon-pen" class="edit-icon-custom" @click="handleEditPasswordDialog(scope.row)"
           ></el-button>
       </template>
     </el-table-column>

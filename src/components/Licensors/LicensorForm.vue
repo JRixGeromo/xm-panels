@@ -7,6 +7,7 @@
     :rules="rules"
     ref="licensorForm"
     @keyup.enter="onSubmit($refs.licensorForm)"
+    @submit.prevent
   >
   <el-row :gutter="20" class="form-bg-color">
     <el-col :span="21" :offset="3" class="form-text-title-pad" style="margin-bottom:50px">

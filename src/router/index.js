@@ -98,13 +98,38 @@ const routes = [
     path: '/managenfts',
     name: 'Manage NFTs',
     beforeEnter: [authenticatedRoute],
+    component: () => import(/* webpackChunkName: "access" */ '../views/nfts/NftsProducts.vue'),
+  },
+  {
+    path: '/managenfts/:id',
+    name: 'NFTs',
+    beforeEnter: [authenticatedRoute],
     component: () => import(/* webpackChunkName: "access" */ '../views/nfts/Nfts.vue'),
+    // children: [
+    //   {
+    //     path: 'list',
+    //     component: () => import(/* webpackChunkName: "user" */ '../views/nfts/NftsDetails.vue'),
+    //   },
+    // ],
   },
   {
     path: '/allcustomers',
     name: 'Manage Customers',
     beforeEnter: [authenticatedRoute],
     component: () => import(/* webpackChunkName: "access" */ '../views/customers/AllCustomers.vue'),
+  },
+  {
+    // path: '/artist/:id',
+    path: '/customers/:id',
+    name: 'Customer Details',
+    beforeEnter: [authenticatedRoute],
+    component: () => import(/* webpackChunkName: "user" */ '../views/customers/Customer.vue'),
+    children: [
+      {
+        path: 'details',
+        component: () => import(/* webpackChunkName: "user" */ '../views/customers/CustomerDetails.vue'),
+      },
+    ],
   },
   {
     path: '/allartists',

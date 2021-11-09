@@ -1,7 +1,11 @@
 const AUTH_TOKEN_KEY = 'auth_token';
 const AUTH_ID = 'auth_id';
 const ADMIN_ROLE = 'XM Admin';
-const DEFAULT_PROFILE_PICTURE = 'https://fileupload.bsg-api.tk/api/uploads/v1/af553d95-60a3-4c40-8d08-aa75158178f1';
+
+// const DEFAULT_PROFILE_PICTURE = 'https://fileupload.bsg-api.tk/api/uploads/v1/af553d95-60a3-4c40-8d08-aa75158178f1';
+
+const DEFAULT_PROFILE_PICTURE = `${process.env.VUE_APP_FILE_DOMAIN}/af553d95-60a3-4c40-8d08-aa75158178f1`;
+
 const ARTWORKS_SIZE = 100 * 1024 * 1024; // Convert MB to Byte
 const ARTWORKS_SUPPORTED_FORMATS = [
   'image/jpg',
@@ -99,13 +103,13 @@ const NAV_MENU = [
   {
     name: 'Manage Products',
     route: '/allproducts',
-    icon: 'xm-el-icon-product',
+    icon: 'xm-el-icon-s-product',
     child: false,
   },
   {
     name: 'Manage NFTs',
     route: '/managenfts',
-    icon: 'xm-el-icon-nft',
+    icon: 'xm-el-icon-s-nft',
     child: false,
   },
   {
@@ -123,7 +127,7 @@ const NAV_MENU = [
   {
     name: 'Manage Licensors',
     route: '/alllicensors',
-    icon: 'xm-el-icon-licensor',
+    icon: 'xm-el-icon-s-licensor',
     child: false,
   },
   {
@@ -135,7 +139,7 @@ const NAV_MENU = [
   {
     name: 'User',
     child: true,
-    icon: 'xm-el-icon-s-customer',
+    icon: 'xm-el-icon-s-user',
     subNav: [
       {
         name: 'User List',
@@ -150,7 +154,7 @@ const NAV_MENU = [
   {
     name: 'Role',
     child: true,
-    icon: 'xm-el-icon-licensor',
+    icon: 'xm-el-icon-s-licensor',
     subNav: [
       {
         name: 'Role List',

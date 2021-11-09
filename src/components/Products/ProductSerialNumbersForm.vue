@@ -10,6 +10,9 @@
     <el-row :gutter="20" class="form-bg-color"
       v-if="showUpload"
       style="padding: 30px 0px 30px 0px;">
+      <el-col :span="21" :offset="3" class="form-text-title-pad">
+        <label class="form-label">SERIAL NUMBERS</label>
+      </el-col>
       <el-col :span="18" :offset="3">
         <div style="font-size: 18px;
             font-weight: bold;
@@ -125,7 +128,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GET_PRODUCT } from '@/store/modules/product/actions-type';
 import readXlsxFile from 'read-excel-file';
-import router from '@/router';
+// import router from '@/router';
 import { ElMessage } from 'element-plus';
 
 const defaultPagination = {
@@ -294,20 +297,20 @@ export default {
         window.open(`${process.env.VUE_APP_LOADING_API_DOMAIN}/productprovenance?id=${sn}`, '_blank');
       }
     },
-    checkSerialOk() {
-      if (!this.productDetails.sustainabilityReport || !this.productDetails.designs.length > 0) {
-        ElMessage.error({
-          showClose: true,
-          message: 'Please enter sustainability report and design first',
-        });
-        if (!this.productDetails.sustainabilityReport) {
-          router.push(`/product/${this.productDetails.productId}/sustainability?name=${this.$route.query.name}`);
-        }
-        if (!this.productDetails.designs.length > 0) {
-          router.push(`/product/${this.productDetails.productId}/designs?name=${this.$route.query.name}`);
-        }
-      }
-    },
+    // checkSerialOk() {
+    //   if (!this.productDetails.sustainabilityReport || !this.productDetails.designs.length > 0) {
+    //     ElMessage.error({
+    //       showClose: true,
+    //       message: 'Please enter sustainability report and design first',
+    //     });
+    //     if (!this.productDetails.sustainabilityReport) {
+    //       router.push(`/product/${this.productDetails.productId}/sustainability?name=${this.$route.query.name}`);
+    //     }
+    //     if (!this.productDetails.designs.length > 0) {
+    //       router.push(`/product/${this.productDetails.productId}/designs?name=${this.$route.query.name}`);
+    //     }
+    //   }
+    // },
     ...mapActions('product', [GET_PRODUCT]),
   },
   computed: {
@@ -324,7 +327,6 @@ export default {
   },
   watch: {
     productDetails() {
-      this.checkSerialOk();
       if (this.searchKeyword) {
         this.pagination = {
           ...this.pagination,
@@ -340,9 +342,10 @@ export default {
         this.showRemote = true;
         this.showUpload = false;
         this.showUploadBut = true;
-        this.w = (this.remoteData.length / this.productDetails.productQuantity) * 100;
+        // this.w = (this.remoteData.length / this.productDetails.productQuantity) * 100;
+        this.w = (this.productDetails.productSerialNumbers.length / this.productDetails.productQuantity) * 100;
         this.w = `${this.w}%`;
-        this.uploadedSerials = `SN Uploaded: ${this.remoteData.length}`;
+        this.uploadedSerials = `SN Uploaded: ${this.productDetails.productSerialNumbers.length}`;
       } else {
         this.showRemote = false;
         this.showUpload = true;

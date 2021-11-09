@@ -102,6 +102,8 @@ const state = {
   relatedProductList: [],
   gettingRelatedProductList: false,
   updateResult: null,
+  updateSustainabilityResult: null,
+  updateDesignResult: null,
   gettingPreviewDesign: false,
   previewDesign: [],
   gettingSustainabilityReportList: false,
@@ -109,6 +111,8 @@ const state = {
   creatingSustainabilityReport: false,
   gettingSustainabilityReportDetails: false,
   updatingSustainabilityReport: false,
+  newSustainabilityReportId: null,
+  newDesignId: null,
 };
 
 const getters = {
@@ -431,12 +435,12 @@ const actions = {
     if (newDesigns.length > 0) {
       commit(CREATE_DESIGN_START);
       await productServices.createDesign(newDesigns).then(
-        () => {
+        (data) => {
           ElMessage.success({
             showClose: true,
             message: 'Design created successfully',
           });
-          commit(CREATE_DESIGN_SUCCESS);
+          commit(CREATE_DESIGN_SUCCESS, data[0]);
           router.push(`/product/${designDetails.productId}/designs`);
         },
         (error) => {
@@ -465,8 +469,12 @@ const actions = {
                 message: 'Design updated successfully',
               });
             }
-            commit(UPDATE_DESIGN_SUCCESS);
-            router.push(`/product/${designDetails.productId}/designs`);
+            const result = [];
+            result.push({
+              next: designDetails.next,
+            });
+            commit(UPDATE_DESIGN_SUCCESS, result);
+            // router.push(`/product/${designDetails.productId}/designs`);
           },
           (error) => {
             ElMessage.error({
@@ -683,7 +691,11 @@ const actions = {
             showClose: true,
             message: 'SustainabilityReport updated successfully',
           });
-          commit(UPDATE_SUSTAINABILITY_REPORT_SUCCESS);
+          const result = [];
+          result.push({
+            next: sustainabilityReportInfo.next,
+          });
+          commit(UPDATE_SUSTAINABILITY_REPORT_SUCCESS, result);
           // router.push('/allproducts');
         },
         (error) => {
@@ -724,12 +736,12 @@ const actions = {
       };
       commit(CREATE_SUSTAINABILITY_REPORT_START);
       productServices.createSustainabilityReport(sustainabilityReports).then(
-        () => {
+        (data) => {
           ElMessage.success({
             showClose: true,
             message: 'SustainabilityReport created successfully',
           });
-          commit(CREATE_SUSTAINABILITY_REPORT_SUCCESS);
+          commit(CREATE_SUSTAINABILITY_REPORT_SUCCESS, data[0]);
           // router.push('/allproducts');
         },
         (error) => {
@@ -841,8 +853,9 @@ const mutations = {
   [CREATE_DESIGN_START](state) {
     state.creatingDesign = true;
   },
-  [CREATE_DESIGN_SUCCESS](state) {
+  [CREATE_DESIGN_SUCCESS](state, data) {
     state.creatingDesign = false;
+    state.newDesignId = data;
   },
   [CREATE_DESIGN_FAILURE](state) {
     state.creatingDesign = false;
@@ -850,8 +863,9 @@ const mutations = {
   [UPDATE_DESIGN_START](state) {
     state.updatingDesign = true;
   },
-  [UPDATE_DESIGN_SUCCESS](state) {
+  [UPDATE_DESIGN_SUCCESS](state, data) {
     state.updatingDesign = false;
+    state.updateDesignResult = data;
   },
   [UPDATE_DESIGN_FAILURE](state) {
     state.updatingDesign = false;
@@ -937,7 +951,8 @@ const mutations = {
   [CREATE_SUSTAINABILITY_REPORT_START](state) {
     state.creatingSustainabilityReport = true;
   },
-  [CREATE_SUSTAINABILITY_REPORT_SUCCESS](state) {
+  [CREATE_SUSTAINABILITY_REPORT_SUCCESS](state, data) {
+    state.newSustainabilityReportId = data;
     state.creatingSustainabilityReport = false;
   },
   [CREATE_SUSTAINABILITY_REPORT_FAILURE](state) {
@@ -946,8 +961,9 @@ const mutations = {
   [UPDATE_SUSTAINABILITY_REPORT_START](state) {
     state.updatingSustainabilityReport = true;
   },
-  [UPDATE_SUSTAINABILITY_REPORT_SUCCESS](state) {
+  [UPDATE_SUSTAINABILITY_REPORT_SUCCESS](state, data) {
     state.updatingSustainabilityReport = false;
+    state.updateSustainabilityResult = data;
   },
   [UPDATE_SUSTAINABILITY_REPORT_FAILURE](state) {
     state.updatingSustainabilityReport = false;

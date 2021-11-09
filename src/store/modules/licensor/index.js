@@ -72,10 +72,13 @@ const getters = {
 };
 
 const actions = {
-  [GET_LICENSOR_LIST]({ commit }) {
-    const fullpageLoader = ElLoading.service({
-      fullscreen: true,
-    });
+  [GET_LICENSOR_LIST]({ commit }, isLoaderNeeded = true) {
+    let fullpageLoader = null;
+    if (isLoaderNeeded) {
+      fullpageLoader = ElLoading.service({
+        fullscreen: true,
+      });
+    }
     commit(GET_LICENSOR_LIST_START);
     licensorServices.getLicensors().then(
       (data) => {
@@ -92,7 +95,9 @@ const actions = {
         commit(GET_LICENSOR_LIST_FAILURE);
       },
     ).finally(() => {
-      fullpageLoader.close();
+      if (isLoaderNeeded) {
+        fullpageLoader.close();
+      }
     });
   },
   [GET_LICENSOR]({ commit }, licensorId) {

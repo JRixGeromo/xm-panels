@@ -85,7 +85,7 @@
     </el-pagination>
     </el-col>
     <el-col :xs="24" :md="6" v-for="(each) in data" :key="each">
-      <router-link :to="`/product/${each.productId}/details?name=${each.productName}`">
+      <router-link :to="`/product/${each.productId}/details`">
         <div :style="{ padding: '5px' }">
           <el-card :body-style="{ padding: '0px' }">
             <div class="portrait">
@@ -111,11 +111,11 @@
             </div>
           </div>
           <div style="float: left; width:10%">
-            <div class="listing-top highlight-text">
+            <div class="listing-top highlight-text" style="padding: 15px 0 0 15px; width: 100%;">
              {{ getSerialNumber(each) }}<br>
              {{ getArtist(each) }}
             </div>
-            <div class="listing-bottom normal-text">
+            <div class="listing-bottom normal-text" style="padding: 0 0 15px 15px; width: 100%;">
               {{ each.productSerialNumber.product.productName }}<br>
               {{ getLicensor(each) }}<br>
               {{ getCharacter(each) }}
@@ -151,11 +151,11 @@
             </div>
           </div>
           <div style="float: left; width:10%">
-            <div class="listing-top highlight-text">
+            <div class="listing-top highlight-text" style="padding: 15px 0 0 15px; width: 100%;">
              {{ getSerialNumber(each) }}<br>
              {{ getArtist(each) }}
             </div>
-            <div class="listing-bottom normal-text">
+            <div class="listing-bottom normal-text" style="padding: 0 0 15px 15px; width: 100%;">
               {{ each.productSerialNumber.product.productName }}<br>
               {{ getLicensor(each) }}<br>
               {{ getCharacter(each) }}

@@ -4,13 +4,15 @@
     label-position="top"
     label-width="100px"
     :model="designForm"
-    :rules="rules"
     ref="designForm"
     @keyup.enter="onSubmit($refs.designForm)"
   >
     <el-row :gutter="20" class="form-bg-color">
+      <el-col :span="21" :offset="3" class="form-text-title-pad">
+        <label class="form-label">ARTIST DETAILS</label>
+      </el-col>
       <el-col :span="18" :offset="3">
-        <div style="margin-top: 30px; text-align:center">
+        <div style="text-align:center">
           <span v-for="(page, i) in designForm.inputs" :key="i" style="margin-right:10px">
             <a href="#" @click="go(i)" style="text-decoration: none;">
               <span class="artist-page" :class="{ current: i == current }">{{i+1}}</span>
@@ -22,16 +24,6 @@
     <el-row :gutter="20" class="form-bg-color" v-for="(input, i) in designForm.inputs" :key="i">
       <el-col :span="18" :offset="3" v-show="input.show">
         <div>
-          <!-- <el-form-item label="Artists / Designer" prop="designArtistId">
-          <el-select v-model="input.designArtistId" placeholder="Select" style="max-width:800px">
-            <el-option
-              v-for="artist in existingArtistList"
-              :key="artist.artistId"
-              :label="artist.artistName"
-              :value="artist.artistId">
-            </el-option>
-          </el-select>
-          </el-form-item> -->
           <SelectInput
             v-model="input.designArtistId"
             formProps="designArtistId"
@@ -97,12 +89,13 @@
               class="custom-btn discard-btn"
               @click="$router.push(`/allproducts`)">DISCARD</el-button>
             <el-button
-              class="custom-btn save-exit-btn"
-              @click="onSubmit($refs.designForm)">SAVE AND EXIT</el-button>
+              class="custom-btn save-exit-btn" :disabled="!allowSave"
+              @click="onSubmit($refs.designForm, 'exit')">SAVE AND EXIT</el-button>
             <el-button
               class="custom-btn submit-btn"
               type="success"
-              @click="onSubmit($refs.designForm)"
+              :disabled="!allowSave"
+              @click="onSubmit($refs.designForm, 'proceed')"
               :loading="loading"
             >
               SAVE AND PROCEED
@@ -122,8 +115,9 @@ import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants'
 import TextArea from '@/components/Share/TextArea.vue';
 import SelectInput from '@/components/Share/SelectInput.vue';
 import imageToBase64 from 'image-to-base64/browser';
+import { SET_LINKS } from '@/store/modules/linkstoggle/actions-type';
+// import { ElMessage } from 'element-plus';
 import router from '@/router';
-import { ElMessage } from 'element-plus';
 
 export default {
   props: {
@@ -139,14 +133,23 @@ export default {
       type: Boolean,
       required: true,
     },
+    next: {
+      type: String,
+    },
   },
   components: {
-    // SingleImageUpload,
     TextArea,
     SelectInput,
   },
   data() {
     return {
+      allowSave: false,
+      toggle: {
+        susLink: true,
+        artLink: true,
+        serLink: true,
+        productName: '',
+      },
       base64: null,
       country: '',
       region: '',
@@ -165,32 +168,13 @@ export default {
         forDelete: [],
         existing: [],
       },
-      // rules: {
-      //   designConcept: [
-      //     {
-      //       required: true,
-      //       message: 'Please enter design concept',
-      //     },
-      //   ],
-      //   designImageUrl: [
-      //     {
-      //       required: true,
-      //       message: 'Please enter design image',
-      //     },
-      //   ],
-      //   designCreateBy: [
-      //     {
-      //       required: true,
-      //       message: 'Please select artist',
-      //     },
-      //   ],
-      // },
     };
   },
 
   methods: {
     ...mapActions('artist', [GET_ARTIST_LIST]),
     ...mapActions('product', [GET_PRODUCT, PREVIEW_DESIGN]),
+    ...mapActions('linkstoggle', [SET_LINKS]),
     handleClick(i) {
       this.clicked = i;
     },
@@ -214,34 +198,41 @@ export default {
       });
       this.go(this.designForm.inputs.length - 1);
     },
-    async preview() {
-      this.base64 = this.designForm.inputs[this.current].designImageUrl;
-      const that = this;
-      let fileType = this.designForm.inputs[this.current].designFileType;
-      if (!this.designForm.inputs[this.current].designId) {
-        fileType = this.designForm.inputs[this.current].designImageFile.type;
-        this.base64 = await imageToBase64(this.designForm.inputs[this.current].designImageUrl)
-          .then(
-            (response) => {
-              that.base64 = `data:${fileType};base64,${response}`;
-              return that.base64;
-            },
-          );
-      }
+    preview() {
+      this.previewForm.productId = null;
+      this.previewForm.designs = [];
+      this.previewForm.artists = [];
       this.previewForm.productId = this.$route.params.id;
-      this.previewForm.designs.push({
-        designId: this.designForm.inputs[this.current].designId,
-        designConcept: this.designForm.inputs[this.current].designConcept,
-        designFilePath: this.base64,
-        designArtistId: this.designForm.inputs[this.current].designArtistId,
-        designFileType: fileType,
+
+      this.designForm.inputs.forEach(async (input) => {
+        const fileType = input.designFileType;
+        if (!input.designId) {
+          this.base64 = await imageToBase64(input.designImageUrl);
+          this.previewForm.designs.push({
+            designId: input.designId,
+            designConcept: input.designConcept,
+            designFilePath: this.base64,
+            designArtistId: input.designArtistId,
+            designFileType: fileType,
+          });
+        } else {
+          this.previewForm.designs.push({
+            designId: input.designId,
+            designConcept: input.designConcept,
+            designFilePath: input.designImageUrl,
+            designArtistId: input.designArtistId,
+            designFileType: fileType,
+          });
+        }
       });
+
       for (let i = 0; i < this.existingArtistList.length; i++) {
         this.previewForm.artists.push({
           artistName: this.existingArtistList[i].artistName,
           artistDisplayPhotoFilePath: this.existingArtistList[i].artistDisplayPhotoFilePath,
         });
       }
+      console.log(JSON.stringify(this.previewForm));
       this.PREVIEW_DESIGN(this.previewForm);
     },
     deleteForm(i) {
@@ -265,19 +256,30 @@ export default {
     showDesign(url) {
       window.open(url, '_blank');
     },
-    checkDesignOk() {
-      if (!this.productDetails.sustainabilityReport) {
-        ElMessage.error({
-          showClose: true,
-          message: 'Please enter sustainability report first',
-        });
-        router.push(`/product/${this.productDetails.productId}/sustainability?name=${this.$route.query.name}`);
+    effectLinks() {
+      if (this.productDetails.productName) {
+        this.toggle.susLink = true;
+      } else {
+        this.toggle.susLink = false;
       }
+      if (this.productDetails.sustainabilityReport) {
+        this.toggle.artLink = true;
+      } else {
+        this.toggle.artLink = false;
+      }
+      if ((this.productDetails.sustainabilityReport && this.productDetails.designs.length > 0) || this.newDesignId) {
+        this.toggle.serLink = true;
+      } else {
+        this.toggle.serLink = false;
+      }
+      this.toggle.productName = this.productDetails.productName;
+      this.SET_LINKS(this.toggle);
     },
   },
   computed: {
     ...mapState('artist', ['artistList']),
-    ...mapState('product', ['designDetails', 'productDetails', 'previewDetails', 'previewDesign']),
+    ...mapState('product', ['designDetails', 'productDetails', 'previewDetails', 'previewDesign', 'newDesignId', 'updateDesignResult']),
+    ...mapState('linkstoggle', ['linksToggled']),
   },
   mounted() {
     this.designForm.productId = this.$route.params.id;
@@ -285,32 +287,6 @@ export default {
   },
   watch: {
     designDetails() {
-      // this.designForm.productId = this.$route.params.id;
-      // let hideShow = false;
-      // if (this.designDetails.length > 0) {
-      //   this.designForm.inputs = [];
-      //   for (let i = 0; i < this.designDetails.length; i++) {
-      //     if (i === 0) {
-      //       hideShow = true;
-      //     } else {
-      //       hideShow = false;
-      //     }
-      //     this.designForm.inputs.push({
-      //       designId: this.designDetails[i].designId,
-      //       designArtistId: this.designDetails[i].designArtistId,
-      //       designImageUrl: this.designDetails[i].designFilePath,
-      //       designFileType: this.designDetails[i].designFileType,
-      //       designConcept: this.designDetails[i].designConcept,
-      //       show: hideShow,
-      //     });
-      //   }
-      // } else {
-      //   this.addForm();
-      // }
-      // this.designForm.existing = this.designDetails;
-      // this.defaultValue = {
-      //   ...this.designForm,
-      // };
     },
     previewDesign() {
       if (this.previewDesign.length > 0) {
@@ -318,8 +294,7 @@ export default {
       }
     },
     productDetails() {
-      this.checkDesignOk();
-      this.existingArtistList = this.productDetails.artistIds;
+      // this.existingArtistList = this.productDetails.artistIds;
       this.GET_ARTIST_LIST();
 
       this.designForm.productId = this.$route.params.id;
@@ -350,7 +325,38 @@ export default {
       };
     },
     artistList() {
-      this.existingArtistList = this.artistList.filter((f) => this.existingArtistList.includes(f.artistId));
+      this.existingArtistList = this.artistList.filter((f) => this.productDetails.artistIds.includes(f.artistId));
+    },
+    newDesignId() {
+      this.effectLinks();
+      if (this.next === 'exit') {
+        router.push('/allproducts');
+      } else {
+        router.push(`/product/${this.$route.params.id}/serialnumbers`);
+      }
+    },
+    updateDesignResult() {
+      if (this.updateDesignResult[0].next === 'exit') {
+        router.push('/allproducts');
+      } else {
+        router.push(`/product/${this.$route.params.id}/serialnumbers`);
+      }
+    },
+    designForm: {
+      handler(val) {
+        if (val.inputs.length > 0) {
+          for (let i = 0; i < val.inputs.length; i++) {
+            if ((val.inputs[i].designArtistId.length > 0) && (val.inputs[i].designConcept.length > 0) && (val.inputs[i].designImageUrl.length > 0)) {
+              this.allowSave = true;
+            } else {
+              this.allowSave = false;
+            }
+          }
+        } else {
+          this.allowSave = false;
+        }
+      },
+      deep: true,
     },
   },
 };

@@ -2,7 +2,8 @@
   <ProductDesignsForm
     :onSubmit="onSubmit"
     :resetForm="resetForm"
-    :loading="creatingProduct"
+    :next="next"
+    :loading="creatingDesign"
   />
 </template>
 
@@ -21,10 +22,12 @@ export default {
     return {
       creatingDesign: computed(() => store.state.product.creatingDesign),
       createDesign: (designDetail) => store.dispatch(`product/${CREATE_DESIGN}`, designDetail),
+      next: null,
     };
   },
   methods: {
-    onSubmit(form) {
+    onSubmit(form, next) {
+      this.next = next;
       form.validate((valid) => {
         if (valid) {
           // use default profile image if user click clear img
@@ -35,6 +38,7 @@ export default {
           const designDetail = {
             ...form.model,
             applicationDomain: process.env.VUE_APP_APPLICATION_DOMAIN,
+            next,
           };
           this.createDesign(designDetail);
         }

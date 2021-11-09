@@ -12,7 +12,24 @@
     ref="userForm"
     @keyup.enter="onSubmit($refs.userForm)"
   >
-    <el-form-item label="Role" prop="role">
+    <el-row :gutter="20">
+      <el-col :span="24" :xs="24">
+        <SelectInput
+            v-model="userForm.role"
+            formProps="role"
+            formLabel="Role"
+          >
+            <el-option
+              v-for="role in roleList"
+              :key="role.roleId"
+              :label="role.roleName"
+              :value="role.roleId"
+            >
+            </el-option>
+          </SelectInput>
+      </el-col>
+    </el-row>
+    <!-- <el-form-item label="Role" prop="role">
       <el-select v-model="userForm.role" placeholder="Select">
         <el-option
           v-for="role in roleList"
@@ -22,10 +39,11 @@
         >
         </el-option>
       </el-select>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item class="button-wrapper">
       <el-button
-        type="primary"
+        class="custom-btn submit-btn"
+        type="success"
         @click="onSubmit($refs.userForm, authorizationId)"
         :loading="loading"
       >
@@ -39,6 +57,7 @@
 import { mapActions, mapState } from 'vuex';
 import { GET_ROLE_LIST } from '@/store/modules/access/actions-type';
 import accessService from '@/services/access-service';
+import SelectInput from '@/components/Share/SelectInput.vue';
 
 export default {
   props: {
@@ -54,6 +73,9 @@ export default {
       type: Boolean,
       required: true,
     },
+  },
+  components: {
+    SelectInput,
   },
   data() {
     return {

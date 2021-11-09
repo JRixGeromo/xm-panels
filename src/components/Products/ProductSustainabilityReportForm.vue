@@ -9,6 +9,9 @@
     @keyup.enter="onSubmit($refs.sustainabilityReportForm)"
   >
     <el-row :gutter="20" class="form-bg-color">
+      <el-col :span="21" :offset="3" class="form-text-title-pad">
+        <label class="form-label">SUSTAINABILITY REPORT</label>
+      </el-col>
       <el-col :span="18" :offset="3">
         <div class="grid-content bg-purple">
           <div class="upload-container">
@@ -65,7 +68,7 @@
           </div>
         </div>
 
-        <div style="margin-top: 15px;">
+        <div style="margin-top: 40px;">
           <TextArea
             v-model="sustainabilityReportForm.summary"
             formProps="summary"
@@ -137,14 +140,14 @@
               @click="$router.push(`/allproducts`)">DISCARD</el-button>
             <el-button
               class="custom-btn save-exit-btn"
-              @click="onSubmit($refs.sustainabilityReportForm)"
-              :disabled="!allowed">SAVE AND EXIT</el-button>
+              @click="onSubmit($refs.sustainabilityReportForm, 'exit')"
+              :disabled="dontSave">SAVE AND EXIT</el-button>
             <el-button
               class="custom-btn submit-btn"
               type="success"
-              @click="onSubmit($refs.sustainabilityReportForm)"
+              @click="onSubmit($refs.sustainabilityReportForm, 'proceed')"
               :loading="loading"
-              :disabled="!allowed"
+              :disabled="dontSave"
             >
               SAVE AND PROCEED
             </el-button>
@@ -156,12 +159,15 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import { GET_SUSTAINABILITY_REPORT } from '@/store/modules/product/actions-type';
+// import { GET_SUSTAINABILITY_REPORT } from '@/store/modules/product/actions-type';
+import { GET_PRODUCT } from '@/store/modules/product/actions-type';
 import { /* DEFAULT_PROFILE_PICTURE, */ IMAGE_FORMAT } from '@/common/constants';
 // import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
 import TextArea from '@/components/Share/TextArea.vue';
 import TextInput from '@/components/Share/TextInput.vue';
 import SingleImageUpload from '@/components/Share/SingleImageUpload.vue';
+import { SET_LINKS } from '@/store/modules/linkstoggle/actions-type';
+import router from '@/router';
 
 export default {
   props: {
@@ -177,6 +183,9 @@ export default {
       type: Boolean,
       required: true,
     },
+    next: {
+      type: String,
+    },
   },
   components: {
     SingleImageUpload,
@@ -185,7 +194,14 @@ export default {
   },
   data() {
     return {
+      toggle: {
+        susLink: true,
+        artLink: true,
+        serLink: true,
+        productName: '',
+      },
       allowed: true,
+      dontSave: true,
       base64: null,
       country: '',
       region: '',
@@ -241,7 +257,9 @@ export default {
   },
 
   methods: {
-    ...mapActions('product', [GET_SUSTAINABILITY_REPORT]),
+    // ...mapActions('product', [GET_SUSTAINABILITY_REPORT]),
+    ...mapActions('product', [GET_PRODUCT]),
+    ...mapActions('linkstoggle', [SET_LINKS]),
     handleSustainabilityReportImg(file) {
       this.sustainabilityReportForm.displayImageUrl = URL.createObjectURL(file.raw);
       this.sustainabilityReportForm.displayImageFile = file.raw;
@@ -280,16 +298,40 @@ export default {
       this.relationshipDialog = false;
       this.memorySaved = false;
     },
+    effectLinks() {
+      if (this.productDetails.productName) {
+        this.toggle.susLink = true;
+      } else {
+        this.toggle.susLink = false;
+      }
+      if (this.productDetails.sustainabilityReport || this.newSustainabilityReportId) {
+        this.toggle.artLink = true;
+      } else {
+        this.toggle.artLink = false;
+      }
+      if (this.productDetails.sustainabilityReport && this.productDetails.designs.length > 0) {
+        this.toggle.serLink = true;
+      } else {
+        this.toggle.serLink = false;
+      }
+      this.toggle.productName = this.productDetails.productName;
+      this.SET_LINKS(this.toggle);
+      console.log(this.linksToggled);
+    },
   },
   computed: {
-    ...mapState('product', ['sustainabilityReportInfo']),
+    // ...mapState('product', ['sustainabilityReportInfo']),
+    ...mapState('product', ['productDetails', 'newSustainabilityReportId', 'updateSustainabilityResult']),
+    ...mapState('linkstoggle', ['linksToggled']),
   },
   mounted() {
     this.sustainabilityReportForm.productId = this.$route.params.id;
-    this.GET_SUSTAINABILITY_REPORT(this.$route.params.id);
+    // this.GET_SUSTAINABILITY_REPORT(this.$route.params.id);
+    this.GET_PRODUCT(this.$route.params.id);
     // this.addResourcesSavedForm();
   },
   watch: {
+    /*
     sustainabilityReportInfo() {
       if (this.sustainabilityReportInfo.sustainabilityReportId) {
         this.sustainabilityReportForm.productId = this.$route.params.id;
@@ -310,10 +352,43 @@ export default {
       } else {
         this.addResourcesSavedForm();
       }
-      // this.sustainabilityReportForm.existing = this.sustainabilityReportDetails;
-      // this.defaultValue = {
-      // ...this.sustainabilityReportForm,
-      // };
+    },
+    */
+    productDetails() {
+      if (this.productDetails.sustainabilityReport) {
+        this.sustainabilityReportForm.productId = this.$route.params.id;
+        this.sustainabilityReportForm.sustainabilityReportId = this.productDetails.sustainabilityReport.sustainabilityReportId;
+        this.sustainabilityReportForm.displayImageUrl = this.productDetails.sustainabilityReport.sustainabilityReportImg;
+        this.sustainabilityReportForm.reportFileUrl = this.productDetails.sustainabilityReport.sustainabilityReportFile;
+        this.sustainabilityReportForm.summary = this.productDetails.sustainabilityReport.sustainabilityReportDescription;
+        this.sustainabilityReportForm.resourcesSaved = [];
+        const resourcesSaved = JSON.parse(this.productDetails.sustainabilityReport.sustainabilityReportDetail);
+        for (let i = 0; i < resourcesSaved.length; i++) {
+          if (resourcesSaved[i].totalSave && resourcesSaved[i].resourceAndSaveMethod) {
+            this.sustainabilityReportForm.resourcesSaved.push({
+              totalSave: resourcesSaved[i].totalSave,
+              resourceAndSaveMethod: resourcesSaved[i].resourceAndSaveMethod,
+            });
+          }
+        }
+      } else {
+        this.addResourcesSavedForm();
+      }
+    },
+    newSustainabilityReportId() {
+      this.effectLinks();
+      if (this.next === 'exit') {
+        router.push('/allproducts');
+      } else {
+        router.push(`/product/${this.$route.params.id}/designs`);
+      }
+    },
+    updateSustainabilityResult() {
+      if (this.updateSustainabilityResult[0].next === 'exit') {
+        router.push('/allproducts');
+      } else {
+        router.push(`/product/${this.$route.params.id}/designs`);
+      }
     },
     sustainabilityReportForm: {
       handler(val) {
@@ -326,6 +401,11 @@ export default {
           }
         } else {
           this.allowed = true;
+        }
+        if (this.sustainabilityReportForm.resourcesSaved.length > 0 && this.allowed) {
+          this.dontSave = false;
+        } else {
+          this.dontSave = true;
         }
       },
       deep: true,

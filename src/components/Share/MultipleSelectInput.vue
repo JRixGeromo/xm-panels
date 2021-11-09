@@ -25,7 +25,7 @@ export default {
   props: {
     modelValue: Array,
     formLimit: {
-      type: String,
+      type: Number,
       required: true,
     },
     formProps: {

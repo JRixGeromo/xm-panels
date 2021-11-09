@@ -119,9 +119,12 @@
           <div style="width: 100%; text-align:right; margin-top: -20px; cursor: pointer;">
             <el-button class="link-btn"
               :disabled="preventClick"
-              @click="relationships()">
-              <span style="text-decoration: underline"
-              >View character relationships</span></el-button>
+              @click="relationships()"
+            >
+              <span style="text-decoration: underline">
+                View character relationships
+              </span>
+            </el-button>
           </div>
         </div>
         <div style="margin-top: 35px;">
@@ -136,6 +139,7 @@
               topCountry="US"
               :autocomplete="true"
               :removePlaceholder="true"
+              :usei18n="false"
             />
           </CountrySelectInput>
         </div>
@@ -166,7 +170,7 @@
             v-model="productForm.artistIds"
             formProps="artistIds"
             formLabel="Artists"
-            formLimit="6"
+            :formLimit="6"
           >
             <el-option
               v-for="artist in artistList"
@@ -206,7 +210,7 @@
               <span class="form-label"> {{ productForm.productName }}: RELATIONSHIPS </span>
             </div>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <div style="width: 100%; text-align:left; margin-top: -20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
@@ -214,14 +218,14 @@
               </el-button>
           </div>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <div style="width: 100%; text-align:right; margin-top: -20px">
               <el-button
                 class="custom-btn black-custom-btn padding-small"
                 @click="popoutRelationship()">EDIT
               </el-button>
             </div>
-          </el-col>
+          </el-col> -->
         </el-row>
         <el-row justify="space-between">
           <el-col :span="24" style="margin-top: 50px; margin-bottom: 50px">
@@ -258,7 +262,7 @@
             <el-row>
             <el-col :span="18" :offset="3">
               <div style="width: 100%; text-align: center; margin-top:30px">
-                <el-button type="default" @click="addForm"><i class="el-icon-plus"></i></el-button>
+                <el-button type="default" @click="addForm" :disabled="!allowed"><i class="el-icon-plus"></i></el-button>
               </div>
             </el-col>
             </el-row>
@@ -267,7 +271,7 @@
               <el-row>
                 <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
                   <el-button
-                    class="custom-btn discard-btn" @click="discard()">DISCARD</el-button>
+                    class="custom-btn discard-btn" @click="products()">DISCARD REL</el-button>
                 </el-col>
                 <el-col :span="8" :offset="1" style="padding: 23px">
                   <el-button  class="custom-btn submit-btn"
@@ -419,6 +423,7 @@ export default {
   },
   data() {
     return {
+      allowed: true,
       memorySaved: false,
       preventClick: true,
       relationshipDialog: false,
@@ -579,6 +584,7 @@ export default {
     },
     relationships() {
       this.show = 'relationships';
+      this.popoutRelationship();
     },
     setRelationship() {
       // this.relationshipForm.inputs = [];
@@ -641,7 +647,7 @@ export default {
       if (this.next === 'exit') {
         router.push('/allproducts');
       } else {
-        router.push(`/product/${this.newProductId}/sustainability?name=${this.productForm.productName}`);
+        router.push(`/product/${this.newProductId}/sustainability`);
       }
     },
     productSeriesList() {
@@ -668,14 +674,21 @@ export default {
     },
     relationshipForm: {
       handler(val) {
+        const i = val.inputs.length;
         if (val.inputs.length > 0) {
           if ((val.inputs[0].relatedProduct.length > 0) && (val.inputs[0].relation.length > 0)) {
             this.allowSave = true;
           } else {
             this.allowSave = false;
           }
+          if ((val.inputs[i - 1].relatedProduct.length > 0) && (val.inputs[i - 1].relation.length > 0)) {
+            this.allowed = true;
+          } else {
+            this.allowed = false;
+          }
         } else {
           this.allowSave = false;
+          this.allowed = true;
         }
       },
       deep: true,

@@ -52,6 +52,11 @@ export default {
       form.resetFields();
     },
   },
+  data() {
+    return {
+      next: null,
+    };
+  },
   components: {
     ProductForm,
   },

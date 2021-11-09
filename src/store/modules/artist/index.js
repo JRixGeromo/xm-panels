@@ -72,10 +72,13 @@ const getters = {
 };
 
 const actions = {
-  [GET_ARTIST_LIST]({ commit }) {
-    const fullpageLoader = ElLoading.service({
-      fullscreen: true,
-    });
+  [GET_ARTIST_LIST]({ commit }, isLoaderNeeded = true) {
+    let fullpageLoader = null;
+    if (isLoaderNeeded) {
+      fullpageLoader = ElLoading.service({
+        fullscreen: true,
+      });
+    }
     commit(GET_ARTIST_LIST_START);
     artistServices.getArtistList().then(
       (data) => {
@@ -102,7 +105,9 @@ const actions = {
         commit(GET_ARTIST_LIST_FAILURE);
       },
     ).finally(() => {
-      fullpageLoader.close();
+      if (isLoaderNeeded) {
+        fullpageLoader.close();
+      }
     });
   },
   [GET_ARTIST]({ commit }, artistId) {

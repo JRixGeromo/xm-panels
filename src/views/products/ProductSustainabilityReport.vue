@@ -2,6 +2,7 @@
   <ProductSustainabilityReportForm
     :onSubmit="onSubmit"
     :resetForm="resetForm"
+    :next="next"
     :loading="creatingSustainabilityReport"
   />
 </template>
@@ -22,10 +23,12 @@ export default {
       creatingSustainabilityReport: computed(() => store.state.product.creatingSustainabilityReport),
       createSustainabilityReport: (sustainabilityReportDetail) => store.dispatch(`product/${CREATE_SUSTAINABILITY_REPORT}`,
         sustainabilityReportDetail),
+      next: null,
     };
   },
   methods: {
-    onSubmit(form) {
+    onSubmit(form, next) {
+      this.next = next;
       form.validate((valid) => {
         if (valid) {
           // use default profile image if user click clear img
@@ -36,6 +39,7 @@ export default {
           const sustainabilityReportDetail = {
             ...form.model,
             applicationDomain: process.env.VUE_APP_APPLICATION_DOMAIN,
+            next,
           };
           this.createSustainabilityReport(sustainabilityReportDetail);
         }
