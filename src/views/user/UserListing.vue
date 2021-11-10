@@ -1,16 +1,28 @@
 <template>
   <el-container class="bg-portion el-container-search">
     <div class="search">
-    <label class="search" for="searchUsers">Search users</label>
-    <el-input
-      v-model="searchKeyword"
-      @input="searchOnChange"
-      suffix-icon="el-icon-search"
-      >
-      <!-- <template #prefix>
-        <i class="el-input__icon el-icon-search search-margin"></i>
-      </template> -->
-    </el-input>
+      <el-row :gutter="20">
+        <el-col :span="18">
+          <label class="search" for="searchUsers">Search users</label>
+          <el-input
+            v-model="searchKeyword"
+            @input="searchOnChange"
+            suffix-icon="el-icon-search"
+            >
+          </el-input>
+        </el-col>
+        <!-- <el-col :span="6">
+          <label class="sort" for="searchNfts">Sort By</label>
+          <el-select v-model="value" placeholder="Select" @change="sortUsers">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col> -->
+      </el-row>
     </div>
   </el-container>
   <el-container>
@@ -117,7 +129,7 @@
 </template>
 
 <script>
-import { GET_USER_LIST, UPDATE_PASSWORD, SEARCH_USER_IN_LIST } from '@/store/modules/user/actions-type';
+import { GET_USER_LIST, UPDATE_PASSWORD, SEARCH_USER_IN_LIST, SORT_USERS } from '@/store/modules/user/actions-type';
 import { EDIT_USER_ROLE } from '@/store/modules/access/actions-type';
 import { mapActions, mapState, mapGetters /* , mapMutations */ } from 'vuex';
 import EditPasswordForm from '@/components/User/EditPasswordForm.vue';
@@ -161,7 +173,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('user', [GET_USER_LIST, UPDATE_PASSWORD, SEARCH_USER_IN_LIST]),
+    ...mapActions('user', [GET_USER_LIST, UPDATE_PASSWORD, SEARCH_USER_IN_LIST, SORT_USERS]),
     ...mapActions('access', [EDIT_USER_ROLE]),
     // ...mapMutations('user', [RESET_USER_STATE]),
     paginationCallback(page) {
@@ -221,6 +233,9 @@ export default {
     searchOnChange() {
       this.SEARCH_USER_IN_LIST(this.searchKeyword);
     },
+    sortUsers() {
+      this.SORT_USERS(this.value);
+    },
   },
   data() {
     return {
@@ -237,15 +252,15 @@ export default {
       },
       options: [
         {
-          value: 'Newest',
+          value: 'newest',
           label: 'Newest',
         },
         {
-          value: 'Oldest',
+          value: 'oldest',
           label: 'Oldest',
         },
       ],
-      value: '',
+      value: 'newest',
     };
   },
   components: {

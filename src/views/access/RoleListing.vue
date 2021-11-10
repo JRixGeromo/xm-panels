@@ -1,10 +1,15 @@
 <template>
-  <!-- <el-breadcrumb separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
-    <el-breadcrumb-item>
-      Role Listing
-    </el-breadcrumb-item>
-  </el-breadcrumb> -->
+  <div style="margin-bottom: 30px">
+    <label class="form-label">ROLES</label>
+  </div>
+  <el-pagination
+    class="table-pagination"
+    layout="prev, pager, next"
+    :total="pagination.totalRecord"
+    :page-size="pagination.itemPerPage"
+    @current-change="paginationCallback"
+  >
+  </el-pagination>
   <el-table :data="data" stripe :header-cell-style="{ background: '#000', 'font-family': 'gotham' }">
     <el-table-column type="expand">
       <template #default="props">
@@ -38,7 +43,7 @@
         {{ slotProps.row.roleName ?? '-' }}
       </template>
     </el-table-column>
-    <el-table-column width="200px">
+    <el-table-column width="200px" align="right">
       <template #default="scope">
         <el-button size="mini" icon="xm-el-icon-pen" class="edit-icon-custom" @click="handleEditDialog(scope.row)"
           ></el-button
@@ -76,6 +81,7 @@
     title="Edit Role"
     v-model="editDialog"
     :destroy-on-close="true"
+    width="75%"
   >
     <RoleForm
       :onSubmit="onSubmit"
@@ -175,6 +181,7 @@ export default {
     },
     resetForm(form) {
       form.resetFields();
+      this.editDialog = false;
     },
     successEditCallback() {
       this.editDialog = false;

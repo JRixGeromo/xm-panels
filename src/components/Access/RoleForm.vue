@@ -8,34 +8,50 @@
     ref="roleForm"
     @keyup.enter="onSubmit($refs.userForm)"
   >
-    <el-form-item label="Role Name" prop="roleName">
+    <div>
+      <TextInput
+        v-model="roleForm.roleName"
+        formProps="roleName"
+        formLabel="Name"
+      />
+    </div>
+    <!-- <el-form-item label="Role Name" prop="roleName">
       <el-input v-model="roleForm.roleName"></el-input>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item label="Permission" prop="permissionsIds">
-      <el-checkbox-group v-model="roleForm.permissionsIds">
-          <label class="show-text top-margin" for="html">API</label>
+      <el-checkbox-group v-model="roleForm.permissionsIds" style="margin-left: 20px">
+          <label class="show-text top-margin" for="html" style="color: #fff">API</label>
           <el-checkbox
             v-for="permission in permissionsApi"
             :key="permission.permissions"
             :label="permission.permissionId"
             name="permission"
+            style="width: 340px"
           >
             {{ permission.permissionName }}
           </el-checkbox>
-          <label class="show-text" for="MENU">MENU</label>
+          <label class="show-text" for="MENU" style="color: #fff">MENU</label>
           <el-checkbox
             v-for="permission in permissionsMenu"
             :key="permission.permissions"
             :label="permission.permissionId"
             name="permission"
+            style="width: 340px"
           >
             {{ permission.permissionName }}
           </el-checkbox>
       </el-checkbox-group>
     </el-form-item>
     <el-form-item class="button-wrapper">
-      <el-button @click="resetForm($refs.roleForm)">Reset</el-button>
-      <el-button type="primary" @click="onSubmit($refs.roleForm)" :loading="loading">
+      <el-button
+        class="custom-btn preview-btn"
+        @click="resetForm($refs.roleForm)">
+        Discard
+      </el-button>
+      <el-button
+        class="custom-btn submit-btn"
+        type="success"
+        @click="onSubmit($refs.roleForm)" :loading="loading">
         Submit
       </el-button>
     </el-form-item>
@@ -43,6 +59,8 @@
 </template>
 
 <script>
+import TextInput from '@/components/Share/TextInput.vue';
+
 export default {
   props: {
     defaultValue: {
@@ -69,6 +87,9 @@ export default {
       type: Boolean,
       required: true,
     },
+  },
+  components: {
+    TextInput,
   },
   data() {
     const formValue = {

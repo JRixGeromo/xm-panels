@@ -752,7 +752,8 @@ body {
   background-color: #000000 !important;
   border: 1px solid #FFFFFF !important;
   color: #FFFFFF !important;
-  padding: 15px;
+  // padding: 15px;
+  padding: 5px 15px 5px 15px;
 }
 
 // .upload-btn {
@@ -793,6 +794,18 @@ body {
   border-radius: 0px !important;
 }
 
+.el-checkbox__input.is-checked+.el-checkbox__label {
+  // color: var(--el-checkbox-checked-font-color);
+  color: #fff;
+}
+.el-checkbox__label {
+  color: #fff;
+}
+.el-form--label-top .el-form-item__label {
+  text-transform: uppercase;
+  font-family: 'gotham';
+  color: #fff;
+}
 
 /////////////////////////////////
 /* ///// inputs /////*/

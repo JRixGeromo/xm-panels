@@ -137,12 +137,12 @@ const NAV_MENU = [
     child: false,
   },
   {
-    name: 'User',
+    name: 'Users',
     child: true,
     icon: 'xm-el-icon-s-user',
     subNav: [
       {
-        name: 'User List',
+        name: 'Users List',
         route: '/userlisting',
       },
       {
@@ -152,12 +152,12 @@ const NAV_MENU = [
     ],
   },
   {
-    name: 'Role',
+    name: 'Roles',
     child: true,
     icon: 'xm-el-icon-s-licensor',
     subNav: [
       {
-        name: 'Role List',
+        name: 'Roles List',
         route: '/rolelisting',
       },
       {

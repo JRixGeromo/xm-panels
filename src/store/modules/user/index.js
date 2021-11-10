@@ -9,6 +9,7 @@ import {
   UPDATE_USER,
   UPDATE_PASSWORD,
   SEARCH_USER_IN_LIST,
+  SORT_USERS,
 } from '@/store/modules/user/actions-type';
 import {
   GET_USER_LIST_START,
@@ -24,6 +25,7 @@ import {
   UPDATE_PASSWORD_SUCCESS,
   UPDATE_PASSWORD_FAILURE,
   SEARCHED_USER,
+  SORTED_USERS,
 } from '@/store/modules/user/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
 import { ElMessage } from 'element-plus';
@@ -280,6 +282,21 @@ const actions = {
       userList;
     commit(SEARCHED_USER, searchedList);
   },
+  [SORT_USERS]({ commit, state }, sortBy) {
+    const usersList = [...state.oriUsersList];
+    const sortedUsers = usersList.sort((a, b) => {
+      const atime = new Date(a.userCreatedDate).getTime();
+      const btime = new Date(b.userCreatedDate).getTime();
+      let val = 0;
+      if (sortBy === 'oldest') {
+        val = atime - btime;
+      } else {
+        val = btime - atime;
+      }
+      return val;
+    });
+    commit(SORTED_USERS, sortedUsers);
+  },
 };
 
 const mutations = {
@@ -325,6 +342,9 @@ const mutations = {
   },
   [SEARCHED_USER](state, data) {
     state.userList = data;
+  },
+  [SORTED_USERS](state, data) {
+    state.usersList = data;
   },
 };
 
