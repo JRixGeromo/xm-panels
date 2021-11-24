@@ -5,6 +5,7 @@
         :model-value="modelValue"
         @change="onChange"
         :disabled="disabled"
+        placeholder=" "
       >
         <slot></slot>
       </el-select>

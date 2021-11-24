@@ -20,7 +20,7 @@
     </el-form-item> -->
     <el-form-item label="Permission" prop="permissionsIds">
       <el-checkbox-group v-model="roleForm.permissionsIds" style="margin-left: 20px">
-          <label class="show-text top-margin" for="html" style="color: #fff">API</label>
+          <label class="show-text top-margin" for="html" style="color: #fff; font-weight: bold">API</label>
           <el-checkbox
             v-for="permission in permissionsApi"
             :key="permission.permissions"
@@ -30,7 +30,7 @@
           >
             {{ permission.permissionName }}
           </el-checkbox>
-          <label class="show-text" for="MENU" style="color: #fff">MENU</label>
+          <label class="show-text" for="MENU" style="color: #fff; font-weight: bold">MENU</label>
           <el-checkbox
             v-for="permission in permissionsMenu"
             :key="permission.permissions"
@@ -43,11 +43,18 @@
       </el-checkbox-group>
     </el-form-item>
     <el-form-item class="button-wrapper">
-      <el-button
-        class="custom-btn preview-btn"
+      <el-button v-if="isEditMode"
+        class="custom-btn discard-btn"
         @click="resetForm($refs.roleForm)">
         Discard
       </el-button>
+      <router-link v-else :to="`/rolelisting`" style="margin: 20px">
+        <el-button
+          class="custom-btn discard-btn"
+        >
+          Discard
+        </el-button>
+      </router-link>
       <el-button
         class="custom-btn submit-btn"
         type="success"

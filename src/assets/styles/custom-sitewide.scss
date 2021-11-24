@@ -688,9 +688,12 @@ body {
 .breadcrumb {
   border-radius: 0px !important;
 }
+
 .breadcrumb a:first-child {
   border-radius: 0px !important;
+  padding: 0px 0px 0px 45px !important;
 }
+
 .breadcrumb a:last-child {
   border-radius: 0px;
 }
@@ -805,6 +808,13 @@ body {
   text-transform: uppercase;
   font-family: 'gotham';
   color: #fff;
+}
+
+.el-button:focus, .el-button:hover {
+  // color: var(--el-color-primary);
+  border-color: #fff;
+  // background-color: var(--el-color-primary-light-9);
+  // outline: 0;
 }
 
 /////////////////////////////////
@@ -1272,4 +1282,101 @@ textarea {
 }
 .el-button {
   height: 40px;
+}
+
+
+.el-popover.el-popper {
+  background: #000000;
+  border-radius: 0;
+  color: #fff;
+}
+
+.el-button--text:focus, .el-button--text:hover {
+  color: #fff;
+}
+.el-button--text {
+  color: #fff;
+}
+
+.el-button--primary {
+  color: #fff;
+  background-color: #000;
+  border-color: #fff;
+}
+
+.el-button--primary:focus, .el-button--primary:hover {
+  background: #000;
+  border-color: #fff;
+  color: #fff;
+}
+
+.el-popper__arrow {
+  display: none;
+}
+
+.el-popconfirm__main {
+  margin-bottom: 20px;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: #000;
+  border-color: #fff;
+}
+.dashboard-panel {
+  border: 1px solid #999598;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.welcome {
+  color: #ffffff;
+  font-size: 36px;
+  font-weight: bold;
+  word-wrap: break-word;
+  padding: 20px 0px 20px 0px;
+  text-transform: uppercase;
+  font-family: 'gotham';
+}
+
+.flat a, .flat a:after {
+  padding: 0px 0px 0px 60px !important;
+}
+
+@media (max-width: 1130px) {
+  .breadcrumb  {
+    width: 200px !important;
+  }  
+  .breadcrumb a:first-child {
+    padding: 0px 0px 0px 60px !important;
+  }  
+  .breadcrumb a:first-child:before {
+    left: 30px;
+  }
+  .flat a:before {
+    margin-left: -15px;
+  }
+  .flat a, .flat a:after {
+    padding: 0px 0px 0px 60px !important;
+  }
+}
+
+.ds-label {
+  font-size: 14px;
+  color: white;
+  font-family: 'gotham';
+  text-transform: uppercase;
+  margin-left: -30px
+}
+
+.ds-icons {
+  margin-top: -30px;
+  margin-left: -30px;
+  width: 120px !important;
+}
+
+.ds-title {
+  font-size: 14px;
+  color: white;
+  font-family: 'gotham';
+  text-transform: uppercase;
 }

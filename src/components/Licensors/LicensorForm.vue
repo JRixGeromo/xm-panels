@@ -54,12 +54,19 @@
     <el-col :span="18" :offset="3">
       <el-row>
         <el-col style="text-align: right;">
-          <el-button
+          <!-- <el-button
             class="custom-btn discard-btn"
             @click="resetFormOnClick"
           >
             Discard
-          </el-button>
+          </el-button> -->
+          <router-link :to="`/alllicensors`" style="margin: 20px">
+              <el-button
+                class="custom-btn discard-btn"
+              >
+                Discard
+              </el-button>
+            </router-link>
           <el-button
             type="success"
             @click="onSubmit($refs.licensorForm)"
@@ -77,7 +84,6 @@
       <div> -->
         <el-col :span="18" :offset="3">
           <div class="show-character">
-            XXX
           </div>
           <div class="add-character">
             <el-button class="custom-btn add-btn-new"

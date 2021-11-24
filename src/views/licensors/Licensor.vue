@@ -1,15 +1,18 @@
 <template>
-  <el-affix :offset="10">
+  <!-- <el-affix :offset="10"> -->
     <el-breadcrumb separator="/">
       <!-- <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item> -->
       <el-breadcrumb-item :to="{ path: '/alllicensors' }">
         All Licensors
       </el-breadcrumb-item>
-      <el-breadcrumb-item>
+      <el-breadcrumb-item v-if="this.$route.params.id">
+        {{ this.$route.query.name }}
+      </el-breadcrumb-item>
+      <el-breadcrumb-item v-else>
         Licensor
       </el-breadcrumb-item>
     </el-breadcrumb>
-  </el-affix>
+  <!-- </el-affix> -->
   <router-view></router-view>
 </template>
 
@@ -32,6 +35,7 @@ export default {
     };
   },
   mounted() {
+    console.log(this.$route);
     this.activeMenu = this.$router.currentRoute.value.fullPath;
   },
   watch: {

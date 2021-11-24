@@ -1,7 +1,7 @@
 <template>
   <el-row type="flex" justify="left">
     <el-col :span="24" :sm="{ span: 20 }" :md="{ span: 16 }">
-      <h1>{{ userInfo.userName }}</h1>
+      <h1 style="color: #fff; margin-bottom: 15px">{{ userInfo.userName }}</h1>
     </el-col>
   </el-row>
   <el-form

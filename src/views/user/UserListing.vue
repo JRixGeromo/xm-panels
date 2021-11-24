@@ -39,7 +39,7 @@
     :current-page="pagination.currentPage + 1"
   >
   </el-pagination>
-  <el-table :data="data" v-loading="gettingUserList" stripe :header-cell-style="{ background: '#000', 'font-family': 'gotham' }">
+  <el-table :data="data" stripe :header-cell-style="{ background: '#000', 'font-family': 'gotham' }">
     <el-table-column
       prop="userName"
       label="Display Name"
@@ -135,6 +135,7 @@ import { mapActions, mapState, mapGetters /* , mapMutations */ } from 'vuex';
 import EditPasswordForm from '@/components/User/EditPasswordForm.vue';
 import EditRoleForm from '@/components/User/EditRoleForm.vue';
 import UserRole from '@/components/Access/UserRole.vue';
+// import router from '@/router';
 // import { getAuthID } from '@/helpers';
 
 const defaultPagination = {
@@ -147,11 +148,17 @@ export default {
   name: 'UserListing',
   computed: {
     ...mapState('user', ['userList', 'gettingUserList', 'updatingPassword']),
-    ...mapState('access', ['updatingUserRole']),
+    ...mapState('access', ['updatingUserRole', 'userUpdated']),
     ...mapGetters('user', ['getUsers']),
   },
   mounted() {
     this.GET_USER_LIST();
+    this.toPage = this.$route.query.n > 0 ? (this.$route.query.n - 1) : 0;
+    window.history.replaceState(
+      {
+      },
+      document.title, '/userlisting',
+    );
   },
   beforeUnmount() {
     clearTimeout(this.paginationTimeout);
@@ -162,14 +169,18 @@ export default {
       if (this.searchKeyword) {
         this.pagination = {
           ...this.pagination,
-          currentPage: 0,
+          currentPage: this.toPage,
         };
       }
+      this.pagination.currentPage = parseInt(this.toPage, 10);
       const userList = this.getUsers({
         ...this.pagination,
       });
       this.data = userList.data;
       this.pagination = userList.pagination;
+    },
+    userUpdated() {
+      window.location.href = `/userlisting?n=${this.toPage}`;
     },
   },
   methods: {
@@ -207,6 +218,7 @@ export default {
       this.userInfo = userInfo;
     },
     onSubmit(values) {
+      this.toPage = this.pagination.currentPage + 1;
       if (values.model.actionType === 'role') {
         const roleBody = {
           roleIds: [
@@ -214,6 +226,7 @@ export default {
           ],
         };
         this.EDIT_USER_ROLE({
+          userId: this.userInfo.userId,
           roleDetail: roleBody,
           authorizationId: values.model.authorizationId,
         });
@@ -239,6 +252,7 @@ export default {
   },
   data() {
     return {
+      toPage: 0,
       page: 0,
       data: [],
       pagination: defaultPagination,

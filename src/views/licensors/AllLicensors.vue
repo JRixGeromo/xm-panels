@@ -88,7 +88,7 @@
     <el-col :xs="24" :md="6" v-for="(each) in data" :key="each">
       <!-- <el-col :span="8" :data="data" v-loading="gettingUserList"> -->
       <!-- <div :style="{ padding: '5px' }" @click="$router.push(`/userprofile/${o.licenseId}`)"> -->
-      <router-link :to="`/licensor/${each.licenseId}/details`">
+      <router-link :to="`/licensor/${each.licenseId}/details?name=${each.licenseName}`">
         <div :style="{ padding: '5px' }">
           <el-card :body-style="{ padding: '0px' }">
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->

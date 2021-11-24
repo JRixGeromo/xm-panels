@@ -62,7 +62,14 @@
         <div style="margin-top: 15px;">
           <el-row justify="end">
             <el-col style="text-align: right;">
-              <el-button class="custom-btn discard-btn" @click="resetFormOnClick">Discard</el-button>
+              <!-- <el-button class="custom-btn discard-btn" @click="resetFormOnClick">Discard</el-button> -->
+              <router-link :to="`/alllicensors`" style="margin: 20px">
+                <el-button
+                  class="custom-btn preview-btn"
+                >
+                  Discard
+                </el-button>
+              </router-link>
               <el-button
                 type="success"
                 @click="onSubmit($refs.licensorForm)"

@@ -1,7 +1,7 @@
 <template>
   <el-row type="flex" justify="left">
     <el-col :span="24" :sm="{ span: 20 }" :md="{ span: 16 }">
-      <h1>{{ userInfo.userName }}</h1>
+      <h1 style="color: #fff; margin-bottom: 15px">{{ userInfo.userName }}</h1>
     </el-col>
   </el-row>
   <el-form
@@ -9,6 +9,7 @@
     label-position="top"
     label-width="100px"
     :model="userForm"
+    :rules="rules"
     ref="userForm"
     @keyup.enter="onSubmit($refs.userForm)"
   >
@@ -29,23 +30,13 @@
           </SelectInput>
       </el-col>
     </el-row>
-    <!-- <el-form-item label="Role" prop="role">
-      <el-select v-model="userForm.role" placeholder="Select">
-        <el-option
-          v-for="role in roleList"
-          :key="role.roleId"
-          :label="role.roleName"
-          :value="role.roleId"
-        >
-        </el-option>
-      </el-select>
-    </el-form-item> -->
     <el-form-item class="button-wrapper">
       <el-button
         class="custom-btn submit-btn"
         type="success"
-        @click="onSubmit($refs.userForm, authorizationId)"
+        @click="onSubmit($refs.userForm)"
         :loading="loading"
+        :disabled="userForm.role.length == 0"
       >
         Submit
       </el-button>
@@ -80,10 +71,18 @@ export default {
   data() {
     return {
       userForm: {
-        userId: '',
+        userId: null,
         role: '',
         actionType: 'role',
         authorizationId: null,
+      },
+      rules: {
+        role: [
+          {
+            required: true,
+            message: 'Please assign a role for new user',
+          },
+        ],
       },
     };
   },
@@ -100,6 +99,9 @@ export default {
         (data) => {
           this.userForm.role = data.roles[0].roleId;
           this.userForm.authorizationId = data.authorizationId;
+        },
+        () => {
+          this.userForm.authorizationId = '-';
         },
       );
     }

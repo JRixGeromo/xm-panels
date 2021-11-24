@@ -2,6 +2,9 @@
   <div style="margin-bottom: 30px">
     <label class="form-label">ROLES</label>
   </div>
+  <el-container>
+    <el-button class="custom-btn add-btn" @click="$router.push(`/createrole`)">Add New Role</el-button>
+  </el-container>
   <el-pagination
     class="table-pagination"
     layout="prev, pager, next"
@@ -26,7 +29,7 @@
                 <div class="permission-header">
                   {{ `${permission.permissionName} - ${permission.type}` }}
                 </div>
-                <ul>
+                <ul style="margin-bottom: 20px">
                   <li v-for="access in permission.accessVerbs" :key="access" style="margin-left: 20px">
                     {{ access }}
                   </li>

@@ -271,7 +271,7 @@
               <el-row>
                 <el-col :span="8" :offset="3" style="text-align: right; padding: 23px">
                   <el-button
-                    class="custom-btn discard-btn" @click="products()">DISCARD REL</el-button>
+                    class="custom-btn discard-btn" @click="products()">DISCARD</el-button>
                 </el-col>
                 <el-col :span="8" :offset="1" style="padding: 23px">
                   <el-button  class="custom-btn submit-btn"

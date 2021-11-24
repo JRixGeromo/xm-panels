@@ -70,6 +70,8 @@ function getUserAuthorization(userId) {
 }
 
 function editUserAuthorization(userRole, authorizationId) {
+  console.log(userRole);
+  console.log(authorizationId);
   SetAuthHeader();
   return ApiIni().put(`/api/access/v1/authorization/${authorizationId}`, userRole)
     .then((response) => response.data)

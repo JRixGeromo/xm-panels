@@ -72,11 +72,18 @@
              {{ nftsDetailData.productName }}<br>
              {{ nftsDetailData.serialNumber }}<br><br>
              <el-button
-              class="custom-btn black-custom-btn"
-              @click="go(nftsDetailData.serialNumber)"
-              ><span>VIEW PROVENANCE</span>
-            </el-button>
+                class="custom-btn black-custom-btn"
+                @click="go(nftsDetailData.serialNumber)"
+                ><span>VIEW PROVENANCE</span>
+              </el-button>
             </div>
+            <el-button class="link-btn" style="padding: 0px;"
+              @click="showProvenanceEvents = true;"
+            >
+              <span style="text-decoration: underline">
+                View Provenance Events
+              </span>
+            </el-button>
           </div>
       </el-col>
     </el-row>
@@ -98,13 +105,13 @@
           <el-col :span="24">
             <div style="margin-bottom: 20px">
             <span style="font-size: 16px" class="font-text noselect">PRODUCT DESCRIPTION</span><br>
-            <span>{{ nftsDetailData.productDescription }}</span>
+            <span style="white-space: pre-wrap;overflow-wrap: break-word;">{{ nftsDetailData.productDescription }}</span>
             </div>
           </el-col>
           <el-col :span="24">
             <div style="margin-bottom: 20px">
             <span style="font-size: 16px" class="font-text noselect">BACKGROUND OF CHARACTER</span><br>
-            <span>{{ nftsDetailData.productBackground }}</span>
+            <span style="white-space: pre-wrap;overflow-wrap: break-word;">{{ nftsDetailData.productBackground }}</span>
             </div>
           </el-col>
           <el-col :span="24" style="padding-bottom: 30px">
@@ -184,6 +191,14 @@
       </el-col>
     </el-row>
   </el-form>
+  <el-dialog
+    custom-class="custom-dialog provenance-event-dialog"
+    v-model="showProvenanceEvents"
+    :destroy-on-close="true"
+    :fullscreen="true"
+  >
+    <iframe :src="provenanceEventUrl()" title="W3Schools Free Online Web Tutorials"></iframe>
+  </el-dialog>
 </template>
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
@@ -242,6 +257,7 @@ export default {
         artists: [],
         metaData: '',
       },
+      showProvenanceEvents: false,
     };
   },
   methods: {
@@ -305,6 +321,9 @@ export default {
     goToList() {
       this.showDetails = false;
       this.showListing = true;
+    },
+    provenanceEventUrl() {
+      return `${process.env.VUE_APP_LOADING_API_DOMAIN}/provenanceevent?id=${this.nftsDetailData.serialNumber}`;
     },
     ...mapActions('nfts', [GET_NFTS_LIST, GET_NFTS_DETAIL]),
     ...mapActions('artist', [GET_ARTIST_LIST]),
@@ -391,6 +410,14 @@ export default {
     font-family: 'gotham';
   }
 
+  .provenance-event-dialog {
+    iframe {
+      border: unset !important;
+      height: 80vh;
+      width: 100%;
+      padding-top: 25px;
+    }
+  }
 </style>
 
 <style scoped>

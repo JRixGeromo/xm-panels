@@ -28,7 +28,7 @@ import {
   SORTED_USERS,
 } from '@/store/modules/user/mutations-type';
 // import { DEFAULT_PROFILE_PICTURE } from '@/common/constants';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 import router from '@/router';
 
 const state = {
@@ -70,6 +70,9 @@ const getters = {
 
 const actions = {
   [GET_USER_LIST]({ commit }) {
+    const fullpageLoader = ElLoading.service({
+      fullscreen: true,
+    });
     commit(GET_USER_LIST_START);
     userServices.getUsers().then(
       (data) => {
@@ -78,7 +81,9 @@ const actions = {
       () => {
         commit(GET_USER_LIST_FAILURE);
       },
-    );
+    ).finally(() => {
+      fullpageLoader.close();
+    });
   },
   async [CREATE_USER]({ commit }, artistDetails) {
     commit(CREATE_USER_START);
@@ -228,7 +233,7 @@ const actions = {
               message: 'Created new user successfully',
               data,
             });
-            router.push('/allartists');
+            router.push('/userlisting');
             commit(UPDATE_USER_SUCCESS);
           },
           () => {

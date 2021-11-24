@@ -1,5 +1,6 @@
 import { createStore, createLogger } from 'vuex';
 import auth from './modules/auth';
+import dashboard from './modules/dashboard';
 import user from './modules/user';
 import artist from './modules/artist';
 import product from './modules/product';
@@ -18,6 +19,7 @@ const debug = process.env.NODE_ENV !== 'production';
 export default createStore({
   modules: {
     auth,
+    dashboard,
     user,
     product,
     nfts,

@@ -1,7 +1,7 @@
 <template>
   <el-row type="flex" justify="left">
     <el-col :span="24" :sm="{ span: 20 }" :md="{ span: 16 }">
-      <h1>{{ userInfo.userName }}</h1>
+      <h1 style="color: #fff; margin-bottom: 15px">{{ userInfo.userName }}</h1>
     </el-col>
   </el-row>
   <el-form
@@ -52,6 +52,7 @@
         type="success"
         @click="onSubmit($refs.userForm)"
         :loading="loading"
+        :disabled="dontAllow"
       >
         UPDATE
       </el-button>
@@ -86,14 +87,18 @@ export default {
   data() {
     const validateConfirm = (rule, value, callback) => {
       if (value === '') {
+        this.dontAllow = true;
         callback(new Error('Please input the confirm password'));
       } else if (value !== this.userForm.password) {
+        this.dontAllow = true;
         callback(new Error("Two inputs don't match!"));
       } else {
+        this.dontAllow = false;
         callback();
       }
     };
     return {
+      dontAllow: true,
       userForm: {
         current_password: '',
         password: '',
@@ -127,9 +132,6 @@ export default {
   },
   // computed: {
   //   ...mapState('access', ['roleList']),
-  // },
-  // methods: {
-  //   ...mapActions('access', [GET_ROLE_LIST]),
   // },
   // mounted() {
   //   this.GET_ROLE_LIST();

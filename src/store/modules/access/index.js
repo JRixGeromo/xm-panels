@@ -47,6 +47,7 @@ const state = {
   deletingRoleId: null,
   deletingRole: false,
   updatingUserRole: false,
+  userUpdated: false,
   gettingUserRole: false,
   userRole: null,
 };
@@ -165,24 +166,46 @@ const actions = {
     );
   },
   [EDIT_USER_ROLE]({ commit }, payload) {
-    const { roleDetail, authorizationId } = payload;
-    commit(EDIT_USER_ROLE_START);
-    accessServices.editUserAuthorization(roleDetail, authorizationId).then(
-      () => {
-        ElMessage.success({
-          showClose: true,
-          message: 'Role updated successfully',
-        });
-        commit(EDIT_USER_ROLE_SUCCESS);
-      },
-      (error) => {
-        ElMessage.error({
-          showClose: true,
-          message: error,
-        });
-        commit(EDIT_USER_ROLE_FAILURE);
-      },
-    );
+    ElLoading.service({
+      fullscreen: true,
+    });
+    let authId = payload.authorizationId;
+    if (authId === '-') {
+      const roleDetails = {
+        userId: payload.userId,
+        ...payload.roleDetail,
+      };
+      commit(ASSIGN_ROLE_START);
+      accessServices.assignRole(roleDetails).then(
+        (data) => {
+          authId = data;
+          commit(ASSIGN_ROLE_SUCCESS);
+        },
+        () => {
+          commit(ASSIGN_ROLE_FAILURE);
+        },
+      );
+    } else {
+      commit(EDIT_USER_ROLE_START);
+      accessServices.editUserAuthorization(payload.roleDetail, payload.authorizationId).then(
+        () => {
+          /*
+          ElMessage.success({
+            showClose: true,
+            message: 'Role updated successfully',
+          });
+          */
+          commit(EDIT_USER_ROLE_SUCCESS);
+        },
+        (error) => {
+          ElMessage.error({
+            showClose: true,
+            message: error,
+          });
+          commit(EDIT_USER_ROLE_FAILURE);
+        },
+      );
+    }
   },
   [GET_USER_ROLE]({ commit }, userId) {
     const fullpageLoader = ElLoading.service({
@@ -266,12 +289,15 @@ const mutations = {
   },
   [EDIT_USER_ROLE_START](state) {
     state.updatingUserRole = true;
+    state.userUpdated = false;
   },
   [EDIT_USER_ROLE_SUCCESS](state) {
     state.updatingUserRole = false;
+    state.userUpdated = true;
   },
   [EDIT_USER_ROLE_FAILURE](state) {
     state.updatingUserRole = false;
+    state.userUpdated = false;
   },
   [GET_USER_ROLE_START](state) {
     state.gettingUserRole = true;
@@ -284,11 +310,14 @@ const mutations = {
   [GET_USER_ROLE_FAILURE](state) {
     state.gettingUserRole = false;
   },
-  [ASSIGN_ROLE_START]() {
+  [ASSIGN_ROLE_START](state) {
+    state.userUpdated = false;
   },
-  [ASSIGN_ROLE_SUCCESS]() {
+  [ASSIGN_ROLE_SUCCESS](state) {
+    state.userUpdated = true;
   },
-  [ASSIGN_ROLE_FAILURE]() {
+  [ASSIGN_ROLE_FAILURE](state) {
+    state.userUpdated = false;
   },
 };
 

@@ -76,7 +76,13 @@
       </el-col>
     </el-row>
     <el-form-item class="button-wrapper">
-      <el-button class="custom-btn preview-btn" @click="resetForm($refs.userForm)">DISCARD</el-button>
+      <router-link :to="`/userlisting`" style="margin: 20px">
+        <el-button
+          class="custom-btn discard-btn"
+        >
+          Discard
+        </el-button>
+      </router-link>
       <el-button
         class="custom-btn submit-btn"
         type="success"
